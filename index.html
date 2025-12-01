@@ -6,58 +6,108 @@
 
   <title>Anton Zip – Art Of Zip</title>
   <meta name="description" content="Cinema indipendente, visioni, esperimenti, immagini in movimento. Il laboratorio personale di Anton Zip." />
+  <link rel="canonical" href="https://antonzip.it" />
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Social preview -->
+  <meta name="theme-color" content="#05070b" />
+
+  <!-- Open Graph -->
   <meta property="og:title" content="Anton Zip – Art Of Zip" />
-  <meta property="og:description" content="Cinema indipendente, visioni e materia.">
+  <meta property="og:description" content="Cinema indipendente, visioni e materia. Il laboratorio personale di Anton Zip." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://antonzip.it" />
+  <!-- Sostituisci quando avrai una cover -->
+  <meta property="og:image" content="https://antonzip.it/cover-antonzip.jpg" />
 
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Anton Zip – Art Of Zip" />
+  <meta name="twitter:description" content="Immagini in movimento, cinema in stato di ricerca, esperimenti visivi." />
+  <meta name="twitter:image" content="https://antonzip.it/cover-antonzip.jpg" />
 </head>
 
 <body>
+  <a href="#main" class="skip-link">Salta al contenuto</a>
 
   <!-- HERO -->
   <header class="hero">
-    <video src="hero.mp4" autoplay muted loop playsinline></video>
+    <video src="hero.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
     <div class="overlay">
       <h1>ANTON ZIP</h1>
-      <p>Art Of Zip — Cinema in stato di ricerca</p>
+      <p>Art Of Zip · Cinema in stato di ricerca</p>
     </div>
   </header>
 
-  <!-- WORKS -->
-  <section id="works" class="bloc">
-    <h2>Works</h2>
-    <div class="grid">
-      <a class="card" href="#">
-        <span>Corto sperimentale</span>
-      </a>
-      <a class="card" href="#">
-        <span>Videoarte</span>
-      </a>
-    </div>
-  </section>
+  <main id="main">
+    <!-- WORKS -->
+    <section id="works" class="bloc" aria-labelledby="works-title">
+      <h2 id="works-title">Works</h2>
+      <div class="grid">
+        <a class="card" href="#" aria-label="Corto sperimentale di Anton Zip">
+          <span>Corto sperimentale</span>
+        </a>
+        <a class="card" href="#" aria-label="Progetto di videoarte di Anton Zip">
+          <span>Videoarte</span>
+        </a>
+      </div>
+    </section>
 
-  <!-- LAB -->
-  <section id="lab" class="bloc">
-    <h2>Lab</h2>
-    <p>Frammenti, prove, appunti. La parte più viva e mutante del mio processo.</p>
-  </section>
+    <!-- LAB -->
+    <section id="lab" class="bloc" aria-labelledby="lab-title">
+      <h2 id="lab-title">Lab</h2>
+      <p>
+        Frammenti, prove, appunti. Il laboratorio dove il materiale resta grezzo, 
+        la forma è provvisoria e il cinema è più vicino al pensiero che al prodotto finito.
+      </p>
+    </section>
 
-  <!-- CONTACT -->
-  <section id="contact" class="bloc">
-    <h2>Contact</h2>
-    <form id="contactForm">
-      <input name="nome" placeholder="Nome" required />
-      <input name="email" type="email" placeholder="Email" required />
-      <textarea name="messaggio" placeholder="Messaggio" required></textarea>
-      <button type="submit">Invia</button>
-    </form>
-  </section>
+    <!-- CONTACT -->
+    <section id="contact" class="bloc" aria-labelledby="contact-title">
+      <h2 id="contact-title">Contact</h2>
+
+      <p class="contact-note">
+        Per collaborazioni, progetti o visioni condivise:
+        <a href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a>
+      </p>
+
+      <form id="contactForm">
+        <input
+          name="nome"
+          placeholder="Nome"
+          autocomplete="name"
+          required
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          autocomplete="email"
+          required
+        />
+        <textarea
+          name="messaggio"
+          placeholder="Messaggio"
+          required
+        ></textarea>
+        <button type="submit">Invia</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="bloc site-footer" aria-label="Credits">
+    <p>
+      © <span id="year"></span> Anton Zip · Art Of Zip
+    </p>
+  </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Anno automatico nel footer
+    const yearSpan = document.getElementById("year");
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  </script>
 </body>
 </html>
