@@ -1,159 +1,101 @@
-/* Reset leggero */
-*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: #ffffff;
-  color: #000000;
-  line-height: 1.65;
-  font-size: 1.05rem;
-}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anton Zip – film & visual work</title>
+  <meta name="description" content="Anton Zip lavora tra cinema indipendente, videoarte e lavori visivi su commissione.">
+  <link rel="canonical" href="https://antonzip.it">
 
-/* Accessibilità */
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  padding: 0.5rem 1rem;
-  background: #000;
-  color: #fff;
-  z-index: 999;
-}
-.skip-link:focus { left: 1rem; top: 1rem; }
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Anton Zip – film & visual work">
+  <meta property="og:description" content="Film, videoarte e lavori visivi di Anton Zip.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://antonzip.it">
+  <meta property="og:image" content="https://antonzip.it/cover-antonzip.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://antonzip.it/cover-antonzip.jpg">
 
-/* Tipografia base */
-h1, h2 { margin: 0; font-weight: 500; }
-p { margin: 0 0 1.6rem; color: #1a1a1a; }
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-/* Layout generale */
-.hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 1.5rem 4rem; }
-.hero-inner { text-align: center; }
-.hero h1 { font-size: clamp(3.2rem, 8vw, 5rem); letter-spacing: 0.04em; }
-.hero-tagline {
-  margin-top: 1.3rem;
-  font-size: 0.95rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: #555555;
-}
+  <a href="#main" class="skip-link">Salta al contenuto principale</a>
 
-/* Nav */
-.site-nav {
-  margin-top: 4rem;
-  font-size: 0.85rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-.site-nav a {
-  color: #777777;
-  text-decoration: none;
-  opacity: 0.7;
-  transition: all 0.25s ease;
-}
-.site-nav a + a::before { content: " · "; opacity: 0.4; padding: 0 0.7ch; }
-.site-nav a:hover,
-.site-nav a:focus { opacity: 1; color: #000; text-decoration: underline; }
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>Anton Zip</h1>
+      <p class="hero-tagline">film, videoarte e lavori visivi</p>
+      <nav class="site-nav" aria-label="Navigazione principale">
+        <a href="#works">Works</a>
+        <a href="#lab">Lab</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-/* Sezioni */
-.section { padding: 8rem 1.5rem 9rem; text-align: center; }
-.container { max-width: 1400px; margin: 0 auto; }
-.narrow { max-width: 40rem; margin: 0 auto; }
+  <main id="main">
+    <section id="works" class="section">
+      <div class="container">
+        <header class="section-header narrow">
+          <h2>Works</h2>
+          <p class="subtitle">Corpo, paesaggio, gesto.</p>
+        </header>
 
-.section h2 {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.23em;
-  color: #474747;
-  margin-bottom: 0.8rem;
-}
-.subtitle {
-  font-size: 1.05rem;
-  font-style: italic;
-  color: #555555;
-  margin-bottom: 4rem;
-}
+        <div class="works-grid">
+          <a href="crystal-crown.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="crystal-crown.jpg" alt="Mani che sorreggono un cristallo sopra una testa" loading="lazy">
+          </a>
+          <a href="Sito-2.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-2.jpg" alt="Figura nel bosco al crepuscolo con luce" loading="lazy">
+          </a>
+          <a href="Sito-4.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-4.jpg" alt="Dittico corpo e paesaggio montano" loading="lazy">
+          </a>
+          <a href="Sito-10.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-10.jpg" alt="Ragazza sola in sala cinema con poltrone rosse" loading="lazy">
+          </a>
+          <a href="Sito-16.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-16.jpg" alt="Figura immersa nell’acqua di un fiume" loading="lazy">
+          </a>
+          <a href="Sito-27.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-27.jpg" alt="Trittico: fiore, corpo in acqua, cristallo" loading="lazy">
+          </a>
+          <a href="Sito-28.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-28.jpg" alt="Ritratto in ombra con taglio di luce" loading="lazy">
+          </a>
+          <a href="Sito-30.jpg" class="work-item" target="_blank" rel="noopener">
+            <img src="Sito-30.jpg" alt="Trittico fashion in interno con luce morbida" loading="lazy">
+          </a>
+        </div>
+      </div>
+    </section>
 
-/* Works grid */
-.works-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 3rem 2.5rem;
-  margin-top: 2rem;
-}
-.work-item { overflow: hidden; cursor: zoom-in; }
-.work-item img {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: grayscale(100%);
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.work-item:hover img {
-  transform: scale(1.04);
-  filter: grayscale(0%);
-}
+    <section id="lab" class="section"><div class="container narrow"><h2>Lab</h2><p>Spazio di lavoro per test, appunti e frammenti. Alcune cose restano prove, altre diventano progetti.</p></div></section>
+    <section id="about" class="section"><div class="container narrow"><h2>About</h2><p>Anton Zip lavora tra cinema indipendente e arti visive. Dirige, filma e monta per festival, realtà culturali e brand.</p><p>Si muove tra film, videoarte e lavori su commissione con attenzione a luce, ritmo e presenza. Preferisce lasciare spazio alle immagini.</p></div></section>
+    <section id="contact" class="section"><div class="container narrow"><h2>Contact</h2><p>Per progetti, collaborazioni o anteprime:<br><a href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a></p>
+      <form class="contact-form" action="https://formsubmit.co/anton0zip@gmail.com" method="POST">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" placeholder="Nome" autocomplete="name" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Email" autocomplete="email" required>
+        <label for="messaggio">Messaggio</label>
+        <textarea id="messaggio" name="messaggio" placeholder="Messaggio" rows="5" required></textarea>
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_autoresponse" value="Grazie per il messaggio – ti risponderò presto.">
+        <input type="hidden" name="_next" value="https://antonzip.it">
+        <button type="submit">Invia</button>
+      </form>
+    </div></section>
+  </main>
 
-/* Form */
-.contact-form {
-  margin-top: 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-  text-align: left;
-  max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-.contact-form label {
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #555;
-  margin-bottom: 0.4rem;
-}
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid rgba(0,0,0,0.18);
-  padding: 0.7rem 0;
-  font-size: 1rem;
-  background: transparent;
-}
-.contact-form input:focus,
-.contact-form textarea:focus {
-  outline: none;
-  border-color: #000;
-}
-.contact-form button {
-  align-self: flex-start;
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 0.9rem 2.4rem;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.25s;
-}
-.contact-form button:hover { background: #1a1a1a; }
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> Anton Zip</div>
+  </footer>
 
-/* Footer */
-.footer {
-  padding: 4rem 1.5rem;
-  font-size: 0.9rem;
-  color: #666666;
-  text-align: center;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .section { padding: 6rem 1.25rem; }
-  .works-grid { gap: 2rem; grid-template-columns: 1fr; }
-  .hero { padding-top: 5rem; }
-  .hero-tagline { margin-bottom: 2rem; }
-  .site-nav { margin-top: 2.5rem; }
-}
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
