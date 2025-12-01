@@ -1,0 +1,203 @@
+:root {
+  --bg: #05070b;
+  --fg: #e7ecf2;
+  --muted: #8f97a4;
+  --accent: #48d7ff;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Inter", sans-serif;
+  background: radial-gradient(circle at top, #111827 0, #020308 55%);
+  color: var(--fg);
+  letter-spacing: 0.02em;
+}
+
+/* HERO */
+
+.hero {
+  position: relative;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.3) contrast(1.1);
+  z-index: -2;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(72, 215, 255, 0.16), transparent 55%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.7), #020308 90%);
+  mix-blend-mode: screen;
+  z-index: -1;
+}
+
+.hero .overlay {
+  padding: 0 1.5rem;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* SEZIONI */
+
+.bloc {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+}
+
+.bloc h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin: 0 0 2rem;
+}
+
+/* WORKS */
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.card {
+  display: flex;
+  align-items: flex-end;
+  padding: 1.75rem 1.5rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: var(--fg);
+  background: radial-gradient(circle at top left, rgba(72, 215, 255, 0.16), transparent 60%),
+    rgba(13, 16, 26, 0.95);
+  backdrop-filter: blur(10px);
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease, background 0.18s ease;
+}
+
+.card span {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+  border-color: rgba(72, 215, 255, 0.7);
+}
+
+/* TESTO GENERALE */
+
+p {
+  max-width: 54ch;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+/* CONTACT FORM */
+
+form {
+  display: grid;
+  gap: 1rem;
+  max-width: 480px;
+}
+
+input,
+textarea {
+  font: inherit;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border-subtle);
+  background: rgba(8, 10, 18, 0.9);
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(143, 151, 164, 0.8);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(72, 215, 255, 0.5);
+  background: rgba(4, 6, 12, 0.98);
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+button {
+  justify-self: flex-start;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.6rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  background: var(--accent);
+  color: #020308;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65);
+  filter: brightness(1.04);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 640px) {
+  .bloc {
+    padding: 4rem 1.25rem;
+  }
+
+  .hero {
+    padding: 0 1.25rem;
+  }
+}
