@@ -1,62 +1,165 @@
-/* Reset leggero */
+/* ========================
+   :root — variabili globali
+   ======================== */
+:root {
+  --color-bg: #ffffff;
+  --color-text: #000000;
+  --color-muted: #555555;
+  --color-muted-light: #777777;
+  --color-border: rgba(0, 0, 0, 0.18);
+  --color-accent: #000000;
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  --transition-default: 0.25s ease;
+  --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  --radius: 0.125rem;
+
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 3rem;
+  --spacing-xl: 6rem;
+
+  --max-width-content: 1200px;
+  --max-width-narrow: 40rem;
+}
+
+/* Dark mode (automatic if preferito dal user) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #121212;
+    --color-text: #e6e6e6;
+    --color-muted: #aaaaaa;
+    --color-muted-light: #cccccc;
+    --color-border: rgba(255, 255, 255, 0.2);
+    --color-accent: #fff;
+  }
+}
+
+/* ========================
+   Reset e base
+   ======================== */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--spacing-xl); /* se usi header fixed/sticky */
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 100%; /* = 16px di default browser; utile per rem coerenti */
+  line-height: 1.6;
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
-  background: #ffffff;
-  color: #000000;
-  line-height: 1.65;
-  font-size: 1.05rem;
+  font-family: var(--font-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
-/* Accessibilità skip link */
+/* Immagini e media responsive */ 
+img,
+picture,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Link di default */
+a {
+  color: inherit;
+  text-decoration: none;
+  background-color: transparent;
+}
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+
+/* Focus outline per accessibilità */
+:focus {
+  outline: 2px dashed var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ========================
+   Accessibilità — Skip link
+   ======================== */
 .skip-link {
   position: absolute;
   left: -9999px;
   top: 0;
-  padding: 0.5rem 1rem;
-  background: #000;
-  color: #fff;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-accent);
+  color: var(--color-bg);
   text-decoration: none;
-  z-index: 999;
+  z-index: 9999;
 }
-
 .skip-link:focus {
-  left: 1rem;
-  top: 1rem;
+  left: var(--spacing-sm);
+  top: var(--spacing-sm);
 }
 
-/* Titoli e testo base */
-
-h1,
-h2 {
-  margin: 0;
+/* ========================
+   Tipografia: titoli e paragrafi
+   ======================== */
+h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.2;
 }
+
+h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+h2 { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: 0.875rem; }
 
 p {
-  margin: 0 0 1.6rem;
-  color: #1a1a1a;
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-muted);
 }
 
-/* HERO */
+/* ========================
+   Container & Utility
+   ======================== */
+.container {
+  width: 90%;
+  max-width: var(--max-width-content);
+  margin-left: auto;
+  margin-right: auto;
+}
 
+.narrow {
+  max-width: var(--max-width-narrow);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========================
+   HERO Section
+   ======================== */
 .hero {
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6rem 1.5rem 4rem;
+  min-height: 100vh;
+  padding: var(--spacing-xl) var(--spacing-sm) var(--spacing-lg);
+  background: var(--color-bg);
 }
 
 .hero-inner {
@@ -64,66 +167,55 @@ p {
 }
 
 .hero h1 {
-  font-size: clamp(3.2rem, 8vw, 5rem);
   letter-spacing: 0.04em;
 }
 
 .hero-tagline {
-  margin-top: 1.3rem;
+  margin-top: var(--spacing-sm);
   font-size: 0.95rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #555555;
+  color: var(--color-muted-light);
 }
 
-/* NAV */
-
+/* ========================
+   Navigation
+   ======================== */
 .site-nav {
-  margin-top: 4rem;
+  margin-top: var(--spacing-xl);
   font-size: 0.85rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .site-nav a {
-  color: #777777;
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.25s ease, opacity 0.25s ease;
+  color: var(--color-muted-light);
+  transition: color var(--transition-default), opacity var(--transition-default);
 }
-
 .site-nav a + a::before {
   content: " · ";
   opacity: 0.4;
   padding: 0 0.7ch;
 }
 
-.site-nav a:hover {
-  color: #000000;
+.site-nav a:hover,
+.site-nav a:focus {
+  color: var(--color-accent);
   opacity: 1;
 }
 
-/* SEZIONI GENERICHE */
-
+/* ========================
+   Sezioni generiche
+   ======================== */
 .section {
-  padding: 6rem 1.5rem 7rem;
+  padding: var(--spacing-xl) var(--spacing-sm) var(--spacing-lg);
   text-align: center;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.narrow {
-  max-width: 40rem;
-}
-
-/* Titoli sezioni */
-
 .section-header {
   text-align: left;
-  max-width: 40rem;
+  max-width: var(--max-width-narrow);
   margin: 0 auto;
 }
 
@@ -131,59 +223,51 @@ p {
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.23em;
-  color: #474747;
+  color: var(--color-muted-light);
   margin-bottom: 0.8rem;
 }
 
 .subtitle {
   font-size: 1.05rem;
   font-style: italic;
-  color: #555555;
+  color: var(--color-muted);
   margin-bottom: 3.5rem;
 }
 
-/* WORKS GRID */
-
+/* ========================
+   Works Grid / Portfolio
+   ======================== */
 .works-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 2.5rem;
-  margin-top: 4rem;
+  margin-top: var(--spacing-lg);
 }
 
 .work-item {
   overflow: hidden;
   cursor: pointer;
+  border-radius: var(--radius);
+  transition: transform var(--transition-default);
 }
 
 .work-item img {
-  width: 100%;
-  height: auto;
-  display: block;
   filter: grayscale(100%);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--transition-slow), filter var(--transition-slow);
+  will-change: transform, filter;
 }
 
-.work-item:hover img {
+.work-item:hover img,
+.work-item:focus-within img {
   transform: scale(1.04);
   filter: grayscale(0%);
 }
 
-/* LAB / ABOUT / CONTACT testo */
-
-#lab p,
-#about p,
-#contact p {
-  text-align: left;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* FORM CONTACT */
-
+/* ========================
+   Form di contatto
+   ======================== */
 .contact-form {
-  margin-top: 3rem;
+  margin-top: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
@@ -194,77 +278,90 @@ p {
 .contact-form textarea {
   width: 100%;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid var(--color-border);
   padding: 0.7rem 0;
   font-size: 1rem;
   background: transparent;
-  color: #000000;
+  color: var(--color-text);
 }
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-  color: #999999;
+  color: var(--color-muted-light);
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
-  border-color: #000000;
+  border-color: var(--color-accent);
 }
 
 .contact-form button {
-  margin-top: 1rem;
   align-self: flex-start;
-  background: #000000;
-  color: #ffffff;
+  background: var(--color-accent);
+  color: var(--color-bg);
   border: none;
   padding: 0.9rem 2.2rem;
   font-size: 0.85rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.25s ease;
+  transition: background var(--transition-default);
+  border-radius: var(--radius);
 }
 
-.contact-form button:hover {
-  background: #1a1a1a;
+.contact-form button:hover,
+.contact-form button:focus {
+  background: var(--color-muted-light);
 }
 
-/* FOOTER */
-
+/* ========================
+   Footer
+   ======================== */
 .footer {
-  padding: 3rem 1.5rem 4rem;
+  padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-xl);
   font-size: 0.9rem;
-  color: #666666;
+  color: var(--color-muted-light);
   text-align: center;
 }
 
-/* LINK GENERICI */
-
-a {
-  color: inherit;
+/* ========================
+   Elementi globali
+   ======================== */
+button,
+input,
+textarea {
+  font-family: inherit;
 }
 
-/* MOBILE TUNING */
+ul, ol {
+  padding-left: 1.5em;
+  margin-bottom: var(--spacing-md);
+}
 
+blockquote {
+  margin: var(--spacing-lg) 0;
+  padding-left: 1em;
+  border-left: 4px solid var(--color-border);
+  color: var(--color-muted-light);
+}
+
+/* ========================
+   Responsive / Media Queries
+   ======================== */
 @media (max-width: 768px) {
   .hero {
-    padding-top: 5rem;
-    padding-bottom: 3rem;
-  }
-
-  .hero-tagline {
-    margin-top: 1rem;
-    margin-bottom: 2rem;
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
   }
 
   .site-nav {
-    margin-top: 2.5rem;
+    margin-top: var(--spacing-lg);
     letter-spacing: 0.2em;
   }
 
   .section {
-    padding: 4rem 1.25rem 4.5rem;
+    padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-md);
   }
 
   .works-grid {
