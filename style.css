@@ -2,7 +2,7 @@
   --color-bg: #ffffff;
   --color-text: #000000;
   --color-muted: #555555;
-  --color-muted-light: #555555; /* ← aumentato il contrasto */
+  --color-muted-light: #444444;
   --color-border: rgba(0, 0, 0, 0.18);
   --color-accent: #000000;
 
@@ -27,9 +27,9 @@
   :root {
     --color-bg: #121212;
     --color-text: #e6e6e6;
-    --color-muted: #cccccc;
-    --color-muted-light: #aaaaaa;
-    --color-border: rgba(255, 255, 255, 0.2);
+    --color-muted: #c7c7c7;
+    --color-muted-light: #d0d0d0;
+    --color-border: rgba(255, 255, 255, 0.22);
     --color-accent: #ffffff;
   }
 }
@@ -77,11 +77,11 @@ a {
 }
 
 a:hover,
-a:focus {
+a:focus-visible {
   text-decoration: underline;
 }
 
-:focus {
+:focus-visible {
   outline: 2px dashed var(--color-accent);
   outline-offset: 3px;
 }
@@ -96,7 +96,7 @@ a:focus {
   text-decoration: none;
   z-index: 9999;
 }
-.skip-link:focus {
+.skip-link:focus-visible {
   left: var(--spacing-sm);
   top: var(--spacing-sm);
 }
@@ -108,8 +108,17 @@ h1, h2, h3, h4 {
   line-height: 1.2;
 }
 
-h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
-h2 { font-size: 1.1rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-muted-light); }
+h1 {
+  font-size: clamp(2.4rem, 7vw, 3.8rem);
+  letter-spacing: 0.04em;
+}
+
+h2 {
+  font-size: 1.05rem;
+  letter-spacing: 0.23em;
+  text-transform: uppercase;
+  color: var(--color-muted-light);
+}
 
 p {
   margin: 0 0 var(--spacing-md);
@@ -140,10 +149,6 @@ p {
   text-align: center;
 }
 
-.hero h1 {
-  letter-spacing: 0.04em;
-}
-
 .hero-tagline {
   margin-top: var(--spacing-sm);
   font-size: 0.95rem;
@@ -172,7 +177,7 @@ p {
 }
 
 .site-nav a:hover,
-.site-nav a:focus {
+.site-nav a:focus-visible {
   color: var(--color-accent);
   opacity: 1;
 }
@@ -219,7 +224,7 @@ p {
   will-change: transform, filter;
 }
 
-/* Show grayscale only on hover (desktop) */
+/* grayscale solo su desktop con hover */
 @media (hover: hover) and (pointer: fine) {
   .work-item img {
     filter: grayscale(100%);
@@ -250,6 +255,13 @@ p {
   text-align: left;
 }
 
+.contact-form label {
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted-light);
+}
+
 .contact-form input,
 .contact-form textarea {
   width: 100%;
@@ -266,8 +278,8 @@ p {
   color: var(--color-muted-light);
 }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
+.contact-form input:focus-visible,
+.contact-form textarea:focus-visible {
   outline: none;
   border-color: var(--color-accent);
 }
@@ -282,13 +294,14 @@ p {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background var(--transition-default);
+  transition: background var(--transition-default), color var(--transition-default);
   border-radius: var(--radius);
 }
 
 .contact-form button:hover,
-.contact-form button:focus {
+.contact-form button:focus-visible {
   background: var(--color-muted-light);
+  color: var(--color-bg);
 }
 
 /* FOOTER */
@@ -321,6 +334,6 @@ p {
   }
 
   h2 {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }
