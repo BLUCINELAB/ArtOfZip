@@ -1,9 +1,146 @@
-/* --- WORKS CINEMATIC --- */
-.works-cinematic {
-  background: var(--color-bg);
-  padding-block: var(--spacing-xl);
+:root {
+  --font-title: "EB Garamond", serif;
+  --font-body: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --color-bg: #ffffff;
+  --color-text: #0d0d0d;
+  --color-muted: #555;
+  --color-muted-light: #999;
+  --color-accent: #000;
+
+  --transition-default: 0.25s ease;
+  --radius: 0.125rem;
+
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 3rem;
+  --spacing-xl: 6rem;
+  --max-width-content: 1200px;
+  --max-width-narrow: 40rem;
 }
 
+/* DARK MODE */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0b0e17;
+    --color-text: #e6e6e6;
+    --color-muted: #c7c7c7;
+    --color-muted-light: #999;
+    --color-accent: #ffffff;
+  }
+}
+
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  text-rendering: optimizeLegibility;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* TYPOGRAPHY */
+h1, h2 {
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: clamp(2.8rem, 8vw, 4.2rem);
+}
+
+h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-muted-light);
+  letter-spacing: 0.05em;
+  font-style: italic;
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+  color: var(--color-muted);
+}
+
+/* LAYOUT */
+.container {
+  width: 90%;
+  max-width: var(--max-width-content);
+  margin-inline: auto;
+}
+
+.narrow {
+  max-width: var(--max-width-narrow);
+  margin-inline: auto;
+}
+
+.section {
+  padding: var(--spacing-xl) var(--spacing-sm);
+  text-align: center;
+}
+
+/* HERO */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.hero-tagline {
+  margin-top: var(--spacing-sm);
+  font-size: 0.95rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-muted-light);
+}
+
+/* NAV */
+.site-nav {
+  margin-top: var(--spacing-lg);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+}
+
+.site-nav ul {
+  list-style: none;
+}
+
+.site-nav li {
+  display: inline;
+  margin: 0 0.7ch;
+}
+
+.site-nav a {
+  color: var(--color-muted-light);
+  transition: color var(--transition-default);
+}
+
+.site-nav a:hover {
+  color: var(--color-accent);
+}
+
+/* WORKS CINEMATIC */
 .works-sequence {
   display: flex;
   flex-direction: column;
@@ -16,27 +153,25 @@
   width: 90%;
   opacity: 0;
   transform: translateY(60px);
-  transition: opacity 1.4s ease, transform 1.4s ease;
 }
 
 .work-frame img {
   width: 100%;
   height: auto;
-  display: block;
   object-fit: cover;
   border-radius: var(--radius);
-  transition: filter 1.4s ease, transform 1.4s ease;
+  transition: transform 1.4s ease, filter 1.4s ease;
 }
 
 .work-frame figcaption {
+  font-family: var(--font-body);
   font-size: 0.85rem;
   color: var(--color-muted);
   margin-top: var(--spacing-sm);
-  text-align: center;
   letter-spacing: 0.05em;
 }
 
-/* Hover leggero solo su desktop */
+/* Hover desktop */
 @media (hover: hover) and (pointer: fine) {
   .work-frame:hover img {
     transform: scale(1.02);
@@ -44,13 +179,53 @@
   }
 }
 
-/* Versione autoriale (Taky Universe) */
-@media (prefers-color-scheme: dark) {
-  .works-cinematic {
-    background: #0b0e17;
-  }
+/* FORM */
+.contact-form {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  text-align: left;
+}
 
-  .work-frame img {
-    filter: contrast(1.05) brightness(0.9);
-  }
+.contact-form label {
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted-light);
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--color-muted-light);
+  background: transparent;
+  color: var(--color-text);
+  padding: 0.7rem 0;
+}
+
+.contact-form button {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border: none;
+  padding: 0.9rem 2.2rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.contact-form button:hover {
+  background: var(--color-muted-light);
+  color: var(--color-bg);
+}
+
+/* FOOTER */
+.footer {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  font-size: 0.9rem;
+  color: var(--color-muted-light);
+  text-align: center;
 }
