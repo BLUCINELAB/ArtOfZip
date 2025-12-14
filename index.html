@@ -9,9 +9,8 @@
   <meta name="author" content="Anton Zip">
   <link rel="canonical" href="https://antonzip.it">
 
-  <!-- Color scheme -->
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#121212">
+  <meta name="theme-color" content="#0b0e17">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Anton Zip – Film & Visual Work">
@@ -26,6 +25,9 @@
   <meta name="twitter:description" content="Cinema indipendente, immagini e frammenti visivi di Anton Zip.">
   <meta name="twitter:image" content="https://antonzip.it/cover-antonzip.jpg">
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -39,10 +41,10 @@
 
       <nav class="site-nav" aria-label="Navigazione principale">
         <ul>
-          <li><a href="#works">Works</a></li>
-          <li><a href="#lab">Lab</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#works">Sequenze</a></li>
+          <li><a href="#lab">Frammenti</a></li>
+          <li><a href="#about">Presenza</a></li>
+          <li><a href="#contact">Contatto</a></li>
         </ul>
       </nav>
     </div>
@@ -50,11 +52,11 @@
 
   <main id="main">
 
-    <!-- WORKS CINEMATIC -->
+    <!-- WORKS -->
     <section id="works" class="section works-cinematic">
       <div class="container narrow">
         <header class="section-header">
-          <h2>Works</h2>
+          <h2>Sequenze</h2>
           <p class="subtitle">Corpo, paesaggio, gesto.</p>
         </header>
 
@@ -90,15 +92,15 @@
     <!-- LAB -->
     <section id="lab" class="section">
       <div class="container narrow">
-        <h2>Lab</h2>
-        <p>Spazio di lavoro per test, appunti e frammenti. Alcune cose restano prove, altre diventano progetti più lunghi.</p>
+        <h2>Frammenti</h2>
+        <p>Prove, appunti, esperimenti. Alcune cose restano prove, altre diventano progetti più lunghi.</p>
       </div>
     </section>
 
     <!-- ABOUT -->
     <section id="about" class="section">
       <div class="container narrow">
-        <h2>About</h2>
+        <h2>Presenza</h2>
         <p>Anton Zip lavora tra cinema indipendente e arti visive. Dirige, filma e monta per festival, realtà culturali e brand che cercano immagini lente e dense.</p>
         <p>Si muove tra film, videoarte e lavori su commissione con attenzione a luce, ritmo e presenza. Preferisce lasciare spazio alle immagini più che alle spiegazioni.</p>
       </div>
@@ -107,7 +109,7 @@
     <!-- CONTACT -->
     <section id="contact" class="section">
       <div class="container narrow">
-        <h2>Contact</h2>
+        <h2>Contatto</h2>
         <p>Per progetti, collaborazioni o anteprime:<br>
           <a href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a>
         </p>
@@ -144,10 +146,8 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-
     gsap.registerPlugin(ScrollTrigger);
 
-    // Fade-in + parallax leggero
     gsap.utils.toArray(".work-frame").forEach((frame) => {
       gsap.fromTo(frame,
         { opacity: 0, y: 80 },
