@@ -4,29 +4,63 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anton Zip — Film / Visual Work</title>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta
+    name="description"
+    content="Anton Zip — film, videoarte, immagini in movimento e frammenti visivi."
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <header class="hero">
-    <h1 class="hero-title">Anton Zip</h1>
-    <p class="hero-sub">film · videoarte · frammenti</p>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a href="#" class="brand">Anton Zip</a>
+    <span class="status">archive / ongoing</span>
   </header>
 
   <main>
-    <section class="sequence">
-      <figure><img src="crystal-crown.jpg" alt=""><figcaption>Crystal Crown</figcaption></figure>
-      <figure><img src="Sito-4.jpg" alt=""><figcaption>Corpo e paesaggio</figcaption></figure>
-      <figure><img src="Sito-27.jpg" alt=""><figcaption>Trittico acqua e luce</figcaption></figure>
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">film / visual work / fragments</p>
+        <h1 class="hero-title">Anton Zip</h1>
+        <p class="hero-subtitle">
+          Una pratica tra immagine in movimento, presenza visiva e costruzione di atmosfera.
+        </p>
+      </div>
+    </section>
+
+    <section class="work">
+      <article class="work-card">
+        <figure class="work-figure">
+          <!-- cambia il nome file se la tua immagine ha un altro nome -->
+          <img src="crystal-crown.jpg" alt="Anton Zip — frammento visivo" />
+        </figure>
+
+        <div class="work-meta">
+          <p class="work-index">01 / Selected fragment</p>
+          <h2 class="work-title">Crystal Crown</h2>
+          <p class="work-text">
+            Un frammento visivo come soglia: luce, corpo, densità e apparizione.
+            Non archivio completo, ma un punto di accesso al lavoro.
+          </p>
+        </div>
+      </article>
     </section>
   </main>
 
-  <footer class="footer">Work in Progress © <span id="year"></span></footer>
+  <footer class="site-footer">
+    <p>Work in progress © <span id="year"></span></p>
+  </footer>
 
-  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
-  <script src="main.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
