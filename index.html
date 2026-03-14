@@ -1,95 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CONTROL SYSTEM</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unknown Systems Interface</title>
+  <meta name="description" content="An experimental interface built as a control room, archive and schematic field." />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="site-noise" aria-hidden="true"></div>
+  <div class="site-scanlines" aria-hidden="true"></div>
+  <div class="site-grid" aria-hidden="true"></div>
 
-<div class="system">
+  <main class="shell">
+    <header class="system-bar panel">
+      <div class="system-bar__brand">
+        <span class="system-bar__dot"></span>
+        <span class="system-bar__name">UNKNOWN_SYSTEMS_INTERFACE</span>
+      </div>
 
-<header class="topbar">
+      <nav class="system-nav" aria-label="Primary">
+        <a href="#control">Control</a>
+        <a href="#modules">Modules</a>
+        <a href="#archive">Archive</a>
+        <a href="#session">Session</a>
+      </nav>
 
-<div class="logo">SYS_CORE</div>
+      <div class="system-state" aria-label="System status">
+        <span>STATUS: ONLINE</span>
+        <span>NODE: 07</span>
+        <span>SYNC: 99.2%</span>
+      </div>
+    </header>
 
-<div class="status">
-<span>STATUS: ONLINE</span>
-<span>NODE: 03</span>
-<span>TIME: 02:54</span>
-</div>
+    <section class="hero panel" id="control">
+      <div class="hero__copy">
+        <p class="hero__eyebrow">Control Surface / Active Environment</p>
+        <h1>Operating a space that does not explain itself.</h1>
+        <p class="hero__lede">
+          This interface behaves like a live control room layered over a deep archive.
+          It does not present content as cards in a marketplace. It stages access,
+          signal, memory and command as parts of a coherent system.
+        </p>
 
-</header>
+        <div class="hero__actions">
+          <a class="button button--primary" href="#modules">Enter Modules</a>
+          <a class="button" href="#archive">Open Archive</a>
+        </div>
+      </div>
 
-<section class="grid">
+      <div class="hero__visual" aria-hidden="true">
+        <div class="radar">
+          <div class="radar__ring radar__ring--a"></div>
+          <div class="radar__ring radar__ring--b"></div>
+          <div class="radar__ring radar__ring--c"></div>
+          <div class="radar__core"></div>
+          <span class="radar__node radar__node--1"></span>
+          <span class="radar__node radar__node--2"></span>
+          <span class="radar__node radar__node--3"></span>
+          <span class="radar__node radar__node--4"></span>
+          <span class="radar__label radar__label--1">SECTOR_A1</span>
+          <span class="radar__label radar__label--2">FIELD_C3</span>
+          <span class="radar__label radar__label--3">NODE_04</span>
+        </div>
+      </div>
+    </section>
 
-<div class="panel large">
-<h2>WORLD ENGINE</h2>
-<p>
-Simulation running.
-Environmental nodes connected.
-Processing terrain data.
-</p>
-</div>
+    <section class="modules" id="modules">
+      <article class="module module--wide panel">
+        <div class="module__head">
+          <span>World Engine</span>
+          <span>Running</span>
+        </div>
 
-<div class="panel">
-<h3>ARCHIVE</h3>
-<ul>
-<li>entry_001</li>
-<li>entry_002</li>
-<li>entry_003</li>
-<li>entry_004</li>
-</ul>
-</div>
+        <div class="wave">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span>
+        </div>
 
-<div class="panel">
-<h3>MODULES</h3>
-<ul>
-<li>mapping</li>
-<li>vision</li>
-<li>signal</li>
-<li>lab</li>
-</ul>
-</div>
+        <p class="module__text">
+          Atmospheric simulation stable. Signal paths active across all visible sectors.
+          Surface behaviour within expected thresholds.
+        </p>
+      </article>
 
-<div class="panel">
-<h3>LOG</h3>
-<div class="log">
-<p>system boot</p>
-<p>loading terrain engine</p>
-<p>signal received</p>
-<p>node connected</p>
-</div>
-</div>
+      <article class="module panel" id="archive">
+        <div class="module__head">
+          <span>Archive</span>
+          <span>Index</span>
+        </div>
 
-<div class="panel">
-<h3>NETWORK</h3>
-<p>nodes active: 12</p>
-<p>latency: 14ms</p>
-<p>sync: stable</p>
-</div>
+        <ul class="data-list">
+          <li>entry_001 / terrain memory</li>
+          <li>entry_002 / anomalous structure</li>
+          <li>entry_003 / transmission residue</li>
+          <li>entry_004 / visual field notes</li>
+          <li>entry_005 / system sketch</li>
+        </ul>
+      </article>
 
-<div class="panel">
-<h3>ACCESS</h3>
-<button>ENTER</button>
-</div>
+      <article class="module panel">
+        <div class="module__head">
+          <span>Live Log</span>
+          <span>Stream</span>
+        </div>
 
-</section>
+        <div class="terminal">
+          <p>&gt; boot sequence complete</p>
+          <p>&gt; archive channel open</p>
+          <p>&gt; remote node detected</p>
+          <p>&gt; signal integrity verified</p>
+          <p>&gt; awaiting command input</p>
+        </div>
+      </article>
 
-<footer class="footer">
+      <article class="module panel">
+        <div class="module__head">
+          <span>Metrics</span>
+          <span>Network</span>
+        </div>
 
-SYSTEM BUILD 0.1  
-CORE ACTIVE  
+        <div class="metrics">
+          <div class="metric">
+            <strong>12</strong>
+            <span>active nodes</span>
+          </div>
+          <div class="metric">
+            <strong>14ms</strong>
+            <span>latency</span>
+          </div>
+          <div class="metric">
+            <strong>99.2%</strong>
+            <span>sync</span>
+          </div>
+        </div>
+      </article>
 
-</footer>
+      <article class="module panel">
+        <div class="module__head">
+          <span>Commands</span>
+          <span>Access</span>
+        </div>
 
-</div>
+        <div class="command-stack">
+          <a class="button button--primary button--block" href="#session">Execute</a>
+          <a class="button button--block" href="#control">Return to Control</a>
+        </div>
+      </article>
+    </section>
 
+    <section class="schematic panel">
+      <div class="schematic__header">
+        <span>Schematic Field</span>
+        <span>Layer 02</span>
+      </div>
+
+      <div class="schematic__grid" aria-hidden="true">
+        <div class="schematic__box"></div>
+        <div class="schematic__box schematic__box--dense"></div>
+        <div class="schematic__box"></div>
+        <div class="schematic__box schematic__box--wide"></div>
+      </div>
+
+      <p class="schematic__note">
+        The system is not represented as a clean fiction. Its internal logic remains partially exposed:
+        traces, labels, false clarity, operational residue.
+      </p>
+    </section>
+
+    <footer class="session panel" id="session">
+      <span>BUILD 0.3</span>
+      <span>SESSION ACTIVE</span>
+      <span>UNKNOWN NETWORK</span>
+    </footer>
+  </main>
 </body>
 </html>
