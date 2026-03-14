@@ -1,180 +1,277 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unknown Systems Interface</title>
-  <meta name="description" content="An experimental interface built as a control room, archive and schematic field." />
+  <title>Camera di Pressione</title>
+  <meta
+    name="description"
+    content="Un archivio-oracolo. Un sistema di accessi, frammenti, protocolli e pressioni percettive."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="site-noise" aria-hidden="true"></div>
-  <div class="site-scanlines" aria-hidden="true"></div>
-  <div class="site-grid" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="orb orb-a" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
 
-  <main class="shell">
-    <header class="system-bar panel">
-      <div class="system-bar__brand">
-        <span class="system-bar__dot"></span>
-        <span class="system-bar__name">UNKNOWN_SYSTEMS_INTERFACE</span>
+  <header class="site-header">
+    <a class="brand" href="#top">
+      <span class="brand__mark"></span>
+      <span class="brand__text">Camera di Pressione</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Navigazione principale">
+      <a href="#accessi">Accessi</a>
+      <a href="#protocollo">Protocollo</a>
+      <a href="#archivio">Archivio</a>
+      <a href="#camera">Camera</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero__meta">
+        <p class="eyebrow">sistema aperto / archivio-oracolo / stato instabile</p>
+        <p class="status">
+          <span class="status__dot"></span>
+          attivo
+        </p>
       </div>
 
-      <nav class="system-nav" aria-label="Primary">
-        <a href="#control">Control</a>
-        <a href="#modules">Modules</a>
-        <a href="#archive">Archive</a>
-        <a href="#session">Session</a>
-      </nav>
+      <div class="hero__body">
+        <p class="hero__lead">
+          Questo non è un sito da scorrere passivamente.
+        </p>
 
-      <div class="system-state" aria-label="System status">
-        <span>STATUS: ONLINE</span>
-        <span>NODE: 07</span>
-        <span>SYNC: 99.2%</span>
-      </div>
-    </header>
+        <h1 class="hero__title">
+          È una soglia.
+          <span>Un ambiente che ti legge</span>
+          mentre provi a leggerlo.
+        </h1>
 
-    <section class="hero panel" id="control">
-      <div class="hero__copy">
-        <p class="hero__eyebrow">Control Surface / Active Environment</p>
-        <h1>Operating a space that does not explain itself.</h1>
-        <p class="hero__lede">
-          This interface behaves like a live control room layered over a deep archive.
-          It does not present content as cards in a marketplace. It stages access,
-          signal, memory and command as parts of a coherent system.
+        <p class="hero__text">
+          Qui i contenuti non sono ordinati come una vetrina.
+          Sono pressioni, frammenti, ipotesi, segnali, archivi incompleti e traiettorie.
+          Non si entra per consumare.
+          Si entra per essere spostati.
         </p>
 
         <div class="hero__actions">
-          <a class="button button--primary" href="#modules">Enter Modules</a>
-          <a class="button" href="#archive">Open Archive</a>
+          <a class="button button--solid" href="#accessi">Entra nel sistema</a>
+          <a class="button" href="#protocollo">Leggi il protocollo</a>
         </div>
       </div>
 
-      <div class="hero__visual" aria-hidden="true">
-        <div class="radar">
-          <div class="radar__ring radar__ring--a"></div>
-          <div class="radar__ring radar__ring--b"></div>
-          <div class="radar__ring radar__ring--c"></div>
-          <div class="radar__core"></div>
-          <span class="radar__node radar__node--1"></span>
-          <span class="radar__node radar__node--2"></span>
-          <span class="radar__node radar__node--3"></span>
-          <span class="radar__node radar__node--4"></span>
-          <span class="radar__label radar__label--1">SECTOR_A1</span>
-          <span class="radar__label radar__label--2">FIELD_C3</span>
-          <span class="radar__label radar__label--3">NODE_04</span>
+      <aside class="hero__aside">
+        <div class="note-card">
+          <p class="note-card__label">coordinate</p>
+          <p class="note-card__text">
+            editoria espansa<br />
+            interfacce poetiche<br />
+            archivi narrativi<br />
+            strutture di attenzione
+          </p>
         </div>
+
+        <div class="note-card note-card--small">
+          <p class="note-card__label">stato</p>
+          <p class="note-card__text">
+            il sistema muta in base alla lettura
+          </p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="threshold" id="accessi">
+      <header class="section-head">
+        <p class="section-head__index">01</p>
+        <h2>Quattro accessi. Quattro modi di essere assorbiti.</h2>
+      </header>
+
+      <div class="gateway-grid">
+        <article class="gateway">
+          <span class="gateway__id">A</span>
+          <p class="gateway__tag">modalità</p>
+          <h3>Entrare come testimone</h3>
+          <p>
+            Attraversi il campo come osservatore. Raccogli tracce, vedi frammenti, intercetti segnali.
+          </p>
+          <a href="#archivio">Apri i frammenti</a>
+        </article>
+
+        <article class="gateway">
+          <span class="gateway__id">B</span>
+          <p class="gateway__tag">modalità</p>
+          <h3>Entrare come interprete</h3>
+          <p>
+            Il sistema non ti mostra soltanto materiali. Ti costringe a prendere posizione.
+          </p>
+          <a href="#camera">Leggi la camera</a>
+        </article>
+
+        <article class="gateway">
+          <span class="gateway__id">C</span>
+          <p class="gateway__tag">modalità</p>
+          <h3>Entrare come infiltrato</h3>
+          <p>
+            Cerchi le zone periferiche, i bordi, ciò che non è stato reso innocuo dalla chiarezza.
+          </p>
+          <a href="#protocollo">Vai ai bordi</a>
+        </article>
+
+        <article class="gateway">
+          <span class="gateway__id">D</span>
+          <p class="gateway__tag">modalità</p>
+          <h3>Entrare come autore</h3>
+          <p>
+            Lasci una traccia. Modifichi il paesaggio. Accetti che il sito smetta di essere neutro.
+          </p>
+          <a href="#finale">Lascia il segnale</a>
+        </article>
       </div>
     </section>
 
-    <section class="modules" id="modules">
-      <article class="module module--wide panel">
-        <div class="module__head">
-          <span>World Engine</span>
-          <span>Running</span>
-        </div>
+    <section class="protocol" id="protocollo">
+      <div class="protocol__left">
+        <p class="section-head__index">02</p>
+        <h2>Protocollo di attraversamento</h2>
+      </div>
 
-        <div class="wave">
-          <span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span>
-          <span></span>
-        </div>
-
-        <p class="module__text">
-          Atmospheric simulation stable. Signal paths active across all visible sectors.
-          Surface behaviour within expected thresholds.
+      <div class="protocol__right">
+        <p>
+          Non cercare una homepage tradizionale. Non è stata prevista.
         </p>
-      </article>
-
-      <article class="module panel" id="archive">
-        <div class="module__head">
-          <span>Archive</span>
-          <span>Index</span>
-        </div>
-
-        <ul class="data-list">
-          <li>entry_001 / terrain memory</li>
-          <li>entry_002 / anomalous structure</li>
-          <li>entry_003 / transmission residue</li>
-          <li>entry_004 / visual field notes</li>
-          <li>entry_005 / system sketch</li>
-        </ul>
-      </article>
-
-      <article class="module panel">
-        <div class="module__head">
-          <span>Live Log</span>
-          <span>Stream</span>
-        </div>
-
-        <div class="terminal">
-          <p>&gt; boot sequence complete</p>
-          <p>&gt; archive channel open</p>
-          <p>&gt; remote node detected</p>
-          <p>&gt; signal integrity verified</p>
-          <p>&gt; awaiting command input</p>
-        </div>
-      </article>
-
-      <article class="module panel">
-        <div class="module__head">
-          <span>Metrics</span>
-          <span>Network</span>
-        </div>
-
-        <div class="metrics">
-          <div class="metric">
-            <strong>12</strong>
-            <span>active nodes</span>
-          </div>
-          <div class="metric">
-            <strong>14ms</strong>
-            <span>latency</span>
-          </div>
-          <div class="metric">
-            <strong>99.2%</strong>
-            <span>sync</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="module panel">
-        <div class="module__head">
-          <span>Commands</span>
-          <span>Access</span>
-        </div>
-
-        <div class="command-stack">
-          <a class="button button--primary button--block" href="#session">Execute</a>
-          <a class="button button--block" href="#control">Return to Control</a>
-        </div>
-      </article>
+        <p>
+          Questo ambiente non ordina il mondo per comodità. Lo dispone per intensità.
+          Alcune parti sono manifeste. Altre restano laterali. Altre ancora esistono solo quando l’attenzione rallenta.
+        </p>
+        <p>
+          Ogni sezione qui è pensata come una stanza mentale: una superficie leggibile e, sotto, un secondo livello di pressione.
+        </p>
+      </div>
     </section>
 
-    <section class="schematic panel">
-      <div class="schematic__header">
-        <span>Schematic Field</span>
-        <span>Layer 02</span>
-      </div>
+    <section class="archive" id="archivio">
+      <header class="section-head">
+        <p class="section-head__index">03</p>
+        <h2>Archivio di frammenti attivi</h2>
+      </header>
 
-      <div class="schematic__grid" aria-hidden="true">
-        <div class="schematic__box"></div>
-        <div class="schematic__box schematic__box--dense"></div>
-        <div class="schematic__box"></div>
-        <div class="schematic__box schematic__box--wide"></div>
-      </div>
+      <div class="archive-grid">
+        <article class="fragment fragment--large">
+          <p class="fragment__meta">frammento / 001</p>
+          <h3>Le strutture invisibili decidono la forma delle ossessioni.</h3>
+          <p>
+            Ogni archivio è una macchina morale. Mostra, nasconde, ordina, espelle.
+          </p>
+        </article>
 
-      <p class="schematic__note">
-        The system is not represented as a clean fiction. Its internal logic remains partially exposed:
-        traces, labels, false clarity, operational residue.
-      </p>
+        <article class="fragment">
+          <p class="fragment__meta">traccia / 002</p>
+          <h3>Una pagina può comportarsi come una stanza.</h3>
+          <p>
+            Il layout non distribuisce soltanto elementi. Distribuisce prossimità, attrito e destino.
+          </p>
+        </article>
+
+        <article class="fragment">
+          <p class="fragment__meta">nota / 003</p>
+          <h3>Non tutto ciò che è leggibile deve essere spiegato.</h3>
+          <p>
+            Un buon sistema culturale lascia margine all’interpretazione senza collassare nel fumo teorico.
+          </p>
+        </article>
+
+        <article class="fragment">
+          <p class="fragment__meta">segnale / 004</p>
+          <h3>Alcuni contenuti vanno incontrati, non annunciati.</h3>
+          <p>
+            La rivelazione ha bisogno di ritmo. Non di saturazione.
+          </p>
+        </article>
+
+        <article class="fragment fragment--tall">
+          <p class="fragment__meta">ipotesi / 005</p>
+          <h3>Le interfacce più forti non descrivono un’identità. La producono.</h3>
+          <p>
+            Entrare in un ambiente ben costruito significa assumere temporaneamente la sua temperatura mentale.
+          </p>
+        </article>
+
+        <article class="fragment">
+          <p class="fragment__meta">incidente / 006</p>
+          <h3>Ordine e caos non sono opposti. Sono partner tossici ma fertili.</h3>
+          <p>
+            Senza struttura non c’è intensità leggibile. Senza attrito non c’è memoria.
+          </p>
+        </article>
+      </div>
     </section>
 
-    <footer class="session panel" id="session">
-      <span>BUILD 0.3</span>
-      <span>SESSION ACTIVE</span>
-      <span>UNKNOWN NETWORK</span>
-    </footer>
+    <section class="chamber" id="camera">
+      <div class="chamber__inner">
+        <p class="chamber__label">04 / camera centrale</p>
+        <p class="chamber__overline">pressione nominale</p>
+        <h2>
+          Questo luogo non vuole convincerti.
+          <span>Vuole aumentare la soglia di ciò che consideri possibile.</span>
+        </h2>
+        <p class="chamber__text">
+          Se una pagina resta soltanto una superficie, muore nel momento in cui la chiudi.
+          Se invece riesce a installare una forma mentale, continua a lavorare anche fuori da qui.
+        </p>
+      </div>
+    </section>
+
+    <section class="ledger">
+      <header class="section-head">
+        <p class="section-head__index">05</p>
+        <h2>Registro delle pressioni</h2>
+      </header>
+
+      <div class="ledger__rows">
+        <article class="ledger-row">
+          <span class="ledger-row__index">[A]</span>
+          <p class="ledger-row__title">densità tipografica</p>
+          <p class="ledger-row__value">alta</p>
+        </article>
+
+        <article class="ledger-row">
+          <span class="ledger-row__index">[B]</span>
+          <p class="ledger-row__title">leggibilità rituale</p>
+          <p class="ledger-row__value">stabile</p>
+        </article>
+
+        <article class="ledger-row">
+          <span class="ledger-row__index">[C]</span>
+          <p class="ledger-row__title">attrito interpretativo</p>
+          <p class="ledger-row__value">calibrato</p>
+        </article>
+
+        <article class="ledger-row">
+          <span class="ledger-row__index">[D]</span>
+          <p class="ledger-row__title">memoria residua</p>
+          <p class="ledger-row__value">persistente</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="finale" id="finale">
+      <p class="finale__label">uscita apparente / rientro probabile</p>
+      <h2>
+        Alcuni luoghi servono a orientarsi.
+        <span>Altri servono a cambiare temperatura mentale.</span>
+      </h2>
+      <a class="finale__link" href="#top">Ricomincia l’attraversamento</a>
+    </section>
   </main>
 </body>
 </html>
