@@ -3,289 +3,276 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Camera Stratigrafica</title>
+  <title>Lampo d'Autore</title>
   <meta
     name="description"
-    content="Sistema stratigrafico di rilievo, quote, anomalie e superfici in movimento."
+    content="Interfaccia editoriale sperimentale tra previsione, segnale, terreno e archivio."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="site-noise" aria-hidden="true"></div>
-  <div class="site-grid" aria-hidden="true"></div>
-  <div class="site-vignette" aria-hidden="true"></div>
-  <div class="scan scan--vertical" aria-hidden="true"></div>
-  <div class="scan scan--horizontal" aria-hidden="true"></div>
-  <div class="crosshair crosshair--a" aria-hidden="true"></div>
-  <div class="crosshair crosshair--b" aria-hidden="true"></div>
+  <div class="fx-noise" aria-hidden="true"></div>
+  <div class="fx-grid" aria-hidden="true"></div>
+  <div class="fx-vignette" aria-hidden="true"></div>
+  <div class="fx-scan fx-scan-x" aria-hidden="true"></div>
+  <div class="fx-scan fx-scan-y" aria-hidden="true"></div>
 
   <header class="topbar">
-    <a class="brand" href="#top">
-      <span class="brand__dot"></span>
-      <span class="brand__text">Camera Stratigrafica</span>
+    <a href="#top" class="brand" aria-label="Lampo d'Autore">
+      <span class="brand__icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="brand__name">Lampo d'Autore</span>
     </a>
 
     <nav class="topnav" aria-label="Navigazione principale">
-      <a href="#core">Core</a>
-      <a href="#layers">Layers</a>
+      <a href="#overview">Overview</a>
+      <a href="#forecast">Forecast</a>
       <a href="#signals">Signals</a>
-      <a href="#registry">Registry</a>
+      <a href="#matrix">Matrix</a>
     </nav>
 
-    <div class="status">
-      <span>STATO: ATTIVO</span>
-      <span>QTA: R+84</span>
+    <div class="toptools" aria-label="Strumenti">
+      <button class="icon-btn" type="button" aria-label="Ricerca">
+        <span class="i-search"></span>
+      </button>
+      <button class="icon-btn" type="button" aria-label="Vista">
+        <span class="i-grid"></span>
+      </button>
+      <button class="icon-btn" type="button" aria-label="Stato">
+        <span class="i-pulse"></span>
+      </button>
     </div>
   </header>
 
   <main id="top" class="page">
-    <section class="hero">
-      <div class="hero__intro">
-        <p class="eyebrow">Atlante operativo / sezione instabile / sistema di rilievo</p>
-        <h1 class="hero__title">
-          Un ambiente di lettura
-          <span>più vicino a un diagramma vivo</span>
-          che a una homepage.
+    <section class="hero" id="overview">
+      <div class="hero__left">
+        <p class="eyebrow">sistema di previsione visiva</p>
+        <h1>
+          Segnali,
+          <span>rischi</span>
+          e densità.
         </h1>
+
+        <div class="hero__chips" aria-label="Stato sistema">
+          <div class="chip"><span></span> live</div>
+          <div class="chip"><span></span> mobile ready</div>
+          <div class="chip"><span></span> synced</div>
+        </div>
       </div>
 
-      <div class="hero__legend">
-        <div class="legend-box">
-          <p class="legend-box__label">Legenda</p>
-          <ul class="legend-list">
-            <li><span></span> quote attive</li>
-            <li><span></span> layer mobili</li>
-            <li><span></span> campo magnetico</li>
-            <li><span></span> memoria residua</li>
-          </ul>
-        </div>
+      <div class="hero__right">
+        <article class="mini-panel mini-panel--hero">
+          <div class="mini-panel__head">
+            <p>forecast index</p>
+            <b>84</b>
+          </div>
+          <div class="spark spark--hero">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section class="chamber" id="core">
-      <aside class="chamber__rail chamber__rail--left">
-        <div class="rail-panel">
-          <p class="rail-panel__label">Quote verticali</p>
-          <div class="altitude-list">
-            <div class="altitude-list__row"><span>+84.0</span><i></i></div>
-            <div class="altitude-list__row"><span>+70.5</span><i></i></div>
-            <div class="altitude-list__row"><span>+56.0</span><i></i></div>
-            <div class="altitude-list__row"><span>+42.2</span><i></i></div>
-            <div class="altitude-list__row"><span>+28.8</span><i></i></div>
-            <div class="altitude-list__row"><span>+14.1</span><i></i></div>
-            <div class="altitude-list__row"><span>+00.0</span><i></i></div>
-          </div>
-        </div>
-
-        <div class="rail-panel rail-panel--notes">
-          <p class="rail-panel__label">Protocollo</p>
-          <p>Isola i piani.</p>
-          <p>Segui le linee.</p>
-          <p>Leggi per densità, non per blocchi.</p>
-        </div>
-      </aside>
-
-      <div class="chamber__core">
-        <div class="monolith">
-          <div class="monolith__frame"></div>
-          <div class="monolith__axis"></div>
-          <div class="monolith__grid"></div>
-          <div class="monolith__rings"></div>
-          <div class="monolith__dust"></div>
-
-          <div class="layer layer--1">
-            <span class="layer__tag">L01</span>
-            <div class="layer__plane layer__plane--mesh"></div>
+    <section class="dashboard">
+      <div class="dashboard__main">
+        <article class="board board--terrain">
+          <div class="board__head">
+            <p>terrain forecast</p>
+            <div class="legend-dot"><span></span><small>anomalia attiva</small></div>
           </div>
 
-          <div class="layer layer--2">
-            <span class="layer__tag">L02</span>
-            <div class="layer__plane layer__plane--contours"></div>
+          <div class="terrain-screen">
+            <div class="terrain-screen__grid"></div>
+            <div class="terrain-layer terrain-layer--back"></div>
+            <div class="terrain-layer terrain-layer--mid"></div>
+            <div class="terrain-layer terrain-layer--front"></div>
+
+            <div class="terrain-orbit orbit-a"></div>
+            <div class="terrain-orbit orbit-b"></div>
+            <div class="terrain-orbit orbit-c"></div>
+
+            <div class="terrain-node node-a"></div>
+            <div class="terrain-node node-b"></div>
+            <div class="terrain-node node-c"></div>
+            <div class="terrain-node node-d"></div>
+
+            <div class="terrain-beam beam-a"></div>
+            <div class="terrain-beam beam-b"></div>
+            <div class="terrain-beam beam-c"></div>
+
+            <div class="terrain-badge badge-a">71%</div>
+            <div class="terrain-badge badge-b">23%</div>
+            <div class="terrain-badge badge-c">89%</div>
           </div>
-
-          <div class="layer layer--3">
-            <span class="layer__tag">L03</span>
-            <div class="layer__plane layer__plane--terrain"></div>
-          </div>
-
-          <div class="layer layer--4">
-            <span class="layer__tag">L04</span>
-            <div class="layer__plane layer__plane--particles"></div>
-          </div>
-
-          <div class="layer layer--5">
-            <span class="layer__tag">L05</span>
-            <div class="layer__plane layer__plane--signal"></div>
-          </div>
-
-          <div class="layer layer--6">
-            <span class="layer__tag">L06</span>
-            <div class="layer__plane layer__plane--topography"></div>
-          </div>
-
-          <div class="beam beam--a"></div>
-          <div class="beam beam--b"></div>
-          <div class="beam beam--c"></div>
-
-          <div class="node node--a"></div>
-          <div class="node node--b"></div>
-          <div class="node node--c"></div>
-          <div class="node node--d"></div>
-
-          <div class="trace trace--a"></div>
-          <div class="trace trace--b"></div>
-          <div class="trace trace--c"></div>
-
-          <div class="callout callout--a">
-            <p class="callout__label">Campo 01</p>
-            <p class="callout__body">Compressione di linee e memoria.</p>
-          </div>
-
-          <div class="callout callout--b">
-            <p class="callout__label">Campo 02</p>
-            <p class="callout__body">Superficie in oscillazione lenta.</p>
-          </div>
-
-          <div class="callout callout--c">
-            <p class="callout__label">Campo 03</p>
-            <p class="callout__body">Residuo topografico persistente.</p>
-          </div>
-        </div>
+        </article>
       </div>
 
-      <aside class="chamber__rail chamber__rail--right">
-        <div class="rail-panel">
-          <p class="rail-panel__label">Registro quote</p>
-          <div class="quote-list">
-            <div class="quote-list__row"><span>R+12</span><i></i></div>
-            <div class="quote-list__row"><span>R+09</span><i></i></div>
-            <div class="quote-list__row"><span>R+06</span><i></i></div>
-            <div class="quote-list__row"><span>R+03</span><i></i></div>
-            <div class="quote-list__row"><span>R+01</span><i></i></div>
+      <aside class="dashboard__side">
+        <article class="mini-panel">
+          <div class="mini-panel__head">
+            <p>probability</p>
+            <b>0.78</b>
           </div>
-        </div>
+          <div class="bars bars--small">
+            <span style="--h: 38%"></span>
+            <span style="--h: 54%"></span>
+            <span style="--h: 72%"></span>
+            <span style="--h: 66%"></span>
+            <span style="--h: 83%"></span>
+            <span style="--h: 48%"></span>
+            <span style="--h: 62%"></span>
+            <span style="--h: 91%"></span>
+          </div>
+        </article>
 
-        <div class="rail-panel rail-panel--metrics">
-          <p class="rail-panel__label">Metriche</p>
-          <div class="metric-line"><span>densità</span><i></i><b>84.2</b></div>
-          <div class="metric-line"><span>attrito</span><i></i><b>63.8</b></div>
-          <div class="metric-line"><span>memoria</span><i></i><b>91.1</b></div>
-          <div class="metric-line"><span>rumore</span><i></i><b>18.7</b></div>
-        </div>
+        <article class="mini-panel">
+          <div class="mini-panel__head">
+            <p>micro climate</p>
+            <b>+12</b>
+          </div>
+          <div class="spark spark--thin">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+
+        <article class="mini-panel mini-panel--radar">
+          <div class="mini-panel__head">
+            <p>radar</p>
+            <b>active</b>
+          </div>
+          <div class="radar">
+            <div class="radar__ring"></div>
+            <div class="radar__ring"></div>
+            <div class="radar__ring"></div>
+            <div class="radar__cross"></div>
+            <div class="radar__sweep"></div>
+            <div class="radar__dot radar__dot--a"></div>
+            <div class="radar__dot radar__dot--b"></div>
+            <div class="radar__dot radar__dot--c"></div>
+          </div>
+        </article>
       </aside>
     </section>
 
-    <section class="panels" id="layers">
-      <header class="section-head">
-        <p class="section-head__index">01</p>
-        <h2>Layer attivi</h2>
-      </header>
+    <section class="forecast" id="forecast">
+      <article class="forecast-card forecast-card--wide">
+        <div class="forecast-card__head">
+          <p>previsioni 24h</p>
+          <b>trend line</b>
+        </div>
+        <div class="line-chart">
+          <span class="line-chart__path line-chart__path--a"></span>
+          <span class="line-chart__path line-chart__path--b"></span>
+          <span class="line-chart__path line-chart__path--c"></span>
+          <div class="line-chart__grid"></div>
+        </div>
+      </article>
 
-      <div class="panel-grid">
-        <article class="panel panel--map">
-          <p class="panel__label">Cartografia dinamica</p>
-          <div class="map-display">
-            <div class="map-display__grid"></div>
-            <div class="map-display__route map-display__route--a"></div>
-            <div class="map-display__route map-display__route--b"></div>
-            <div class="map-display__dot map-display__dot--1"></div>
-            <div class="map-display__dot map-display__dot--2"></div>
-            <div class="map-display__dot map-display__dot--3"></div>
-          </div>
-        </article>
+      <article class="forecast-card">
+        <div class="forecast-card__head">
+          <p>risk window</p>
+          <b>18:40</b>
+        </div>
+        <div class="gauge">
+          <div class="gauge__arc"></div>
+          <div class="gauge__needle"></div>
+          <div class="gauge__center"></div>
+        </div>
+      </article>
 
-        <article class="panel panel--wave">
-          <p class="panel__label">Filtrazione</p>
-          <div class="wave-display">
-            <span class="wave-display__line wave-display__line--1"></span>
-            <span class="wave-display__line wave-display__line--2"></span>
-            <span class="wave-display__line wave-display__line--3"></span>
-            <span class="wave-display__line wave-display__line--4"></span>
-            <span class="wave-display__line wave-display__line--5"></span>
-          </div>
-        </article>
-
-        <article class="panel panel--bars">
-          <p class="panel__label">Segnale</p>
-          <div class="bar-display">
-            <span class="bar-display__bar" style="--bar-h: 34%"></span>
-            <span class="bar-display__bar" style="--bar-h: 58%"></span>
-            <span class="bar-display__bar" style="--bar-h: 76%"></span>
-            <span class="bar-display__bar" style="--bar-h: 42%"></span>
-            <span class="bar-display__bar" style="--bar-h: 67%"></span>
-            <span class="bar-display__bar" style="--bar-h: 29%"></span>
-            <span class="bar-display__bar" style="--bar-h: 83%"></span>
-            <span class="bar-display__bar" style="--bar-h: 53%"></span>
-          </div>
-        </article>
-      </div>
+      <article class="forecast-card">
+        <div class="forecast-card__head">
+          <p>density map</p>
+          <b>high</b>
+        </div>
+        <div class="matrix-grid">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </article>
     </section>
 
     <section class="signals" id="signals">
-      <header class="section-head">
-        <p class="section-head__index">02</p>
-        <h2>Segnali e anomalie</h2>
-      </header>
+      <article class="signal-box">
+        <div class="signal-box__head">
+          <p>signal A</p>
+          <b>68%</b>
+        </div>
+        <div class="signal-wave signal-wave--a"></div>
+      </article>
 
-      <div class="signal-grid">
-        <article class="signal-card">
-          <span class="signal-card__id">A1</span>
-          <h3>Deviazione minima</h3>
-          <p>Un asse inclinato di pochi gradi altera l’attenzione più di un intero apparato decorativo.</p>
-        </article>
+      <article class="signal-box">
+        <div class="signal-box__head">
+          <p>signal B</p>
+          <b>42%</b>
+        </div>
+        <div class="signal-wave signal-wave--b"></div>
+      </article>
 
-        <article class="signal-card">
-          <span class="signal-card__id">A2</span>
-          <h3>Compressione visiva</h3>
-          <p>La densità non va accumulata ovunque. Va concentrata in punti con forza di gravità.</p>
-        </article>
+      <article class="signal-box">
+        <div class="signal-box__head">
+          <p>signal C</p>
+          <b>91%</b>
+        </div>
+        <div class="signal-wave signal-wave--c"></div>
+      </article>
 
-        <article class="signal-card">
-          <span class="signal-card__id">A3</span>
-          <h3>Memoria topografica</h3>
-          <p>Una superficie deve sembrare attraversata, rilevata, misurata, non semplicemente disegnata.</p>
-        </article>
-
-        <article class="signal-card">
-          <span class="signal-card__id">A4</span>
-          <h3>Rumore calibrato</h3>
-          <p>La precisione senza residuo è morta. Il residuo senza disciplina è solo disordine in costume.</p>
-        </article>
-      </div>
+      <article class="signal-box signal-box--alert">
+        <div class="signal-box__head">
+          <p>alert state</p>
+          <b>stable</b>
+        </div>
+        <div class="alert-strip">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </article>
     </section>
 
-    <section class="registry" id="registry">
-      <div class="registry__statement">
-        <p class="registry__label">Registro centrale</p>
-        <h2>
-          Il compito non è riempire la pagina.
-          <span>È costruire un campo di percezione.</span>
-        </h2>
-      </div>
+    <section class="matrix" id="matrix">
+      <article class="board board--matrix">
+        <div class="board__head">
+          <p>prediction matrix</p>
+          <div class="legend-dot"><span></span><small>live frame</small></div>
+        </div>
 
-      <div class="registry__cards">
-        <article class="registry-card">
-          <p class="registry-card__label">Stato del sistema</p>
-          <div class="registry-card__row"><span>leggibilità</span><i></i><b>stabile</b></div>
-          <div class="registry-card__row"><span>densità</span><i></i><b>alta</b></div>
-          <div class="registry-card__row"><span>segnale</span><i></i><b>attivo</b></div>
-          <div class="registry-card__row"><span>memoria</span><i></i><b>persistente</b></div>
-        </article>
+        <div class="matrix-screen">
+          <div class="matrix-screen__axis matrix-screen__axis--x"></div>
+          <div class="matrix-screen__axis matrix-screen__axis--y"></div>
 
-        <article class="registry-card registry-card--accent">
-          <p class="registry-card__label">Uscita apparente</p>
-          <p class="registry-card__text">
-            Alcuni siti mostrano contenuti. Altri lasciano una quota mentale residua anche dopo la chiusura.
-          </p>
-          <a class="registry-card__link" href="#top">Ritorna a quota zero</a>
-        </article>
-      </div>
+          <div class="matrix-column" style="--x: 6%; --h: 28%"></div>
+          <div class="matrix-column" style="--x: 14%; --h: 46%"></div>
+          <div class="matrix-column" style="--x: 22%; --h: 38%"></div>
+          <div class="matrix-column" style="--x: 30%; --h: 74%"></div>
+          <div class="matrix-column" style="--x: 38%; --h: 52%"></div>
+          <div class="matrix-column" style="--x: 46%; --h: 82%"></div>
+          <div class="matrix-column" style="--x: 54%; --h: 61%"></div>
+          <div class="matrix-column" style="--x: 62%; --h: 43%"></div>
+          <div class="matrix-column" style="--x: 70%; --h: 69%"></div>
+          <div class="matrix-column" style="--x: 78%; --h: 58%"></div>
+          <div class="matrix-column" style="--x: 86%; --h: 32%"></div>
+
+          <div class="matrix-line matrix-line--a"></div>
+          <div class="matrix-line matrix-line--b"></div>
+          <div class="matrix-line matrix-line--c"></div>
+        </div>
+      </article>
     </section>
   </main>
 </body>
