@@ -3,275 +3,318 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Camera di Pressione</title>
+  <title>Web Designer Folle — Lab Segreto</title>
   <meta
     name="description"
-    content="Un archivio-oracolo. Un sistema di accessi, frammenti, protocolli e pressioni percettive."
+    content="Sezione portfolio/editoriale con stile retro-terminal, tips segrete, trick creativi e layout immersivo."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="scanlines" aria-hidden="true"></div>
-  <div class="orb orb-a" aria-hidden="true"></div>
-  <div class="orb orb-b" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="screen-noise" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <a class="brand" href="#top">
-      <span class="brand__mark"></span>
-      <span class="brand__text">Camera di Pressione</span>
-    </a>
+  <header class="menubar">
+    <div class="menubar__left">
+      <span class="menubar__logo">◆</span>
+      <a href="#hero" class="menubar__item">File</a>
+      <a href="#designer" class="menubar__item">Designer</a>
+      <a href="#tricks" class="menubar__item">Tricks</a>
+      <a href="#tips" class="menubar__item">Tips</a>
+      <a href="#manifesto" class="menubar__item">Manifesto</a>
+    </div>
 
-    <nav class="site-nav" aria-label="Navigazione principale">
-      <a href="#accessi">Accessi</a>
-      <a href="#protocollo">Protocollo</a>
-      <a href="#archivio">Archivio</a>
-      <a href="#camera">Camera</a>
-    </nav>
+    <div class="menubar__right">
+      <span>LAB.XR</span>
+      <span>MODE: CHAOTIC</span>
+      <span id="clock">00:00:00</span>
+    </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero__meta">
-        <p class="eyebrow">sistema aperto / archivio-oracolo / stato instabile</p>
-        <p class="status">
-          <span class="status__dot"></span>
-          attivo
-        </p>
-      </div>
+  <aside class="icon-rail" aria-label="Accessi rapidi">
+    <a class="icon" href="#designer">
+      <span class="icon__box">◈</span>
+      <span class="icon__name">Designer</span>
+    </a>
+    <a class="icon" href="#tricks">
+      <span class="icon__box">⊞</span>
+      <span class="icon__name">Tricks</span>
+    </a>
+    <a class="icon" href="#tips">
+      <span class="icon__box">✦</span>
+      <span class="icon__name">Tips</span>
+    </a>
+    <a class="icon" href="#manifesto">
+      <span class="icon__box icon__box--light">?</span>
+      <span class="icon__name">Manifesto</span>
+    </a>
+  </aside>
 
-      <div class="hero__body">
-        <p class="hero__lead">
-          Questo non è un sito da scorrere passivamente.
-        </p>
-
-        <h1 class="hero__title">
-          È una soglia.
-          <span>Un ambiente che ti legge</span>
-          mentre provi a leggerlo.
-        </h1>
-
-        <p class="hero__text">
-          Qui i contenuti non sono ordinati come una vetrina.
-          Sono pressioni, frammenti, ipotesi, segnali, archivi incompleti e traiettorie.
-          Non si entra per consumare.
-          Si entra per essere spostati.
-        </p>
-
-        <div class="hero__actions">
-          <a class="button button--solid" href="#accessi">Entra nel sistema</a>
-          <a class="button" href="#protocollo">Leggi il protocollo</a>
-        </div>
-      </div>
-
-      <aside class="hero__aside">
-        <div class="note-card">
-          <p class="note-card__label">coordinate</p>
-          <p class="note-card__text">
-            editoria espansa<br />
-            interfacce poetiche<br />
-            archivi narrativi<br />
-            strutture di attenzione
-          </p>
+  <main class="desktop">
+    <section class="layout-grid" aria-label="Interfaccia principale">
+      <article class="window window--hero" id="hero">
+        <div class="window__bar">
+          <div class="window__dots"><i></i><i></i><i></i></div>
+          <span>Finestra principale / accesso creativo</span>
+          <span class="window__ctrl">█ ░ ✕</span>
         </div>
 
-        <div class="note-card note-card--small">
-          <p class="note-card__label">stato</p>
-          <p class="note-card__text">
-            il sistema muta in base alla lettura
+        <div class="window__body">
+          <p class="eyebrow">WEB DESIGNER FOLLE / LAB SEGRETO / ACCESSO NON LINEARE</p>
+          <hr class="separator" />
+
+          <p class="muted">— sezione di ingresso</p>
+
+          <h1 class="hero-title">
+            Non è un web designer normale.<br />
+            <span>È una creatura che piega layout, ritmo e tensione visiva.</span>
+          </h1>
+
+          <p class="hero-copy">
+            Qui non trovi una vetrina calma. Trovi un ambiente vivo:
+            esperimenti, micro-interazioni mentali, tipografia come arma,
+            griglie spezzate, contrasti studiati, sorprese invisibili e piccoli
+            dettagli che sembrano illegali.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn--primary" href="#tricks">[ Entra nei trick ]</a>
+            <a class="btn" href="#tips">[ Apri le tips ]</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="window window--bios" id="designer">
+        <div class="bios-head">DESIGNER PROFILE ─ BIOS v2.0 ─ SYSTEM READOUT</div>
+
+        <div class="bios-body">
+          <div class="bios-row"><span class="bios-k">NOME MODULO</span><span class="bios-v bios-v--inv">WEB DESIGNER FOLLE</span></div>
+          <div class="bios-row"><span class="bios-k">STILE</span><span class="bios-v">RETRO / BRUTAL / CINEMATIC</span></div>
+          <div class="bios-row"><span class="bios-k">APPROCCIO</span><span class="bios-v">IPERCREATIVO</span></div>
+          <div class="bios-row"><span class="bios-k">SPECIALITÀ</span><span class="bios-v">TRICK NASCOSTI</span></div>
+          <div class="bios-row"><span class="bios-k">RISCHIO</span><span class="bios-v">ALTO IMPATTO VISIVO</span></div>
+          <div class="bios-row"><span class="bios-k">OUTPUT</span><span class="bios-v">SITI CHE RESTANO IN TESTA</span></div>
+          <div class="bios-row"><span class="bios-k">STATUS</span><span class="bios-v">ATTIVO</span></div>
+
+          <div class="bios-hint">
+            ↑↓ ESPLORA &nbsp; INVIO: APRI &nbsp; ESC: DIMENTICA TUTTO
+            <div class="bios-bar">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="window window--terminal">
+        <div class="window__bar window__bar--dim">
+          <div class="window__dots"><i></i><i></i></div>
+          <span>terminal://creative-core</span>
+          <span class="window__ctrl">─ □ ✕</span>
+        </div>
+
+        <div class="terminal">
+          <span class="terminal__line terminal__line--out">Creative Core OS v2.4</span>
+          <span class="terminal__line terminal__line--out">Ultimo accesso: sconosciuto</span>
+
+          <span class="terminal__break"></span>
+
+          <span class="terminal__line terminal__line--prompt">load designer.profile</span>
+          <span class="terminal__line terminal__line--out">profilo caricato...</span>
+          <span class="terminal__line terminal__line--out">anomalie visive: rilevate</span>
+
+          <span class="terminal__break"></span>
+
+          <span class="terminal__line terminal__line--prompt">ls /secret-tricks</span>
+          <span class="terminal__line terminal__line--out">001_typography_pressure</span>
+          <span class="terminal__line terminal__line--out">002_false_order</span>
+          <span class="terminal__line terminal__line--out">003_attention_hooks</span>
+          <span class="terminal__line terminal__line--out">004_micro_shock</span>
+          <span class="terminal__line terminal__line--out">005_silent_motion</span>
+
+          <span class="terminal__break"></span>
+
+          <span class="terminal__line terminal__line--prompt"><span class="terminal__cursor"></span></span>
+        </div>
+      </article>
+
+      <section class="window window--full" id="tricks">
+        <div class="window__bar">
+          <div class="window__dots"><i></i><i></i><i></i></div>
+          <span>01 / Trick segreti del designer folle</span>
+          <span class="window__ctrl">░ █ ✕</span>
+        </div>
+
+        <div class="window__body window__body--flush">
+          <div class="card-grid">
+            <article class="card">
+              <span class="card__id">01</span>
+              <p class="card__tag">trick</p>
+              <h3 class="card__title">Tipografia che crea pressione</h3>
+              <p class="card__desc">
+                Usa una headline enorme, poi spezzala con una frase sottile
+                e quasi sussurrata. Il contrasto tra peso e fragilità costruisce tensione.
+              </p>
+            </article>
+
+            <article class="card">
+              <span class="card__id">02</span>
+              <p class="card__tag">trick</p>
+              <h3 class="card__title">Ordine finto, caos controllato</h3>
+              <p class="card__desc">
+                Dai l’illusione di una griglia perfetta, poi rompi un solo elemento.
+                Quella deviazione diventa il magnete visivo.
+              </p>
+            </article>
+
+            <article class="card">
+              <span class="card__id">03</span>
+              <p class="card__tag">trick</p>
+              <h3 class="card__title">Sezioni che sembrano ambienti</h3>
+              <p class="card__desc">
+                Non progettare “blocchi”. Progetta stanze mentali:
+                ogni sezione deve avere temperatura, ritmo e comportamento.
+              </p>
+            </article>
+
+            <article class="card">
+              <span class="card__id">04</span>
+              <p class="card__tag">trick</p>
+              <h3 class="card__title">Dettagli invisibili ma memorabili</h3>
+              <p class="card__desc">
+                Una texture appena percettibile, una linea che pulsa, un cursore finto:
+                piccole anomalie che fanno sembrare il sito vivo.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <article class="window" id="tips">
+        <div class="window__bar">
+          <div class="window__dots"><i></i><i></i><i></i></div>
+          <span>02 / Tips pazzesche da laboratorio</span>
+          <span class="window__ctrl">░ █ ✕</span>
+        </div>
+
+        <div class="stack-list">
+          <article class="fragment">
+            <div class="fragment__meta">
+              <span>tip / 001</span>
+              <span>● attiva</span>
+            </div>
+            <h3 class="fragment__title">Non mostrare tutto subito.</h3>
+            <p class="fragment__body">
+              Un layout forte lascia sempre una micro-promessa irrisolta.
+              L’utente deve sentire che c’è un livello sotto.
+            </p>
+          </article>
+
+          <article class="fragment">
+            <div class="fragment__meta">
+              <span>tip / 002</span>
+              <span>● attiva</span>
+            </div>
+            <h3 class="fragment__title">Usa il vuoto come dispositivo narrativo.</h3>
+            <p class="fragment__body">
+              Lo spazio non è assenza: è attesa, ritmo, sospensione.
+              Il vuoto può essere aggressivo quanto un colore acceso.
+            </p>
+          </article>
+
+          <article class="fragment">
+            <div class="fragment__meta">
+              <span>tip / 003</span>
+              <span>● attiva</span>
+            </div>
+            <h3 class="fragment__title">Fai parlare l’interfaccia prima del testo.</h3>
+            <p class="fragment__body">
+              Prima ancora di leggere, l’utente deve capire
+              se il sito è disciplinato, folle, elegante, ostile o magnetico.
+            </p>
+          </article>
+        </div>
+      </article>
+
+      <article class="window window--light" id="manifesto">
+        <div class="window__bar">
+          <div class="window__dots"><i></i><i></i><i></i></div>
+          <span>03 / Manifesto del designer fuori scala</span>
+          <span class="window__ctrl">█ ░ ✕</span>
+        </div>
+
+        <div class="window__body prose prose--light">
+          <p class="eyebrow eyebrow--dark">DOCUMENTO / MANIFESTO OPERATIVO</p>
+
+          <p class="lead">
+            Un sito forte non si limita a essere bello.
+            Installa una sensazione mentale.
+          </p>
+
+          <p>
+            Il web designer folle non rincorre soltanto la pulizia.
+            Conosce la pulizia, ma sa anche quando romperla.
+            Usa la struttura come una trappola elegante:
+            accoglie, orienta, destabilizza, firma.
+          </p>
+
+          <p>
+            I suoi trucchi non sono effetti casuali.
+            Sono scosse misurate: una headline fuori scala,
+            una barra che sembra di sistema, un contrasto
+            tipografico quasi troppo teso, una sezione
+            che sembra respirare in silenzio.
           </p>
         </div>
-      </aside>
-    </section>
+      </article>
 
-    <section class="threshold" id="accessi">
-      <header class="section-head">
-        <p class="section-head__index">01</p>
-        <h2>Quattro accessi. Quattro modi di essere assorbiti.</h2>
-      </header>
+      <article class="window">
+        <div class="window__bar">
+          <div class="window__dots"><i></i><i></i></div>
+          <span>04 / Uscita apparente</span>
+          <span class="window__ctrl">✕</span>
+        </div>
 
-      <div class="gateway-grid">
-        <article class="gateway">
-          <span class="gateway__id">A</span>
-          <p class="gateway__tag">modalità</p>
-          <h3>Entrare come testimone</h3>
-          <p>
-            Attraversi il campo come osservatore. Raccogli tracce, vedi frammenti, intercetti segnali.
-          </p>
-          <a href="#archivio">Apri i frammenti</a>
-        </article>
-
-        <article class="gateway">
-          <span class="gateway__id">B</span>
-          <p class="gateway__tag">modalità</p>
-          <h3>Entrare come interprete</h3>
-          <p>
-            Il sistema non ti mostra soltanto materiali. Ti costringe a prendere posizione.
-          </p>
-          <a href="#camera">Leggi la camera</a>
-        </article>
-
-        <article class="gateway">
-          <span class="gateway__id">C</span>
-          <p class="gateway__tag">modalità</p>
-          <h3>Entrare come infiltrato</h3>
-          <p>
-            Cerchi le zone periferiche, i bordi, ciò che non è stato reso innocuo dalla chiarezza.
-          </p>
-          <a href="#protocollo">Vai ai bordi</a>
-        </article>
-
-        <article class="gateway">
-          <span class="gateway__id">D</span>
-          <p class="gateway__tag">modalità</p>
-          <h3>Entrare come autore</h3>
-          <p>
-            Lasci una traccia. Modifichi il paesaggio. Accetti che il sito smetta di essere neutro.
-          </p>
-          <a href="#finale">Lascia il segnale</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="protocol" id="protocollo">
-      <div class="protocol__left">
-        <p class="section-head__index">02</p>
-        <h2>Protocollo di attraversamento</h2>
-      </div>
-
-      <div class="protocol__right">
-        <p>
-          Non cercare una homepage tradizionale. Non è stata prevista.
-        </p>
-        <p>
-          Questo ambiente non ordina il mondo per comodità. Lo dispone per intensità.
-          Alcune parti sono manifeste. Altre restano laterali. Altre ancora esistono solo quando l’attenzione rallenta.
-        </p>
-        <p>
-          Ogni sezione qui è pensata come una stanza mentale: una superficie leggibile e, sotto, un secondo livello di pressione.
-        </p>
-      </div>
-    </section>
-
-    <section class="archive" id="archivio">
-      <header class="section-head">
-        <p class="section-head__index">03</p>
-        <h2>Archivio di frammenti attivi</h2>
-      </header>
-
-      <div class="archive-grid">
-        <article class="fragment fragment--large">
-          <p class="fragment__meta">frammento / 001</p>
-          <h3>Le strutture invisibili decidono la forma delle ossessioni.</h3>
-          <p>
-            Ogni archivio è una macchina morale. Mostra, nasconde, ordina, espelle.
-          </p>
-        </article>
-
-        <article class="fragment">
-          <p class="fragment__meta">traccia / 002</p>
-          <h3>Una pagina può comportarsi come una stanza.</h3>
-          <p>
-            Il layout non distribuisce soltanto elementi. Distribuisce prossimità, attrito e destino.
-          </p>
-        </article>
-
-        <article class="fragment">
-          <p class="fragment__meta">nota / 003</p>
-          <h3>Non tutto ciò che è leggibile deve essere spiegato.</h3>
-          <p>
-            Un buon sistema culturale lascia margine all’interpretazione senza collassare nel fumo teorico.
-          </p>
-        </article>
-
-        <article class="fragment">
-          <p class="fragment__meta">segnale / 004</p>
-          <h3>Alcuni contenuti vanno incontrati, non annunciati.</h3>
-          <p>
-            La rivelazione ha bisogno di ritmo. Non di saturazione.
-          </p>
-        </article>
-
-        <article class="fragment fragment--tall">
-          <p class="fragment__meta">ipotesi / 005</p>
-          <h3>Le interfacce più forti non descrivono un’identità. La producono.</h3>
-          <p>
-            Entrare in un ambiente ben costruito significa assumere temporaneamente la sua temperatura mentale.
-          </p>
-        </article>
-
-        <article class="fragment">
-          <p class="fragment__meta">incidente / 006</p>
-          <h3>Ordine e caos non sono opposti. Sono partner tossici ma fertili.</h3>
-          <p>
-            Senza struttura non c’è intensità leggibile. Senza attrito non c’è memoria.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <section class="chamber" id="camera">
-      <div class="chamber__inner">
-        <p class="chamber__label">04 / camera centrale</p>
-        <p class="chamber__overline">pressione nominale</p>
-        <h2>
-          Questo luogo non vuole convincerti.
-          <span>Vuole aumentare la soglia di ciò che consideri possibile.</span>
-        </h2>
-        <p class="chamber__text">
-          Se una pagina resta soltanto una superficie, muore nel momento in cui la chiudi.
-          Se invece riesce a installare una forma mentale, continua a lavorare anche fuori da qui.
-        </p>
-      </div>
-    </section>
-
-    <section class="ledger">
-      <header class="section-head">
-        <p class="section-head__index">05</p>
-        <h2>Registro delle pressioni</h2>
-      </header>
-
-      <div class="ledger__rows">
-        <article class="ledger-row">
-          <span class="ledger-row__index">[A]</span>
-          <p class="ledger-row__title">densità tipografica</p>
-          <p class="ledger-row__value">alta</p>
-        </article>
-
-        <article class="ledger-row">
-          <span class="ledger-row__index">[B]</span>
-          <p class="ledger-row__title">leggibilità rituale</p>
-          <p class="ledger-row__value">stabile</p>
-        </article>
-
-        <article class="ledger-row">
-          <span class="ledger-row__index">[C]</span>
-          <p class="ledger-row__title">attrito interpretativo</p>
-          <p class="ledger-row__value">calibrato</p>
-        </article>
-
-        <article class="ledger-row">
-          <span class="ledger-row__index">[D]</span>
-          <p class="ledger-row__title">memoria residua</p>
-          <p class="ledger-row__value">persistente</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="finale" id="finale">
-      <p class="finale__label">uscita apparente / rientro probabile</p>
-      <h2>
-        Alcuni luoghi servono a orientarsi.
-        <span>Altri servono a cambiare temperatura mentale.</span>
-      </h2>
-      <a class="finale__link" href="#top">Ricomincia l’attraversamento</a>
+        <div class="window__body">
+          <p class="eyebrow">FINE CICLO / RIENTRO PROBABILE</p>
+          <h2 class="closing-title">
+            Alcuni designer fanno siti.<br />
+            Altri costruiscono allucinazioni leggibili.
+          </h2>
+          <a href="#hero" class="btn btn--primary">[ Ricomincia ]</a>
+        </div>
+      </article>
     </section>
   </main>
+
+  <footer class="statusbar">
+    <span class="statusbar__dot"></span>
+    <span>SISTEMA ATTIVO</span>
+    <span>TRICK: 04</span>
+    <span>TIPS: 03</span>
+    <span>SESSIONE: APERTA</span>
+    <span class="statusbar__right">LAB.XR — web designer folle / build 2.0</span>
+  </footer>
+
+  <script>
+    (function tickClock() {
+      const clock = document.getElementById("clock");
+      if (!clock) return;
+
+      const update = () => {
+        const now = new Date();
+        clock.textContent =
+          String(now.getHours()).padStart(2, "0") + ":" +
+          String(now.getMinutes()).padStart(2, "0") + ":" +
+          String(now.getSeconds()).padStart(2, "0");
+      };
+
+      update();
+      setInterval(update, 1000);
+    })();
+  </script>
 </body>
 </html>
