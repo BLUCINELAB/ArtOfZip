@@ -6,7 +6,7 @@
   <title>Camera Stratigrafica</title>
   <meta
     name="description"
-    content="Atlante operativo di pressioni, layer, anomalie e rilievi. Un sistema visivo stratificato tra infografica e ambiente speculativo."
+    content="Sistema stratigrafico di rilievo, quote, anomalie e superfici in movimento."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,288 +19,272 @@
 <body>
   <div class="site-noise" aria-hidden="true"></div>
   <div class="site-grid" aria-hidden="true"></div>
-  <div class="site-glow site-glow--a" aria-hidden="true"></div>
-  <div class="site-glow site-glow--b" aria-hidden="true"></div>
-  <div class="scan scan--v" aria-hidden="true"></div>
-  <div class="scan scan--h" aria-hidden="true"></div>
+  <div class="site-vignette" aria-hidden="true"></div>
+  <div class="scan scan--vertical" aria-hidden="true"></div>
+  <div class="scan scan--horizontal" aria-hidden="true"></div>
+  <div class="crosshair crosshair--a" aria-hidden="true"></div>
+  <div class="crosshair crosshair--b" aria-hidden="true"></div>
 
   <header class="topbar">
     <a class="brand" href="#top">
       <span class="brand__dot"></span>
-      <span class="brand__name">Camera Stratigrafica</span>
+      <span class="brand__text">Camera Stratigrafica</span>
     </a>
 
     <nav class="topnav" aria-label="Navigazione principale">
-      <a href="#rilievo">Rilievo</a>
-      <a href="#layer">Layer</a>
-      <a href="#anomalie">Anomalie</a>
-      <a href="#registro">Registro</a>
+      <a href="#core">Core</a>
+      <a href="#layers">Layers</a>
+      <a href="#signals">Signals</a>
+      <a href="#registry">Registry</a>
     </nav>
 
-    <div class="topbar__meta">
+    <div class="status">
       <span>STATO: ATTIVO</span>
-      <span>CAMPO: 07</span>
+      <span>QTA: R+84</span>
     </div>
   </header>
 
   <main id="top" class="page">
     <section class="hero">
-      <div class="hero__left">
-        <p class="kicker">Atlante operativo / sistema di osservazione / pressione nominale</p>
+      <div class="hero__intro">
+        <p class="eyebrow">Atlante operativo / sezione instabile / sistema di rilievo</p>
         <h1 class="hero__title">
-          Un ambiente
-          <span>più vicino a una sezione viva</span>
+          Un ambiente di lettura
+          <span>più vicino a un diagramma vivo</span>
           che a una homepage.
         </h1>
-        <p class="hero__text">
-          Qui tutto si comporta come un rilievo: quote, linee, densità, superfici,
-          anomalie, tagli, flussi e residui. Non si entra per consumare contenuti.
-          Si entra per attraversare livelli.
-        </p>
-
-        <div class="hero__actions">
-          <a class="button button--solid" href="#rilievo">Apri il rilievo</a>
-          <a class="button" href="#anomalie">Vedi le anomalie</a>
-        </div>
       </div>
 
-      <aside class="hero__right">
-        <div class="meta-panel">
-          <p class="meta-panel__label">Legenda rapida</p>
-          <ul class="legend">
-            <li><span></span> layer attivi</li>
-            <li><span></span> densità in transito</li>
-            <li><span></span> campo instabile</li>
-            <li><span></span> asse di lettura</li>
+      <div class="hero__legend">
+        <div class="legend-box">
+          <p class="legend-box__label">Legenda</p>
+          <ul class="legend-list">
+            <li><span></span> quote attive</li>
+            <li><span></span> layer mobili</li>
+            <li><span></span> campo magnetico</li>
+            <li><span></span> memoria residua</li>
           </ul>
         </div>
-      </aside>
+      </div>
     </section>
 
-    <section class="survey" id="rilievo" aria-label="Rilievo principale">
-      <aside class="survey__side survey__side--left">
-        <div class="side-block">
-          <p class="side-block__label">Indice verticale</p>
-          <div class="altitudes">
-            <div class="altitudes__row"><span>+84</span><i></i></div>
-            <div class="altitudes__row"><span>+72</span><i></i></div>
-            <div class="altitudes__row"><span>+63</span><i></i></div>
-            <div class="altitudes__row"><span>+51</span><i></i></div>
-            <div class="altitudes__row"><span>+39</span><i></i></div>
-            <div class="altitudes__row"><span>+28</span><i></i></div>
-            <div class="altitudes__row"><span>+14</span><i></i></div>
-            <div class="altitudes__row"><span>+00</span><i></i></div>
+    <section class="chamber" id="core">
+      <aside class="chamber__rail chamber__rail--left">
+        <div class="rail-panel">
+          <p class="rail-panel__label">Quote verticali</p>
+          <div class="altitude-list">
+            <div class="altitude-list__row"><span>+84.0</span><i></i></div>
+            <div class="altitude-list__row"><span>+70.5</span><i></i></div>
+            <div class="altitude-list__row"><span>+56.0</span><i></i></div>
+            <div class="altitude-list__row"><span>+42.2</span><i></i></div>
+            <div class="altitude-list__row"><span>+28.8</span><i></i></div>
+            <div class="altitude-list__row"><span>+14.1</span><i></i></div>
+            <div class="altitude-list__row"><span>+00.0</span><i></i></div>
           </div>
         </div>
 
-        <div class="side-block side-block--text">
-          <p class="side-block__label">Protocollo</p>
-          <p>Non leggere tutto subito.</p>
-          <p>Segui le linee, poi isola i piani.</p>
-          <p>Ogni sezione è una stanza di dati, non un semplice modulo.</p>
+        <div class="rail-panel rail-panel--notes">
+          <p class="rail-panel__label">Protocollo</p>
+          <p>Isola i piani.</p>
+          <p>Segui le linee.</p>
+          <p>Leggi per densità, non per blocchi.</p>
         </div>
       </aside>
 
-      <div class="survey__core">
+      <div class="chamber__core">
         <div class="monolith">
+          <div class="monolith__frame"></div>
           <div class="monolith__axis"></div>
-          <div class="monolith__pulse monolith__pulse--a"></div>
-          <div class="monolith__pulse monolith__pulse--b"></div>
+          <div class="monolith__grid"></div>
+          <div class="monolith__rings"></div>
+          <div class="monolith__dust"></div>
 
-          <div class="strata strata--1">
-            <span class="strata__tag">L01</span>
-            <div class="strata__mesh"></div>
-            <div class="strata__signal"></div>
+          <div class="layer layer--1">
+            <span class="layer__tag">L01</span>
+            <div class="layer__plane layer__plane--mesh"></div>
           </div>
 
-          <div class="strata strata--2">
-            <span class="strata__tag">L02</span>
-            <div class="strata__contours"></div>
+          <div class="layer layer--2">
+            <span class="layer__tag">L02</span>
+            <div class="layer__plane layer__plane--contours"></div>
           </div>
 
-          <div class="strata strata--3">
-            <span class="strata__tag">L03</span>
-            <div class="strata__cloud"></div>
+          <div class="layer layer--3">
+            <span class="layer__tag">L03</span>
+            <div class="layer__plane layer__plane--terrain"></div>
           </div>
 
-          <div class="strata strata--4">
-            <span class="strata__tag">L04</span>
-            <div class="strata__wire"></div>
+          <div class="layer layer--4">
+            <span class="layer__tag">L04</span>
+            <div class="layer__plane layer__plane--particles"></div>
           </div>
 
-          <div class="strata strata--5">
-            <span class="strata__tag">L05</span>
-            <div class="strata__data"></div>
+          <div class="layer layer--5">
+            <span class="layer__tag">L05</span>
+            <div class="layer__plane layer__plane--signal"></div>
           </div>
 
-          <div class="strata strata--6">
-            <span class="strata__tag">L06</span>
-            <div class="strata__terrain"></div>
+          <div class="layer layer--6">
+            <span class="layer__tag">L06</span>
+            <div class="layer__plane layer__plane--topography"></div>
           </div>
 
-          <div class="node node--1"></div>
-          <div class="node node--2"></div>
-          <div class="node node--3"></div>
-          <div class="node node--4"></div>
+          <div class="beam beam--a"></div>
+          <div class="beam beam--b"></div>
+          <div class="beam beam--c"></div>
 
-          <div class="connector connector--1"></div>
-          <div class="connector connector--2"></div>
-          <div class="connector connector--3"></div>
+          <div class="node node--a"></div>
+          <div class="node node--b"></div>
+          <div class="node node--c"></div>
+          <div class="node node--d"></div>
+
+          <div class="trace trace--a"></div>
+          <div class="trace trace--b"></div>
+          <div class="trace trace--c"></div>
 
           <div class="callout callout--a">
             <p class="callout__label">Campo 01</p>
-            <p class="callout__text">Accumulo di densità e linee in attrito.</p>
+            <p class="callout__body">Compressione di linee e memoria.</p>
           </div>
 
           <div class="callout callout--b">
             <p class="callout__label">Campo 02</p>
-            <p class="callout__text">Superficie instabile, oscillazione minima.</p>
+            <p class="callout__body">Superficie in oscillazione lenta.</p>
           </div>
 
           <div class="callout callout--c">
             <p class="callout__label">Campo 03</p>
-            <p class="callout__text">Memoria residua e piega topografica.</p>
+            <p class="callout__body">Residuo topografico persistente.</p>
           </div>
         </div>
       </div>
 
-      <aside class="survey__side survey__side--right">
-        <div class="side-block">
-          <p class="side-block__label">Registro quote</p>
-          <div class="quotes">
-            <div class="quotes__item"><span>R+12</span><i></i></div>
-            <div class="quotes__item"><span>R+09</span><i></i></div>
-            <div class="quotes__item"><span>R+06</span><i></i></div>
-            <div class="quotes__item"><span>R+03</span><i></i></div>
-            <div class="quotes__item"><span>R+01</span><i></i></div>
+      <aside class="chamber__rail chamber__rail--right">
+        <div class="rail-panel">
+          <p class="rail-panel__label">Registro quote</p>
+          <div class="quote-list">
+            <div class="quote-list__row"><span>R+12</span><i></i></div>
+            <div class="quote-list__row"><span>R+09</span><i></i></div>
+            <div class="quote-list__row"><span>R+06</span><i></i></div>
+            <div class="quote-list__row"><span>R+03</span><i></i></div>
+            <div class="quote-list__row"><span>R+01</span><i></i></div>
           </div>
         </div>
 
-        <div class="side-block side-block--numeric">
-          <p class="side-block__label">Letture</p>
-          <div class="metric">
-            <span class="metric__name">densità</span>
-            <span class="metric__value">84.2</span>
-          </div>
-          <div class="metric">
-            <span class="metric__name">attrito</span>
-            <span class="metric__value">61.7</span>
-          </div>
-          <div class="metric">
-            <span class="metric__name">memoria</span>
-            <span class="metric__value">93.1</span>
-          </div>
+        <div class="rail-panel rail-panel--metrics">
+          <p class="rail-panel__label">Metriche</p>
+          <div class="metric-line"><span>densità</span><i></i><b>84.2</b></div>
+          <div class="metric-line"><span>attrito</span><i></i><b>63.8</b></div>
+          <div class="metric-line"><span>memoria</span><i></i><b>91.1</b></div>
+          <div class="metric-line"><span>rumore</span><i></i><b>18.7</b></div>
         </div>
       </aside>
     </section>
 
-    <section class="layer-panels" id="layer">
+    <section class="panels" id="layers">
       <header class="section-head">
         <p class="section-head__index">01</p>
-        <h2>Layer in attività</h2>
+        <h2>Layer attivi</h2>
       </header>
 
-      <div class="layer-panels__grid">
+      <div class="panel-grid">
         <article class="panel panel--map">
-          <p class="panel__label">Layer / cartografia</p>
-          <div class="map-field">
-            <div class="map-field__grid"></div>
-            <div class="map-field__route map-field__route--a"></div>
-            <div class="map-field__route map-field__route--b"></div>
-            <div class="map-field__node map-field__node--1"></div>
-            <div class="map-field__node map-field__node--2"></div>
-            <div class="map-field__node map-field__node--3"></div>
+          <p class="panel__label">Cartografia dinamica</p>
+          <div class="map-display">
+            <div class="map-display__grid"></div>
+            <div class="map-display__route map-display__route--a"></div>
+            <div class="map-display__route map-display__route--b"></div>
+            <div class="map-display__dot map-display__dot--1"></div>
+            <div class="map-display__dot map-display__dot--2"></div>
+            <div class="map-display__dot map-display__dot--3"></div>
           </div>
         </article>
 
         <article class="panel panel--wave">
-          <p class="panel__label">Layer / filtrazione</p>
-          <div class="waves">
-            <span class="waves__line waves__line--1"></span>
-            <span class="waves__line waves__line--2"></span>
-            <span class="waves__line waves__line--3"></span>
-            <span class="waves__line waves__line--4"></span>
-            <span class="waves__line waves__line--5"></span>
+          <p class="panel__label">Filtrazione</p>
+          <div class="wave-display">
+            <span class="wave-display__line wave-display__line--1"></span>
+            <span class="wave-display__line wave-display__line--2"></span>
+            <span class="wave-display__line wave-display__line--3"></span>
+            <span class="wave-display__line wave-display__line--4"></span>
+            <span class="wave-display__line wave-display__line--5"></span>
           </div>
         </article>
 
-        <article class="panel panel--signal">
-          <p class="panel__label">Layer / segnale</p>
-          <div class="signal">
-            <span class="signal__bar" style="--h: 35%"></span>
-            <span class="signal__bar" style="--h: 52%"></span>
-            <span class="signal__bar" style="--h: 82%"></span>
-            <span class="signal__bar" style="--h: 46%"></span>
-            <span class="signal__bar" style="--h: 69%"></span>
-            <span class="signal__bar" style="--h: 28%"></span>
-            <span class="signal__bar" style="--h: 57%"></span>
-            <span class="signal__bar" style="--h: 74%"></span>
-            <span class="signal__bar" style="--h: 39%"></span>
-            <span class="signal__bar" style="--h: 61%"></span>
+        <article class="panel panel--bars">
+          <p class="panel__label">Segnale</p>
+          <div class="bar-display">
+            <span class="bar-display__bar" style="--bar-h: 34%"></span>
+            <span class="bar-display__bar" style="--bar-h: 58%"></span>
+            <span class="bar-display__bar" style="--bar-h: 76%"></span>
+            <span class="bar-display__bar" style="--bar-h: 42%"></span>
+            <span class="bar-display__bar" style="--bar-h: 67%"></span>
+            <span class="bar-display__bar" style="--bar-h: 29%"></span>
+            <span class="bar-display__bar" style="--bar-h: 83%"></span>
+            <span class="bar-display__bar" style="--bar-h: 53%"></span>
           </div>
         </article>
       </div>
     </section>
 
-    <section class="anomalies" id="anomalie">
+    <section class="signals" id="signals">
       <header class="section-head">
         <p class="section-head__index">02</p>
-        <h2>Anomalie attive</h2>
+        <h2>Segnali e anomalie</h2>
       </header>
 
-      <div class="anomalies__grid">
-        <article class="anomaly">
-          <span class="anomaly__id">A1</span>
-          <h3>Deviazione di asse</h3>
-          <p>Una griglia può sembrare stabile e invece inclinare la lettura di pochi gradi. Basta questo per creare attenzione vera.</p>
+      <div class="signal-grid">
+        <article class="signal-card">
+          <span class="signal-card__id">A1</span>
+          <h3>Deviazione minima</h3>
+          <p>Un asse inclinato di pochi gradi altera l’attenzione più di un intero apparato decorativo.</p>
         </article>
 
-        <article class="anomaly">
-          <span class="anomaly__id">A2</span>
-          <h3>Compressione tipografica</h3>
-          <p>La parola non deve spiegare sempre. A volte deve agire come segnale, soglia o taglio di superficie.</p>
+        <article class="signal-card">
+          <span class="signal-card__id">A2</span>
+          <h3>Compressione visiva</h3>
+          <p>La densità non va accumulata ovunque. Va concentrata in punti con forza di gravità.</p>
         </article>
 
-        <article class="anomaly">
-          <span class="anomaly__id">A3</span>
+        <article class="signal-card">
+          <span class="signal-card__id">A3</span>
           <h3>Memoria topografica</h3>
-          <p>Le superfici non devono sembrare piatte. Devono trattenere il ricordo di una scansione, di un attrito, di un passaggio.</p>
+          <p>Una superficie deve sembrare attraversata, rilevata, misurata, non semplicemente disegnata.</p>
         </article>
 
-        <article class="anomaly">
-          <span class="anomaly__id">A4</span>
-          <h3>Rumore controllato</h3>
-          <p>Troppo pulito è morto. Troppo sporco è amatoriale. L’intervallo giusto produce presenza.</p>
+        <article class="signal-card">
+          <span class="signal-card__id">A4</span>
+          <h3>Rumore calibrato</h3>
+          <p>La precisione senza residuo è morta. Il residuo senza disciplina è solo disordine in costume.</p>
         </article>
       </div>
     </section>
 
-    <section class="registry" id="registro">
-      <div class="registry__left">
+    <section class="registry" id="registry">
+      <div class="registry__statement">
         <p class="registry__label">Registro centrale</p>
         <h2>
-          Il compito non è decorare uno schermo.
-          <span>È costruire un ambiente di lettura con gravità.</span>
+          Il compito non è riempire la pagina.
+          <span>È costruire un campo di percezione.</span>
         </h2>
       </div>
 
-      <div class="registry__right">
-        <div class="registry-card">
+      <div class="registry__cards">
+        <article class="registry-card">
           <p class="registry-card__label">Stato del sistema</p>
-          <div class="registry-line"><span>leggibilità</span><i></i><b>stabile</b></div>
-          <div class="registry-line"><span>densità</span><i></i><b>alta</b></div>
-          <div class="registry-line"><span>rumore</span><i></i><b>calibrato</b></div>
-          <div class="registry-line"><span>memoria</span><i></i><b>persistente</b></div>
-        </div>
+          <div class="registry-card__row"><span>leggibilità</span><i></i><b>stabile</b></div>
+          <div class="registry-card__row"><span>densità</span><i></i><b>alta</b></div>
+          <div class="registry-card__row"><span>segnale</span><i></i><b>attivo</b></div>
+          <div class="registry-card__row"><span>memoria</span><i></i><b>persistente</b></div>
+        </article>
 
-        <div class="registry-card registry-card--accent">
+        <article class="registry-card registry-card--accent">
           <p class="registry-card__label">Uscita apparente</p>
           <p class="registry-card__text">
-            Alcuni siti si ricordano per ciò che mostrano.
-            Altri per il modo in cui alterano la percezione del tempo mentre li attraversi.
+            Alcuni siti mostrano contenuti. Altri lasciano una quota mentale residua anche dopo la chiusura.
           </p>
           <a class="registry-card__link" href="#top">Ritorna a quota zero</a>
-        </div>
+        </article>
       </div>
     </section>
   </main>
