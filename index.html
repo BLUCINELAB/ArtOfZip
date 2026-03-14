@@ -1,66 +1,95 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anton Zip — Film / Visual Work</title>
-  <meta
-    name="description"
-    content="Anton Zip — film, videoarte, immagini in movimento e frammenti visivi."
-  />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap"
-    rel="stylesheet"
-  />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css" />
+<title>CONTROL SYSTEM</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="glow" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <a href="#" class="brand">Anton Zip</a>
-    <span class="status">archive / ongoing</span>
-  </header>
+<div class="system">
 
-  <main>
-    <section class="hero">
-      <div class="hero-inner">
-        <p class="eyebrow">film / visual work / fragments</p>
-        <h1 class="hero-title">Anton Zip</h1>
-        <p class="hero-subtitle">
-          Una pratica tra immagine in movimento, presenza visiva e costruzione di atmosfera.
-        </p>
-      </div>
-    </section>
+<header class="topbar">
 
-    <section class="work">
-      <article class="work-card">
-        <figure class="work-figure">
-          <!-- cambia il nome file se la tua immagine ha un altro nome -->
-          <img src="crystal-crown.jpg" alt="Anton Zip — frammento visivo" />
-        </figure>
+<div class="logo">SYS_CORE</div>
 
-        <div class="work-meta">
-          <p class="work-index">01 / Selected fragment</p>
-          <h2 class="work-title">Crystal Crown</h2>
-          <p class="work-text">
-            Un frammento visivo come soglia: luce, corpo, densità e apparizione.
-            Non archivio completo, ma un punto di accesso al lavoro.
-          </p>
-        </div>
-      </article>
-    </section>
-  </main>
+<div class="status">
+<span>STATUS: ONLINE</span>
+<span>NODE: 03</span>
+<span>TIME: 02:54</span>
+</div>
 
-  <footer class="site-footer">
-    <p>Work in progress © <span id="year"></span></p>
-  </footer>
+</header>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+<section class="grid">
+
+<div class="panel large">
+<h2>WORLD ENGINE</h2>
+<p>
+Simulation running.
+Environmental nodes connected.
+Processing terrain data.
+</p>
+</div>
+
+<div class="panel">
+<h3>ARCHIVE</h3>
+<ul>
+<li>entry_001</li>
+<li>entry_002</li>
+<li>entry_003</li>
+<li>entry_004</li>
+</ul>
+</div>
+
+<div class="panel">
+<h3>MODULES</h3>
+<ul>
+<li>mapping</li>
+<li>vision</li>
+<li>signal</li>
+<li>lab</li>
+</ul>
+</div>
+
+<div class="panel">
+<h3>LOG</h3>
+<div class="log">
+<p>system boot</p>
+<p>loading terrain engine</p>
+<p>signal received</p>
+<p>node connected</p>
+</div>
+</div>
+
+<div class="panel">
+<h3>NETWORK</h3>
+<p>nodes active: 12</p>
+<p>latency: 14ms</p>
+<p>sync: stable</p>
+</div>
+
+<div class="panel">
+<h3>ACCESS</h3>
+<button>ENTER</button>
+</div>
+
+</section>
+
+<footer class="footer">
+
+SYSTEM BUILD 0.1  
+CORE ACTIVE  
+
+</footer>
+
+</div>
+
 </body>
 </html>
