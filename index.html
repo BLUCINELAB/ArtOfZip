@@ -3,318 +3,306 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Designer Folle — Lab Segreto</title>
+  <title>Camera Stratigrafica</title>
   <meta
     name="description"
-    content="Sezione portfolio/editoriale con stile retro-terminal, tips segrete, trick creativi e layout immersivo."
+    content="Atlante operativo di pressioni, layer, anomalie e rilievi. Un sistema visivo stratificato tra infografica e ambiente speculativo."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="bg-grid" aria-hidden="true"></div>
-  <div class="screen-noise" aria-hidden="true"></div>
+  <div class="site-noise" aria-hidden="true"></div>
+  <div class="site-grid" aria-hidden="true"></div>
+  <div class="site-glow site-glow--a" aria-hidden="true"></div>
+  <div class="site-glow site-glow--b" aria-hidden="true"></div>
+  <div class="scan scan--v" aria-hidden="true"></div>
+  <div class="scan scan--h" aria-hidden="true"></div>
 
-  <header class="menubar">
-    <div class="menubar__left">
-      <span class="menubar__logo">◆</span>
-      <a href="#hero" class="menubar__item">File</a>
-      <a href="#designer" class="menubar__item">Designer</a>
-      <a href="#tricks" class="menubar__item">Tricks</a>
-      <a href="#tips" class="menubar__item">Tips</a>
-      <a href="#manifesto" class="menubar__item">Manifesto</a>
-    </div>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand__dot"></span>
+      <span class="brand__name">Camera Stratigrafica</span>
+    </a>
 
-    <div class="menubar__right">
-      <span>LAB.XR</span>
-      <span>MODE: CHAOTIC</span>
-      <span id="clock">00:00:00</span>
+    <nav class="topnav" aria-label="Navigazione principale">
+      <a href="#rilievo">Rilievo</a>
+      <a href="#layer">Layer</a>
+      <a href="#anomalie">Anomalie</a>
+      <a href="#registro">Registro</a>
+    </nav>
+
+    <div class="topbar__meta">
+      <span>STATO: ATTIVO</span>
+      <span>CAMPO: 07</span>
     </div>
   </header>
 
-  <aside class="icon-rail" aria-label="Accessi rapidi">
-    <a class="icon" href="#designer">
-      <span class="icon__box">◈</span>
-      <span class="icon__name">Designer</span>
-    </a>
-    <a class="icon" href="#tricks">
-      <span class="icon__box">⊞</span>
-      <span class="icon__name">Tricks</span>
-    </a>
-    <a class="icon" href="#tips">
-      <span class="icon__box">✦</span>
-      <span class="icon__name">Tips</span>
-    </a>
-    <a class="icon" href="#manifesto">
-      <span class="icon__box icon__box--light">?</span>
-      <span class="icon__name">Manifesto</span>
-    </a>
-  </aside>
+  <main id="top" class="page">
+    <section class="hero">
+      <div class="hero__left">
+        <p class="kicker">Atlante operativo / sistema di osservazione / pressione nominale</p>
+        <h1 class="hero__title">
+          Un ambiente
+          <span>più vicino a una sezione viva</span>
+          che a una homepage.
+        </h1>
+        <p class="hero__text">
+          Qui tutto si comporta come un rilievo: quote, linee, densità, superfici,
+          anomalie, tagli, flussi e residui. Non si entra per consumare contenuti.
+          Si entra per attraversare livelli.
+        </p>
 
-  <main class="desktop">
-    <section class="layout-grid" aria-label="Interfaccia principale">
-      <article class="window window--hero" id="hero">
-        <div class="window__bar">
-          <div class="window__dots"><i></i><i></i><i></i></div>
-          <span>Finestra principale / accesso creativo</span>
-          <span class="window__ctrl">█ ░ ✕</span>
+        <div class="hero__actions">
+          <a class="button button--solid" href="#rilievo">Apri il rilievo</a>
+          <a class="button" href="#anomalie">Vedi le anomalie</a>
         </div>
+      </div>
 
-        <div class="window__body">
-          <p class="eyebrow">WEB DESIGNER FOLLE / LAB SEGRETO / ACCESSO NON LINEARE</p>
-          <hr class="separator" />
+      <aside class="hero__right">
+        <div class="meta-panel">
+          <p class="meta-panel__label">Legenda rapida</p>
+          <ul class="legend">
+            <li><span></span> layer attivi</li>
+            <li><span></span> densità in transito</li>
+            <li><span></span> campo instabile</li>
+            <li><span></span> asse di lettura</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
 
-          <p class="muted">— sezione di ingresso</p>
-
-          <h1 class="hero-title">
-            Non è un web designer normale.<br />
-            <span>È una creatura che piega layout, ritmo e tensione visiva.</span>
-          </h1>
-
-          <p class="hero-copy">
-            Qui non trovi una vetrina calma. Trovi un ambiente vivo:
-            esperimenti, micro-interazioni mentali, tipografia come arma,
-            griglie spezzate, contrasti studiati, sorprese invisibili e piccoli
-            dettagli che sembrano illegali.
-          </p>
-
-          <div class="hero-actions">
-            <a class="btn btn--primary" href="#tricks">[ Entra nei trick ]</a>
-            <a class="btn" href="#tips">[ Apri le tips ]</a>
+    <section class="survey" id="rilievo" aria-label="Rilievo principale">
+      <aside class="survey__side survey__side--left">
+        <div class="side-block">
+          <p class="side-block__label">Indice verticale</p>
+          <div class="altitudes">
+            <div class="altitudes__row"><span>+84</span><i></i></div>
+            <div class="altitudes__row"><span>+72</span><i></i></div>
+            <div class="altitudes__row"><span>+63</span><i></i></div>
+            <div class="altitudes__row"><span>+51</span><i></i></div>
+            <div class="altitudes__row"><span>+39</span><i></i></div>
+            <div class="altitudes__row"><span>+28</span><i></i></div>
+            <div class="altitudes__row"><span>+14</span><i></i></div>
+            <div class="altitudes__row"><span>+00</span><i></i></div>
           </div>
         </div>
-      </article>
 
-      <article class="window window--bios" id="designer">
-        <div class="bios-head">DESIGNER PROFILE ─ BIOS v2.0 ─ SYSTEM READOUT</div>
+        <div class="side-block side-block--text">
+          <p class="side-block__label">Protocollo</p>
+          <p>Non leggere tutto subito.</p>
+          <p>Segui le linee, poi isola i piani.</p>
+          <p>Ogni sezione è una stanza di dati, non un semplice modulo.</p>
+        </div>
+      </aside>
 
-        <div class="bios-body">
-          <div class="bios-row"><span class="bios-k">NOME MODULO</span><span class="bios-v bios-v--inv">WEB DESIGNER FOLLE</span></div>
-          <div class="bios-row"><span class="bios-k">STILE</span><span class="bios-v">RETRO / BRUTAL / CINEMATIC</span></div>
-          <div class="bios-row"><span class="bios-k">APPROCCIO</span><span class="bios-v">IPERCREATIVO</span></div>
-          <div class="bios-row"><span class="bios-k">SPECIALITÀ</span><span class="bios-v">TRICK NASCOSTI</span></div>
-          <div class="bios-row"><span class="bios-k">RISCHIO</span><span class="bios-v">ALTO IMPATTO VISIVO</span></div>
-          <div class="bios-row"><span class="bios-k">OUTPUT</span><span class="bios-v">SITI CHE RESTANO IN TESTA</span></div>
-          <div class="bios-row"><span class="bios-k">STATUS</span><span class="bios-v">ATTIVO</span></div>
+      <div class="survey__core">
+        <div class="monolith">
+          <div class="monolith__axis"></div>
+          <div class="monolith__pulse monolith__pulse--a"></div>
+          <div class="monolith__pulse monolith__pulse--b"></div>
 
-          <div class="bios-hint">
-            ↑↓ ESPLORA &nbsp; INVIO: APRI &nbsp; ESC: DIMENTICA TUTTO
-            <div class="bios-bar">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%</div>
+          <div class="strata strata--1">
+            <span class="strata__tag">L01</span>
+            <div class="strata__mesh"></div>
+            <div class="strata__signal"></div>
+          </div>
+
+          <div class="strata strata--2">
+            <span class="strata__tag">L02</span>
+            <div class="strata__contours"></div>
+          </div>
+
+          <div class="strata strata--3">
+            <span class="strata__tag">L03</span>
+            <div class="strata__cloud"></div>
+          </div>
+
+          <div class="strata strata--4">
+            <span class="strata__tag">L04</span>
+            <div class="strata__wire"></div>
+          </div>
+
+          <div class="strata strata--5">
+            <span class="strata__tag">L05</span>
+            <div class="strata__data"></div>
+          </div>
+
+          <div class="strata strata--6">
+            <span class="strata__tag">L06</span>
+            <div class="strata__terrain"></div>
+          </div>
+
+          <div class="node node--1"></div>
+          <div class="node node--2"></div>
+          <div class="node node--3"></div>
+          <div class="node node--4"></div>
+
+          <div class="connector connector--1"></div>
+          <div class="connector connector--2"></div>
+          <div class="connector connector--3"></div>
+
+          <div class="callout callout--a">
+            <p class="callout__label">Campo 01</p>
+            <p class="callout__text">Accumulo di densità e linee in attrito.</p>
+          </div>
+
+          <div class="callout callout--b">
+            <p class="callout__label">Campo 02</p>
+            <p class="callout__text">Superficie instabile, oscillazione minima.</p>
+          </div>
+
+          <div class="callout callout--c">
+            <p class="callout__label">Campo 03</p>
+            <p class="callout__text">Memoria residua e piega topografica.</p>
           </div>
         </div>
-      </article>
+      </div>
 
-      <article class="window window--terminal">
-        <div class="window__bar window__bar--dim">
-          <div class="window__dots"><i></i><i></i></div>
-          <span>terminal://creative-core</span>
-          <span class="window__ctrl">─ □ ✕</span>
-        </div>
-
-        <div class="terminal">
-          <span class="terminal__line terminal__line--out">Creative Core OS v2.4</span>
-          <span class="terminal__line terminal__line--out">Ultimo accesso: sconosciuto</span>
-
-          <span class="terminal__break"></span>
-
-          <span class="terminal__line terminal__line--prompt">load designer.profile</span>
-          <span class="terminal__line terminal__line--out">profilo caricato...</span>
-          <span class="terminal__line terminal__line--out">anomalie visive: rilevate</span>
-
-          <span class="terminal__break"></span>
-
-          <span class="terminal__line terminal__line--prompt">ls /secret-tricks</span>
-          <span class="terminal__line terminal__line--out">001_typography_pressure</span>
-          <span class="terminal__line terminal__line--out">002_false_order</span>
-          <span class="terminal__line terminal__line--out">003_attention_hooks</span>
-          <span class="terminal__line terminal__line--out">004_micro_shock</span>
-          <span class="terminal__line terminal__line--out">005_silent_motion</span>
-
-          <span class="terminal__break"></span>
-
-          <span class="terminal__line terminal__line--prompt"><span class="terminal__cursor"></span></span>
-        </div>
-      </article>
-
-      <section class="window window--full" id="tricks">
-        <div class="window__bar">
-          <div class="window__dots"><i></i><i></i><i></i></div>
-          <span>01 / Trick segreti del designer folle</span>
-          <span class="window__ctrl">░ █ ✕</span>
-        </div>
-
-        <div class="window__body window__body--flush">
-          <div class="card-grid">
-            <article class="card">
-              <span class="card__id">01</span>
-              <p class="card__tag">trick</p>
-              <h3 class="card__title">Tipografia che crea pressione</h3>
-              <p class="card__desc">
-                Usa una headline enorme, poi spezzala con una frase sottile
-                e quasi sussurrata. Il contrasto tra peso e fragilità costruisce tensione.
-              </p>
-            </article>
-
-            <article class="card">
-              <span class="card__id">02</span>
-              <p class="card__tag">trick</p>
-              <h3 class="card__title">Ordine finto, caos controllato</h3>
-              <p class="card__desc">
-                Dai l’illusione di una griglia perfetta, poi rompi un solo elemento.
-                Quella deviazione diventa il magnete visivo.
-              </p>
-            </article>
-
-            <article class="card">
-              <span class="card__id">03</span>
-              <p class="card__tag">trick</p>
-              <h3 class="card__title">Sezioni che sembrano ambienti</h3>
-              <p class="card__desc">
-                Non progettare “blocchi”. Progetta stanze mentali:
-                ogni sezione deve avere temperatura, ritmo e comportamento.
-              </p>
-            </article>
-
-            <article class="card">
-              <span class="card__id">04</span>
-              <p class="card__tag">trick</p>
-              <h3 class="card__title">Dettagli invisibili ma memorabili</h3>
-              <p class="card__desc">
-                Una texture appena percettibile, una linea che pulsa, un cursore finto:
-                piccole anomalie che fanno sembrare il sito vivo.
-              </p>
-            </article>
+      <aside class="survey__side survey__side--right">
+        <div class="side-block">
+          <p class="side-block__label">Registro quote</p>
+          <div class="quotes">
+            <div class="quotes__item"><span>R+12</span><i></i></div>
+            <div class="quotes__item"><span>R+09</span><i></i></div>
+            <div class="quotes__item"><span>R+06</span><i></i></div>
+            <div class="quotes__item"><span>R+03</span><i></i></div>
+            <div class="quotes__item"><span>R+01</span><i></i></div>
           </div>
         </div>
-      </section>
 
-      <article class="window" id="tips">
-        <div class="window__bar">
-          <div class="window__dots"><i></i><i></i><i></i></div>
-          <span>02 / Tips pazzesche da laboratorio</span>
-          <span class="window__ctrl">░ █ ✕</span>
+        <div class="side-block side-block--numeric">
+          <p class="side-block__label">Letture</p>
+          <div class="metric">
+            <span class="metric__name">densità</span>
+            <span class="metric__value">84.2</span>
+          </div>
+          <div class="metric">
+            <span class="metric__name">attrito</span>
+            <span class="metric__value">61.7</span>
+          </div>
+          <div class="metric">
+            <span class="metric__name">memoria</span>
+            <span class="metric__value">93.1</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="layer-panels" id="layer">
+      <header class="section-head">
+        <p class="section-head__index">01</p>
+        <h2>Layer in attività</h2>
+      </header>
+
+      <div class="layer-panels__grid">
+        <article class="panel panel--map">
+          <p class="panel__label">Layer / cartografia</p>
+          <div class="map-field">
+            <div class="map-field__grid"></div>
+            <div class="map-field__route map-field__route--a"></div>
+            <div class="map-field__route map-field__route--b"></div>
+            <div class="map-field__node map-field__node--1"></div>
+            <div class="map-field__node map-field__node--2"></div>
+            <div class="map-field__node map-field__node--3"></div>
+          </div>
+        </article>
+
+        <article class="panel panel--wave">
+          <p class="panel__label">Layer / filtrazione</p>
+          <div class="waves">
+            <span class="waves__line waves__line--1"></span>
+            <span class="waves__line waves__line--2"></span>
+            <span class="waves__line waves__line--3"></span>
+            <span class="waves__line waves__line--4"></span>
+            <span class="waves__line waves__line--5"></span>
+          </div>
+        </article>
+
+        <article class="panel panel--signal">
+          <p class="panel__label">Layer / segnale</p>
+          <div class="signal">
+            <span class="signal__bar" style="--h: 35%"></span>
+            <span class="signal__bar" style="--h: 52%"></span>
+            <span class="signal__bar" style="--h: 82%"></span>
+            <span class="signal__bar" style="--h: 46%"></span>
+            <span class="signal__bar" style="--h: 69%"></span>
+            <span class="signal__bar" style="--h: 28%"></span>
+            <span class="signal__bar" style="--h: 57%"></span>
+            <span class="signal__bar" style="--h: 74%"></span>
+            <span class="signal__bar" style="--h: 39%"></span>
+            <span class="signal__bar" style="--h: 61%"></span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="anomalies" id="anomalie">
+      <header class="section-head">
+        <p class="section-head__index">02</p>
+        <h2>Anomalie attive</h2>
+      </header>
+
+      <div class="anomalies__grid">
+        <article class="anomaly">
+          <span class="anomaly__id">A1</span>
+          <h3>Deviazione di asse</h3>
+          <p>Una griglia può sembrare stabile e invece inclinare la lettura di pochi gradi. Basta questo per creare attenzione vera.</p>
+        </article>
+
+        <article class="anomaly">
+          <span class="anomaly__id">A2</span>
+          <h3>Compressione tipografica</h3>
+          <p>La parola non deve spiegare sempre. A volte deve agire come segnale, soglia o taglio di superficie.</p>
+        </article>
+
+        <article class="anomaly">
+          <span class="anomaly__id">A3</span>
+          <h3>Memoria topografica</h3>
+          <p>Le superfici non devono sembrare piatte. Devono trattenere il ricordo di una scansione, di un attrito, di un passaggio.</p>
+        </article>
+
+        <article class="anomaly">
+          <span class="anomaly__id">A4</span>
+          <h3>Rumore controllato</h3>
+          <p>Troppo pulito è morto. Troppo sporco è amatoriale. L’intervallo giusto produce presenza.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="registry" id="registro">
+      <div class="registry__left">
+        <p class="registry__label">Registro centrale</p>
+        <h2>
+          Il compito non è decorare uno schermo.
+          <span>È costruire un ambiente di lettura con gravità.</span>
+        </h2>
+      </div>
+
+      <div class="registry__right">
+        <div class="registry-card">
+          <p class="registry-card__label">Stato del sistema</p>
+          <div class="registry-line"><span>leggibilità</span><i></i><b>stabile</b></div>
+          <div class="registry-line"><span>densità</span><i></i><b>alta</b></div>
+          <div class="registry-line"><span>rumore</span><i></i><b>calibrato</b></div>
+          <div class="registry-line"><span>memoria</span><i></i><b>persistente</b></div>
         </div>
 
-        <div class="stack-list">
-          <article class="fragment">
-            <div class="fragment__meta">
-              <span>tip / 001</span>
-              <span>● attiva</span>
-            </div>
-            <h3 class="fragment__title">Non mostrare tutto subito.</h3>
-            <p class="fragment__body">
-              Un layout forte lascia sempre una micro-promessa irrisolta.
-              L’utente deve sentire che c’è un livello sotto.
-            </p>
-          </article>
-
-          <article class="fragment">
-            <div class="fragment__meta">
-              <span>tip / 002</span>
-              <span>● attiva</span>
-            </div>
-            <h3 class="fragment__title">Usa il vuoto come dispositivo narrativo.</h3>
-            <p class="fragment__body">
-              Lo spazio non è assenza: è attesa, ritmo, sospensione.
-              Il vuoto può essere aggressivo quanto un colore acceso.
-            </p>
-          </article>
-
-          <article class="fragment">
-            <div class="fragment__meta">
-              <span>tip / 003</span>
-              <span>● attiva</span>
-            </div>
-            <h3 class="fragment__title">Fai parlare l’interfaccia prima del testo.</h3>
-            <p class="fragment__body">
-              Prima ancora di leggere, l’utente deve capire
-              se il sito è disciplinato, folle, elegante, ostile o magnetico.
-            </p>
-          </article>
-        </div>
-      </article>
-
-      <article class="window window--light" id="manifesto">
-        <div class="window__bar">
-          <div class="window__dots"><i></i><i></i><i></i></div>
-          <span>03 / Manifesto del designer fuori scala</span>
-          <span class="window__ctrl">█ ░ ✕</span>
-        </div>
-
-        <div class="window__body prose prose--light">
-          <p class="eyebrow eyebrow--dark">DOCUMENTO / MANIFESTO OPERATIVO</p>
-
-          <p class="lead">
-            Un sito forte non si limita a essere bello.
-            Installa una sensazione mentale.
+        <div class="registry-card registry-card--accent">
+          <p class="registry-card__label">Uscita apparente</p>
+          <p class="registry-card__text">
+            Alcuni siti si ricordano per ciò che mostrano.
+            Altri per il modo in cui alterano la percezione del tempo mentre li attraversi.
           </p>
-
-          <p>
-            Il web designer folle non rincorre soltanto la pulizia.
-            Conosce la pulizia, ma sa anche quando romperla.
-            Usa la struttura come una trappola elegante:
-            accoglie, orienta, destabilizza, firma.
-          </p>
-
-          <p>
-            I suoi trucchi non sono effetti casuali.
-            Sono scosse misurate: una headline fuori scala,
-            una barra che sembra di sistema, un contrasto
-            tipografico quasi troppo teso, una sezione
-            che sembra respirare in silenzio.
-          </p>
+          <a class="registry-card__link" href="#top">Ritorna a quota zero</a>
         </div>
-      </article>
-
-      <article class="window">
-        <div class="window__bar">
-          <div class="window__dots"><i></i><i></i></div>
-          <span>04 / Uscita apparente</span>
-          <span class="window__ctrl">✕</span>
-        </div>
-
-        <div class="window__body">
-          <p class="eyebrow">FINE CICLO / RIENTRO PROBABILE</p>
-          <h2 class="closing-title">
-            Alcuni designer fanno siti.<br />
-            Altri costruiscono allucinazioni leggibili.
-          </h2>
-          <a href="#hero" class="btn btn--primary">[ Ricomincia ]</a>
-        </div>
-      </article>
+      </div>
     </section>
   </main>
-
-  <footer class="statusbar">
-    <span class="statusbar__dot"></span>
-    <span>SISTEMA ATTIVO</span>
-    <span>TRICK: 04</span>
-    <span>TIPS: 03</span>
-    <span>SESSIONE: APERTA</span>
-    <span class="statusbar__right">LAB.XR — web designer folle / build 2.0</span>
-  </footer>
-
-  <script>
-    (function tickClock() {
-      const clock = document.getElementById("clock");
-      if (!clock) return;
-
-      const update = () => {
-        const now = new Date();
-        clock.textContent =
-          String(now.getHours()).padStart(2, "0") + ":" +
-          String(now.getMinutes()).padStart(2, "0") + ":" +
-          String(now.getSeconds()).padStart(2, "0");
-      };
-
-      update();
-      setInterval(update, 1000);
-    })();
-  </script>
 </body>
 </html>
