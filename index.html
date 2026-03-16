@@ -2,278 +2,355 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Lampo d'Autore</title>
-  <meta
-    name="description"
-    content="Interfaccia editoriale sperimentale tra previsione, segnale, terreno e archivio."
-  />
+  <meta name="description" content="Sistema di previsione visiva — segnali, rischi e densità." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="fx-noise" aria-hidden="true"></div>
-  <div class="fx-grid" aria-hidden="true"></div>
+
+  <!-- Ambient FX -->
+  <div class="fx-noise"    aria-hidden="true"></div>
+  <div class="fx-grid"     aria-hidden="true"></div>
   <div class="fx-vignette" aria-hidden="true"></div>
   <div class="fx-scan fx-scan-x" aria-hidden="true"></div>
   <div class="fx-scan fx-scan-y" aria-hidden="true"></div>
 
-  <header class="topbar">
-    <a href="#top" class="brand" aria-label="Lampo d'Autore">
-      <span class="brand__icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-      <span class="brand__name">Lampo d'Autore</span>
-    </a>
+  <!-- ==============================
+       TOPBAR
+  ============================== -->
+  <header class="topbar" role="banner">
+    <div class="topbar__brand">
+      <div class="brand-icon" aria-hidden="true">
+        <span class="brand-icon__v"></span>
+        <span class="brand-icon__h"></span>
+        <span class="brand-icon__ring"></span>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Lampo d'Autore</span>
+        <span class="brand-sub" id="live-clock" aria-label="Orario corrente" aria-live="off">--:--:--</span>
+      </div>
+    </div>
 
-    <nav class="topnav" aria-label="Navigazione principale">
-      <a href="#overview">Overview</a>
-      <a href="#forecast">Forecast</a>
-      <a href="#signals">Signals</a>
-      <a href="#matrix">Matrix</a>
-    </nav>
-
-    <div class="toptools" aria-label="Strumenti">
-      <button class="icon-btn" type="button" aria-label="Ricerca">
-        <span class="i-search"></span>
-      </button>
-      <button class="icon-btn" type="button" aria-label="Vista">
-        <span class="i-grid"></span>
-      </button>
-      <button class="icon-btn" type="button" aria-label="Stato">
-        <span class="i-pulse"></span>
-      </button>
+    <div class="topbar__status" aria-label="Stato sistema">
+      <div class="status-chip status-chip--live">
+        <span class="status-dot" aria-hidden="true"></span>
+        LIVE
+      </div>
+      <div class="status-chip" id="status-index" aria-label="Forecast index">
+        IDX <strong>--</strong>
+      </div>
     </div>
   </header>
 
-  <main id="top" class="page">
-    <section class="hero" id="overview">
-      <div class="hero__left">
-        <p class="eyebrow">sistema di previsione visiva</p>
-        <h1>
-          Segnali,
-          <span>rischi</span>
+  <!-- ==============================
+       MAIN — TAB PANELS
+  ============================== -->
+  <main class="page" id="main-page">
+
+    <!-- ── OVERVIEW ─────────────────────────── -->
+    <section class="tab-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+
+      <div class="hero">
+        <div class="hero__eyebrow">sistema di previsione visiva</div>
+        <h1 class="hero__title">
+          Segnali,<br/>
+          <em>rischi</em><br/>
           e densità.
         </h1>
-
-        <div class="hero__chips" aria-label="Stato sistema">
-          <div class="chip"><span></span> live</div>
-          <div class="chip"><span></span> mobile ready</div>
-          <div class="chip"><span></span> synced</div>
+        <div class="hero__row">
+          <div class="hero__chip-group" aria-label="Stato componenti">
+            <div class="chip chip--accent"><span aria-hidden="true"></span>live</div>
+            <div class="chip"><span aria-hidden="true"></span>synced</div>
+            <div class="chip"><span aria-hidden="true"></span>mobile</div>
+          </div>
+          <article class="hero__index-card" aria-label="Forecast index">
+            <p>forecast</p>
+            <strong class="counter" data-target="84" aria-live="polite">0</strong>
+          </article>
         </div>
       </div>
 
-      <div class="hero__right">
-        <article class="mini-panel mini-panel--hero">
-          <div class="mini-panel__head">
-            <p>forecast index</p>
-            <b>84</b>
-          </div>
-          <div class="spark spark--hero">
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </article>
-      </div>
-    </section>
+      <!-- Terrain board -->
+      <article class="board board--terrain" aria-label="Terrain forecast">
+        <header class="board__head">
+          <p>terrain forecast</p>
+          <div class="legend-dot"><span aria-hidden="true"></span><small>anomalia attiva</small></div>
+        </header>
+        <div class="terrain-screen" role="img" aria-label="Visualizzazione terrain forecast">
+          <div class="terrain-screen__grid" aria-hidden="true"></div>
+          <div class="terrain-layer terrain-layer--back"  aria-hidden="true"></div>
+          <div class="terrain-layer terrain-layer--mid"   aria-hidden="true"></div>
+          <div class="terrain-layer terrain-layer--front" aria-hidden="true"></div>
+          <div class="terrain-orbit orbit-a" aria-hidden="true"></div>
+          <div class="terrain-orbit orbit-b" aria-hidden="true"></div>
+          <div class="terrain-orbit orbit-c" aria-hidden="true"></div>
+          <div class="terrain-node node-a" aria-hidden="true"></div>
+          <div class="terrain-node node-b" aria-hidden="true"></div>
+          <div class="terrain-node node-c" aria-hidden="true"></div>
+          <div class="terrain-node node-d" aria-hidden="true"></div>
+          <div class="terrain-beam beam-a" aria-hidden="true"></div>
+          <div class="terrain-beam beam-b" aria-hidden="true"></div>
+          <div class="terrain-beam beam-c" aria-hidden="true"></div>
+          <div class="terrain-badge badge-a" aria-label="71 percento">71%</div>
+          <div class="terrain-badge badge-b" aria-label="23 percento">23%</div>
+          <div class="terrain-badge badge-c" aria-label="89 percento">89%</div>
+        </div>
+      </article>
 
-    <section class="dashboard">
-      <div class="dashboard__main">
-        <article class="board board--terrain">
-          <div class="board__head">
-            <p>terrain forecast</p>
-            <div class="legend-dot"><span></span><small>anomalia attiva</small></div>
-          </div>
-
-          <div class="terrain-screen">
-            <div class="terrain-screen__grid"></div>
-            <div class="terrain-layer terrain-layer--back"></div>
-            <div class="terrain-layer terrain-layer--mid"></div>
-            <div class="terrain-layer terrain-layer--front"></div>
-
-            <div class="terrain-orbit orbit-a"></div>
-            <div class="terrain-orbit orbit-b"></div>
-            <div class="terrain-orbit orbit-c"></div>
-
-            <div class="terrain-node node-a"></div>
-            <div class="terrain-node node-b"></div>
-            <div class="terrain-node node-c"></div>
-            <div class="terrain-node node-d"></div>
-
-            <div class="terrain-beam beam-a"></div>
-            <div class="terrain-beam beam-b"></div>
-            <div class="terrain-beam beam-c"></div>
-
-            <div class="terrain-badge badge-a">71%</div>
-            <div class="terrain-badge badge-b">23%</div>
-            <div class="terrain-badge badge-c">89%</div>
-          </div>
-        </article>
-      </div>
-
-      <aside class="dashboard__side">
-        <article class="mini-panel">
-          <div class="mini-panel__head">
+      <!-- Mini panels row -->
+      <div class="mini-row">
+        <article class="mini-panel" aria-label="Probability panel">
+          <header class="mini-panel__head">
             <p>probability</p>
-            <b>0.78</b>
-          </div>
-          <div class="bars bars--small">
-            <span style="--h: 38%"></span>
-            <span style="--h: 54%"></span>
-            <span style="--h: 72%"></span>
-            <span style="--h: 66%"></span>
-            <span style="--h: 83%"></span>
-            <span style="--h: 48%"></span>
-            <span style="--h: 62%"></span>
-            <span style="--h: 91%"></span>
+            <strong class="counter" data-target="78" data-prefix="0." aria-live="polite">0.00</strong>
+          </header>
+          <div class="bars bars--small" aria-hidden="true">
+            <span style="--h:38%"></span><span style="--h:54%"></span>
+            <span style="--h:72%"></span><span style="--h:66%"></span>
+            <span style="--h:83%"></span><span style="--h:48%"></span>
+            <span style="--h:62%"></span><span style="--h:91%"></span>
           </div>
         </article>
 
-        <article class="mini-panel">
-          <div class="mini-panel__head">
+        <article class="mini-panel" aria-label="Micro climate panel">
+          <header class="mini-panel__head">
             <p>micro climate</p>
-            <b>+12</b>
-          </div>
-          <div class="spark spark--thin">
+            <strong class="counter" data-target="12" data-prefix="+" aria-live="polite">0</strong>
+          </header>
+          <div class="spark spark--thin" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span>
             <span></span><span></span><span></span><span></span><span></span>
           </div>
         </article>
 
-        <article class="mini-panel mini-panel--radar">
-          <div class="mini-panel__head">
+        <article class="mini-panel mini-panel--radar" aria-label="Radar panel">
+          <header class="mini-panel__head">
             <p>radar</p>
-            <b>active</b>
-          </div>
-          <div class="radar">
-            <div class="radar__ring"></div>
-            <div class="radar__ring"></div>
-            <div class="radar__ring"></div>
-            <div class="radar__cross"></div>
-            <div class="radar__sweep"></div>
-            <div class="radar__dot radar__dot--a"></div>
-            <div class="radar__dot radar__dot--b"></div>
-            <div class="radar__dot radar__dot--c"></div>
+            <strong>active</strong>
+          </header>
+          <div class="radar" role="img" aria-label="Radar attivo">
+            <div class="radar__ring" aria-hidden="true"></div>
+            <div class="radar__ring" aria-hidden="true"></div>
+            <div class="radar__cross" aria-hidden="true"></div>
+            <div class="radar__sweep" aria-hidden="true"></div>
+            <div class="radar__dot radar__dot--a" aria-hidden="true"></div>
+            <div class="radar__dot radar__dot--b" aria-hidden="true"></div>
+            <div class="radar__dot radar__dot--c" aria-hidden="true"></div>
           </div>
         </article>
-      </aside>
+      </div>
+
     </section>
 
-    <section class="forecast" id="forecast">
-      <article class="forecast-card forecast-card--wide">
-        <div class="forecast-card__head">
+    <!-- ── FORECAST ──────────────────────────── -->
+    <section class="tab-panel" id="panel-forecast" role="tabpanel" aria-labelledby="tab-forecast" tabindex="0" hidden>
+
+      <div class="section-header">
+        <h2>Forecast</h2>
+        <span class="section-tag">24h window</span>
+      </div>
+
+      <article class="forecast-card forecast-card--wide" aria-label="Trend line 24h">
+        <header class="forecast-card__head">
           <p>previsioni 24h</p>
-          <b>trend line</b>
-        </div>
-        <div class="line-chart">
-          <span class="line-chart__path line-chart__path--a"></span>
-          <span class="line-chart__path line-chart__path--b"></span>
-          <span class="line-chart__path line-chart__path--c"></span>
-          <div class="line-chart__grid"></div>
-        </div>
-      </article>
-
-      <article class="forecast-card">
-        <div class="forecast-card__head">
-          <p>risk window</p>
-          <b>18:40</b>
-        </div>
-        <div class="gauge">
-          <div class="gauge__arc"></div>
-          <div class="gauge__needle"></div>
-          <div class="gauge__center"></div>
+          <strong>trend line</strong>
+        </header>
+        <div class="line-chart" role="img" aria-label="Grafico trend line">
+          <span class="line-chart__path line-chart__path--a" aria-hidden="true"></span>
+          <span class="line-chart__path line-chart__path--b" aria-hidden="true"></span>
+          <span class="line-chart__path line-chart__path--c" aria-hidden="true"></span>
+          <div class="line-chart__grid" aria-hidden="true"></div>
         </div>
       </article>
 
-      <article class="forecast-card">
-        <div class="forecast-card__head">
-          <p>density map</p>
-          <b>high</b>
-        </div>
-        <div class="matrix-grid">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-      </article>
+      <div class="forecast-row">
+        <article class="forecast-card" aria-label="Risk window panel">
+          <header class="forecast-card__head">
+            <p>risk window</p>
+            <strong id="risk-time">18:40</strong>
+          </header>
+          <div class="gauge" role="img" aria-label="Indicatore rischio">
+            <div class="gauge__arc"    aria-hidden="true"></div>
+            <div class="gauge__needle" aria-hidden="true"></div>
+            <div class="gauge__center" aria-hidden="true"></div>
+          </div>
+        </article>
+
+        <article class="forecast-card" aria-label="Density map panel">
+          <header class="forecast-card__head">
+            <p>density map</p>
+            <strong>high</strong>
+          </header>
+          <div class="matrix-grid" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+      </div>
+
     </section>
 
-    <section class="signals" id="signals">
-      <article class="signal-box">
-        <div class="signal-box__head">
-          <p>signal A</p>
-          <b>68%</b>
-        </div>
-        <div class="signal-wave signal-wave--a"></div>
-      </article>
+    <!-- ── SIGNALS ───────────────────────────── -->
+    <section class="tab-panel" id="panel-signals" role="tabpanel" aria-labelledby="tab-signals" tabindex="0" hidden>
 
-      <article class="signal-box">
-        <div class="signal-box__head">
-          <p>signal B</p>
-          <b>42%</b>
-        </div>
-        <div class="signal-wave signal-wave--b"></div>
-      </article>
+      <div class="section-header">
+        <h2>Signals</h2>
+        <span class="section-tag" id="signals-update" aria-live="polite">live</span>
+      </div>
 
-      <article class="signal-box">
-        <div class="signal-box__head">
-          <p>signal C</p>
-          <b>91%</b>
-        </div>
-        <div class="signal-wave signal-wave--c"></div>
-      </article>
+      <div class="signals-grid">
+        <article class="signal-box" aria-label="Signal A — 68 percento">
+          <header class="signal-box__head">
+            <p>signal A</p>
+            <strong class="counter" data-target="68" data-suffix="%" aria-live="polite">0%</strong>
+          </header>
+          <div class="signal-wave signal-wave--a" aria-hidden="true"></div>
+          <div class="signal-bar-track" aria-hidden="true">
+            <div class="signal-bar-fill" style="--fill: 68%"></div>
+          </div>
+        </article>
 
-      <article class="signal-box signal-box--alert">
-        <div class="signal-box__head">
-          <p>alert state</p>
-          <b>stable</b>
-        </div>
-        <div class="alert-strip">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-      </article>
+        <article class="signal-box" aria-label="Signal B — 42 percento">
+          <header class="signal-box__head">
+            <p>signal B</p>
+            <strong class="counter" data-target="42" data-suffix="%" aria-live="polite">0%</strong>
+          </header>
+          <div class="signal-wave signal-wave--b" aria-hidden="true"></div>
+          <div class="signal-bar-track" aria-hidden="true">
+            <div class="signal-bar-fill" style="--fill: 42%"></div>
+          </div>
+        </article>
+
+        <article class="signal-box" aria-label="Signal C — 91 percento">
+          <header class="signal-box__head">
+            <p>signal C</p>
+            <strong class="counter" data-target="91" data-suffix="%" aria-live="polite">0%</strong>
+          </header>
+          <div class="signal-wave signal-wave--c" aria-hidden="true"></div>
+          <div class="signal-bar-track" aria-hidden="true">
+            <div class="signal-bar-fill signal-bar-fill--warning" style="--fill: 91%"></div>
+          </div>
+        </article>
+
+        <article class="signal-box signal-box--alert" aria-label="Alert state — stable">
+          <header class="signal-box__head">
+            <p>alert state</p>
+            <strong>stable</strong>
+          </header>
+          <div class="alert-strip" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+      </div>
+
     </section>
 
-    <section class="matrix" id="matrix">
-      <article class="board board--matrix">
-        <div class="board__head">
+    <!-- ── MATRIX ────────────────────────────── -->
+    <section class="tab-panel" id="panel-matrix" role="tabpanel" aria-labelledby="tab-matrix" tabindex="0" hidden>
+
+      <div class="section-header">
+        <h2>Matrix</h2>
+        <span class="section-tag">prediction</span>
+      </div>
+
+      <article class="board board--matrix" aria-label="Prediction matrix">
+        <header class="board__head">
           <p>prediction matrix</p>
-          <div class="legend-dot"><span></span><small>live frame</small></div>
-        </div>
-
-        <div class="matrix-screen">
-          <div class="matrix-screen__axis matrix-screen__axis--x"></div>
-          <div class="matrix-screen__axis matrix-screen__axis--y"></div>
-
-          <div class="matrix-column" style="--x: 6%; --h: 28%"></div>
-          <div class="matrix-column" style="--x: 14%; --h: 46%"></div>
-          <div class="matrix-column" style="--x: 22%; --h: 38%"></div>
-          <div class="matrix-column" style="--x: 30%; --h: 74%"></div>
-          <div class="matrix-column" style="--x: 38%; --h: 52%"></div>
-          <div class="matrix-column" style="--x: 46%; --h: 82%"></div>
-          <div class="matrix-column" style="--x: 54%; --h: 61%"></div>
-          <div class="matrix-column" style="--x: 62%; --h: 43%"></div>
-          <div class="matrix-column" style="--x: 70%; --h: 69%"></div>
-          <div class="matrix-column" style="--x: 78%; --h: 58%"></div>
-          <div class="matrix-column" style="--x: 86%; --h: 32%"></div>
-
-          <div class="matrix-line matrix-line--a"></div>
-          <div class="matrix-line matrix-line--b"></div>
-          <div class="matrix-line matrix-line--c"></div>
+          <div class="legend-dot"><span aria-hidden="true"></span><small>live frame</small></div>
+        </header>
+        <div class="matrix-screen" role="img" aria-label="Grafico prediction matrix">
+          <div class="matrix-screen__axis matrix-screen__axis--x" aria-hidden="true"></div>
+          <div class="matrix-screen__axis matrix-screen__axis--y" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:6%;  --h:28%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:14%; --h:46%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:22%; --h:38%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:30%; --h:74%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:38%; --h:52%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:46%; --h:82%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:54%; --h:61%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:62%; --h:43%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:70%; --h:69%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:78%; --h:58%" aria-hidden="true"></div>
+          <div class="matrix-column" style="--x:86%; --h:32%" aria-hidden="true"></div>
+          <div class="matrix-line matrix-line--a" aria-hidden="true"></div>
+          <div class="matrix-line matrix-line--b" aria-hidden="true"></div>
+          <div class="matrix-line matrix-line--c" aria-hidden="true"></div>
         </div>
       </article>
+
+      <!-- Data table -->
+      <div class="data-table" role="table" aria-label="Dati prediction matrix">
+        <div class="data-table__row data-table__row--head" role="row">
+          <span role="columnheader">canale</span>
+          <span role="columnheader">valore</span>
+          <span role="columnheader">delta</span>
+          <span role="columnheader">stato</span>
+        </div>
+        <div class="data-table__row" role="row">
+          <span role="cell">alpha</span>
+          <span role="cell" class="mono">0.847</span>
+          <span role="cell" class="delta delta--up">+0.12</span>
+          <span role="cell"><span class="pill pill--green">attivo</span></span>
+        </div>
+        <div class="data-table__row" role="row">
+          <span role="cell">beta</span>
+          <span role="cell" class="mono">0.523</span>
+          <span role="cell" class="delta delta--down">−0.08</span>
+          <span role="cell"><span class="pill pill--yellow">vigile</span></span>
+        </div>
+        <div class="data-table__row" role="row">
+          <span role="cell">gamma</span>
+          <span role="cell" class="mono">0.912</span>
+          <span role="cell" class="delta delta--up">+0.34</span>
+          <span role="cell"><span class="pill pill--red">alert</span></span>
+        </div>
+        <div class="data-table__row" role="row">
+          <span role="cell">delta</span>
+          <span role="cell" class="mono">0.341</span>
+          <span role="cell" class="delta delta--up">+0.02</span>
+          <span role="cell"><span class="pill pill--green">attivo</span></span>
+        </div>
+      </div>
+
     </section>
+
   </main>
+
+  <!-- ==============================
+       BOTTOM NAV (mobile-first)
+  ============================== -->
+  <nav class="bottom-nav" aria-label="Navigazione principale" role="tablist">
+    <button class="bottom-nav__item active" id="tab-overview"  role="tab" aria-selected="true"  aria-controls="panel-overview"  data-panel="panel-overview">
+      <span class="nav-icon nav-icon--overview" aria-hidden="true"></span>
+      <span>Overview</span>
+    </button>
+    <button class="bottom-nav__item" id="tab-forecast" role="tab" aria-selected="false" aria-controls="panel-forecast"  data-panel="panel-forecast">
+      <span class="nav-icon nav-icon--forecast" aria-hidden="true"></span>
+      <span>Forecast</span>
+    </button>
+    <button class="bottom-nav__item" id="tab-signals"  role="tab" aria-selected="false" aria-controls="panel-signals"   data-panel="panel-signals">
+      <span class="nav-icon nav-icon--signals" aria-hidden="true"></span>
+      <span>Signals</span>
+    </button>
+    <button class="bottom-nav__item" id="tab-matrix"   role="tab" aria-selected="false" aria-controls="panel-matrix"    data-panel="panel-matrix">
+      <span class="nav-icon nav-icon--matrix" aria-hidden="true"></span>
+      <span>Matrix</span>
+    </button>
+  </nav>
+
+  <script src="script.js"></script>
 </body>
 </html>
