@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0b" />
+
+  <title>ATLANTE.EXE — v2.1</title>
+  <meta
+    name="description"
+    content="Atlante delle Contraddizioni. Ambiente dati cinematografico tra tensioni, paradossi e segnali del presente."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=EB+Garamond:wght@700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="bootScreen" class="boot-screen" aria-hidden="true">
+    <div class="boot-inner">
+      <div class="boot-topline">BOOT...</div>
+      <div class="boot-center">
+        <div class="boot-word">SISTEMA</div>
+        <div class="boot-sub">CARICAMENTO DATI...</div>
+        <div class="boot-bar-wrap">
+          <div id="bootBar" class="boot-bar"></div>
+        </div>
+        <div id="bootPercent" class="boot-percent">0%</div>
+        <div id="bootReady" class="boot-ready">SYSTEM READY.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="crt-curvature"></div>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+  <canvas id="particlesCanvas" class="particles-canvas" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <div class="brandline">
+      <span class="brand-id">[BOOT SEQUENCE]</span>
+      <span class="brand-status">[STATUS: ONLINE]</span>
+    </div>
+
+    <nav class="command-nav" aria-label="Filtri">
+      <button class="cmd-link active" data-filter="all">/all</button>
+      <button class="cmd-link" data-filter="sociale">/social</button>
+      <button class="cmd-link" data-filter="lavoro">/work</button>
+      <button class="cmd-link" data-filter="ambiente">/env</button>
+      <button class="cmd-link" data-filter="media">/media</button>
+    </nav>
+  </header>
+
+  <main class="main-shell">
+    <section class="hero">
+      <div class="hero-counter-wrap">
+        <div class="hero-counter-label">countdown</div>
+        <div id="heroCounter" class="hero-counter">12</div>
+      </div>
+
+      <div class="hero-copy">
+        <p class="hero-kicker">ATLANTE.EXE — v2.1</p>
+
+        <h1 id="heroTitle" class="hero-title glitch-target" data-text="IL SISTEMA CRESCE. TU SPARISCI DENTRO.">
+          IL SISTEMA CRESCE. TU SPARISCI DENTRO.
+        </h1>
+
+        <div class="hero-terminal">
+          <p id="heroLine1" class="hero-line"></p>
+          <p id="heroLine2" class="hero-line"></p>
+          <p id="heroLine3" class="hero-line"></p>
+          <p id="heroLine4" class="hero-line highlight"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="intro-strip">
+      <article class="intro-node">
+        <span class="intro-label">Premessa</span>
+        <p>Le città avanzano mentre collassano. I dati lo provano ma la vista ti inganna.</p>
+      </article>
+
+      <article class="intro-node">
+        <span class="intro-label">Metodo</span>
+        <p>Ogni scheda è un asse. Un grafico che non mente. Una tensione che non si risolve.</p>
+      </article>
+
+      <article class="intro-node">
+        <span class="intro-label">Uso</span>
+        <p>Clicca. Guarda il futuro compilarsi davanti. Decidi se ti interessa.</p>
+      </article>
+    </section>
+
+    <section class="grid-head">
+      <div>
+        <p class="grid-kicker">contraddizioni rilevate</p>
+        <h2>Archivio operativo</h2>
+      </div>
+
+      <div class="grid-meta">
+        <span id="gridCount">06</span>
+        <span>nodi</span>
+      </div>
+    </section>
+
+    <section id="cardsGrid" class="cards-grid" aria-live="polite"></section>
+  </main>
+
+  <aside id="detailPanel" class="detail-panel" aria-hidden="true">
+    <div id="detailOverlay" class="detail-overlay"></div>
+
+    <div class="detail-shell" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <button id="closeDetailBtn" class="detail-close" aria-label="Chiudi">×</button>
+
+      <div class="detail-header">
+        <p id="detailCategory" class="detail-category"></p>
+        <h3 id="detailTitle" class="detail-title glitch-target" data-text=""></h3>
+        <p id="detailSubtitle" class="detail-subtitle"></p>
+      </div>
+
+      <div class="detail-tags">
+        <div class="detail-code">
+          <span id="detailCodeA"></span>
+          <span class="sep">/</span>
+          <span id="detailCodeB"></span>
+        </div>
+        <div id="detailTagline" class="detail-tagline"></div>
+      </div>
+
+      <div class="detail-metrics">
+        <div class="detail-metric">
+          <span id="detailLeftLabel" class="detail-metric-label"></span>
+          <strong id="detailLeftValue" class="detail-metric-value"></strong>
+        </div>
+
+        <div class="detail-metric">
+          <span id="detailRightLabel" class="detail-metric-label"></span>
+          <strong id="detailRightValue" class="detail-metric-value"></strong>
+        </div>
+      </div>
+
+      <div class="detail-chart-wrap">
+        <canvas id="detailCanvas" width="1200" height="520"></canvas>
+      </div>
+
+      <div class="detail-copy">
+        <div class="detail-block">
+          <span class="detail-block-label">Lettura</span>
+          <p id="detailInsight"></p>
+        </div>
+
+        <div class="detail-block">
+          <span class="detail-block-label">Nota</span>
+          <p id="detailNote"></p>
+        </div>
+      </div>
+
+      <div class="detail-nav-hint">
+        <span>←</span>
+        <span>→</span>
+        <span>naviga</span>
+        <span>·</span>
+        <span>esc chiude</span>
+      </div>
+    </div>
+  </aside>
+
+  <div id="commandPalette" class="command-palette" aria-hidden="true">
+    <div class="command-box">
+      <div class="command-head">COMMAND MODE</div>
+      <div class="command-line">
+        <span class="command-slash">/</span>
+        <input id="commandInput" type="text" autocomplete="off" spellcheck="false" placeholder="all, social, work, env, media, 1-6, help" />
+      </div>
+      <div id="commandHints" class="command-hints"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
