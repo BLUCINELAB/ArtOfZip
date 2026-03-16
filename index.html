@@ -2,354 +2,189 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#050505" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Lampo d'Autore</title>
-  <meta name="description" content="Sistema di previsione visiva — segnali, rischi e densità." />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#0a0b0d" />
+  <title>Lampo d’Autore</title>
+  <meta
+    name="description"
+    content="Stazione di trasmissione geologica del presente."
+  />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <div class="ambient ambient--grain" aria-hidden="true"></div>
+    <div class="ambient ambient--vignette" aria-hidden="true"></div>
+    <div class="ambient ambient--light" id="ambientLight" aria-hidden="true"></div>
 
-  <!-- Ambient FX -->
-  <div class="fx-noise"    aria-hidden="true"></div>
-  <div class="fx-grid"     aria-hidden="true"></div>
-  <div class="fx-vignette" aria-hidden="true"></div>
-  <div class="fx-scan fx-scan-x" aria-hidden="true"></div>
-  <div class="fx-scan fx-scan-y" aria-hidden="true"></div>
-
-  <!-- ==============================
-       TOPBAR
-  ============================== -->
-  <header class="topbar" role="banner">
-    <div class="topbar__brand">
-      <div class="brand-icon" aria-hidden="true">
-        <span class="brand-icon__v"></span>
-        <span class="brand-icon__h"></span>
-        <span class="brand-icon__ring"></span>
-      </div>
-      <div class="brand-text">
-        <span class="brand-name">Lampo d'Autore</span>
-        <span class="brand-sub" id="live-clock" aria-label="Orario corrente" aria-live="off">--:--:--</span>
-      </div>
-    </div>
-
-    <div class="topbar__status" aria-label="Stato sistema">
-      <div class="status-chip status-chip--live">
-        <span class="status-dot" aria-hidden="true"></span>
-        LIVE
-      </div>
-      <div class="status-chip" id="status-index" aria-label="Forecast index">
-        IDX <strong>--</strong>
-      </div>
-    </div>
-  </header>
-
-  <!-- ==============================
-       MAIN — TAB PANELS
-  ============================== -->
-  <main class="page" id="main-page">
-
-    <!-- ── OVERVIEW ─────────────────────────── -->
-    <section class="tab-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
-
-      <div class="hero">
-        <div class="hero__eyebrow">sistema di previsione visiva</div>
-        <h1 class="hero__title">
-          Segnali,<br/>
-          <em>rischi</em><br/>
-          e densità.
-        </h1>
-        <div class="hero__row">
-          <div class="hero__chip-group" aria-label="Stato componenti">
-            <div class="chip chip--accent"><span aria-hidden="true"></span>live</div>
-            <div class="chip"><span aria-hidden="true"></span>synced</div>
-            <div class="chip"><span aria-hidden="true"></span>mobile</div>
+    <header class="topbar">
+      <div class="topbar__left">
+        <div class="brand">
+          <span class="brand__dot" aria-hidden="true"></span>
+          <div class="brand__text">
+            <span class="brand__name">Lampo d’Autore</span>
+            <span class="brand__meta">stazione di trasmissione geologica del presente</span>
           </div>
-          <article class="hero__index-card" aria-label="Forecast index">
-            <p>forecast</p>
-            <strong class="counter" data-target="84" aria-live="polite">0</strong>
-          </article>
         </div>
       </div>
 
-      <!-- Terrain board -->
-      <article class="board board--terrain" aria-label="Terrain forecast">
-        <header class="board__head">
-          <p>terrain forecast</p>
-          <div class="legend-dot"><span aria-hidden="true"></span><small>anomalia attiva</small></div>
-        </header>
-        <div class="terrain-screen" role="img" aria-label="Visualizzazione terrain forecast">
-          <div class="terrain-screen__grid" aria-hidden="true"></div>
-          <div class="terrain-layer terrain-layer--back"  aria-hidden="true"></div>
-          <div class="terrain-layer terrain-layer--mid"   aria-hidden="true"></div>
-          <div class="terrain-layer terrain-layer--front" aria-hidden="true"></div>
-          <div class="terrain-orbit orbit-a" aria-hidden="true"></div>
-          <div class="terrain-orbit orbit-b" aria-hidden="true"></div>
-          <div class="terrain-orbit orbit-c" aria-hidden="true"></div>
-          <div class="terrain-node node-a" aria-hidden="true"></div>
-          <div class="terrain-node node-b" aria-hidden="true"></div>
-          <div class="terrain-node node-c" aria-hidden="true"></div>
-          <div class="terrain-node node-d" aria-hidden="true"></div>
-          <div class="terrain-beam beam-a" aria-hidden="true"></div>
-          <div class="terrain-beam beam-b" aria-hidden="true"></div>
-          <div class="terrain-beam beam-c" aria-hidden="true"></div>
-          <div class="terrain-badge badge-a" aria-label="71 percento">71%</div>
-          <div class="terrain-badge badge-b" aria-label="23 percento">23%</div>
-          <div class="terrain-badge badge-c" aria-label="89 percento">89%</div>
+      <div class="topbar__right">
+        <div class="statusline">
+          <span class="statusline__label">stazione</span>
+          <span class="statusline__value" id="stationName">Bologna Urbana</span>
         </div>
-      </article>
-
-      <!-- Mini panels row -->
-      <div class="mini-row">
-        <article class="mini-panel" aria-label="Probability panel">
-          <header class="mini-panel__head">
-            <p>probability</p>
-            <strong class="counter" data-target="78" data-prefix="0." aria-live="polite">0.00</strong>
-          </header>
-          <div class="bars bars--small" aria-hidden="true">
-            <span style="--h:38%"></span><span style="--h:54%"></span>
-            <span style="--h:72%"></span><span style="--h:66%"></span>
-            <span style="--h:83%"></span><span style="--h:48%"></span>
-            <span style="--h:62%"></span><span style="--h:91%"></span>
-          </div>
-        </article>
-
-        <article class="mini-panel" aria-label="Micro climate panel">
-          <header class="mini-panel__head">
-            <p>micro climate</p>
-            <strong class="counter" data-target="12" data-prefix="+" aria-live="polite">0</strong>
-          </header>
-          <div class="spark spark--thin" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </article>
-
-        <article class="mini-panel mini-panel--radar" aria-label="Radar panel">
-          <header class="mini-panel__head">
-            <p>radar</p>
-            <strong>active</strong>
-          </header>
-          <div class="radar" role="img" aria-label="Radar attivo">
-            <div class="radar__ring" aria-hidden="true"></div>
-            <div class="radar__ring" aria-hidden="true"></div>
-            <div class="radar__cross" aria-hidden="true"></div>
-            <div class="radar__sweep" aria-hidden="true"></div>
-            <div class="radar__dot radar__dot--a" aria-hidden="true"></div>
-            <div class="radar__dot radar__dot--b" aria-hidden="true"></div>
-            <div class="radar__dot radar__dot--c" aria-hidden="true"></div>
-          </div>
-        </article>
-      </div>
-
-    </section>
-
-    <!-- ── FORECAST ──────────────────────────── -->
-    <section class="tab-panel" id="panel-forecast" role="tabpanel" aria-labelledby="tab-forecast" tabindex="0" hidden>
-
-      <div class="section-header">
-        <h2>Forecast</h2>
-        <span class="section-tag">24h window</span>
-      </div>
-
-      <article class="forecast-card forecast-card--wide" aria-label="Trend line 24h">
-        <header class="forecast-card__head">
-          <p>previsioni 24h</p>
-          <strong>trend line</strong>
-        </header>
-        <div class="line-chart" role="img" aria-label="Grafico trend line">
-          <span class="line-chart__path line-chart__path--a" aria-hidden="true"></span>
-          <span class="line-chart__path line-chart__path--b" aria-hidden="true"></span>
-          <span class="line-chart__path line-chart__path--c" aria-hidden="true"></span>
-          <div class="line-chart__grid" aria-hidden="true"></div>
-        </div>
-      </article>
-
-      <div class="forecast-row">
-        <article class="forecast-card" aria-label="Risk window panel">
-          <header class="forecast-card__head">
-            <p>risk window</p>
-            <strong id="risk-time">18:40</strong>
-          </header>
-          <div class="gauge" role="img" aria-label="Indicatore rischio">
-            <div class="gauge__arc"    aria-hidden="true"></div>
-            <div class="gauge__needle" aria-hidden="true"></div>
-            <div class="gauge__center" aria-hidden="true"></div>
-          </div>
-        </article>
-
-        <article class="forecast-card" aria-label="Density map panel">
-          <header class="forecast-card__head">
-            <p>density map</p>
-            <strong>high</strong>
-          </header>
-          <div class="matrix-grid" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </article>
-      </div>
-
-    </section>
-
-    <!-- ── SIGNALS ───────────────────────────── -->
-    <section class="tab-panel" id="panel-signals" role="tabpanel" aria-labelledby="tab-signals" tabindex="0" hidden>
-
-      <div class="section-header">
-        <h2>Signals</h2>
-        <span class="section-tag" id="signals-update" aria-live="polite">live</span>
-      </div>
-
-      <div class="signals-grid">
-        <article class="signal-box" aria-label="Signal A — 68 percento">
-          <header class="signal-box__head">
-            <p>signal A</p>
-            <strong class="counter" data-target="68" data-suffix="%" aria-live="polite">0%</strong>
-          </header>
-          <div class="signal-wave signal-wave--a" aria-hidden="true"></div>
-          <div class="signal-bar-track" aria-hidden="true">
-            <div class="signal-bar-fill" style="--fill: 68%"></div>
-          </div>
-        </article>
-
-        <article class="signal-box" aria-label="Signal B — 42 percento">
-          <header class="signal-box__head">
-            <p>signal B</p>
-            <strong class="counter" data-target="42" data-suffix="%" aria-live="polite">0%</strong>
-          </header>
-          <div class="signal-wave signal-wave--b" aria-hidden="true"></div>
-          <div class="signal-bar-track" aria-hidden="true">
-            <div class="signal-bar-fill" style="--fill: 42%"></div>
-          </div>
-        </article>
-
-        <article class="signal-box" aria-label="Signal C — 91 percento">
-          <header class="signal-box__head">
-            <p>signal C</p>
-            <strong class="counter" data-target="91" data-suffix="%" aria-live="polite">0%</strong>
-          </header>
-          <div class="signal-wave signal-wave--c" aria-hidden="true"></div>
-          <div class="signal-bar-track" aria-hidden="true">
-            <div class="signal-bar-fill signal-bar-fill--warning" style="--fill: 91%"></div>
-          </div>
-        </article>
-
-        <article class="signal-box signal-box--alert" aria-label="Alert state — stable">
-          <header class="signal-box__head">
-            <p>alert state</p>
-            <strong>stable</strong>
-          </header>
-          <div class="alert-strip" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </article>
-      </div>
-
-    </section>
-
-    <!-- ── MATRIX ────────────────────────────── -->
-    <section class="tab-panel" id="panel-matrix" role="tabpanel" aria-labelledby="tab-matrix" tabindex="0" hidden>
-
-      <div class="section-header">
-        <h2>Matrix</h2>
-        <span class="section-tag">prediction</span>
-      </div>
-
-      <article class="board board--matrix" aria-label="Prediction matrix">
-        <header class="board__head">
-          <p>prediction matrix</p>
-          <div class="legend-dot"><span aria-hidden="true"></span><small>live frame</small></div>
-        </header>
-        <div class="matrix-screen" role="img" aria-label="Grafico prediction matrix">
-          <div class="matrix-screen__axis matrix-screen__axis--x" aria-hidden="true"></div>
-          <div class="matrix-screen__axis matrix-screen__axis--y" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:6%;  --h:28%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:14%; --h:46%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:22%; --h:38%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:30%; --h:74%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:38%; --h:52%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:46%; --h:82%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:54%; --h:61%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:62%; --h:43%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:70%; --h:69%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:78%; --h:58%" aria-hidden="true"></div>
-          <div class="matrix-column" style="--x:86%; --h:32%" aria-hidden="true"></div>
-          <div class="matrix-line matrix-line--a" aria-hidden="true"></div>
-          <div class="matrix-line matrix-line--b" aria-hidden="true"></div>
-          <div class="matrix-line matrix-line--c" aria-hidden="true"></div>
-        </div>
-      </article>
-
-      <!-- Data table -->
-      <div class="data-table" role="table" aria-label="Dati prediction matrix">
-        <div class="data-table__row data-table__row--head" role="row">
-          <span role="columnheader">canale</span>
-          <span role="columnheader">valore</span>
-          <span role="columnheader">delta</span>
-          <span role="columnheader">stato</span>
-        </div>
-        <div class="data-table__row" role="row">
-          <span role="cell">alpha</span>
-          <span role="cell" class="mono">0.847</span>
-          <span role="cell" class="delta delta--up">+0.12</span>
-          <span role="cell"><span class="pill pill--green">attivo</span></span>
-        </div>
-        <div class="data-table__row" role="row">
-          <span role="cell">beta</span>
-          <span role="cell" class="mono">0.523</span>
-          <span role="cell" class="delta delta--down">−0.08</span>
-          <span role="cell"><span class="pill pill--yellow">vigile</span></span>
-        </div>
-        <div class="data-table__row" role="row">
-          <span role="cell">gamma</span>
-          <span role="cell" class="mono">0.912</span>
-          <span role="cell" class="delta delta--up">+0.34</span>
-          <span role="cell"><span class="pill pill--red">alert</span></span>
-        </div>
-        <div class="data-table__row" role="row">
-          <span role="cell">delta</span>
-          <span role="cell" class="mono">0.341</span>
-          <span role="cell" class="delta delta--up">+0.02</span>
-          <span role="cell"><span class="pill pill--green">attivo</span></span>
+        <div class="statusline">
+          <span class="statusline__label">aggiornamento</span>
+          <time class="statusline__value" id="updatedAt">--:--</time>
         </div>
       </div>
+    </header>
 
-    </section>
+    <main class="scene" id="scene">
+      <section class="scene__hero">
+        <div class="scene__heading">
+          <p class="scene__eyebrow">Emilia-Romagna · area sensibile</p>
+          <h1 class="scene__state" id="stateWord">QUIETE</h1>
+          <p class="scene__note" id="stateSentence">
+            Pressione stabile, aria nitida, vento basso.
+          </p>
+        </div>
 
-  </main>
+        <div class="scene__reading">
+          <div class="reading reading--dominant">
+            <span class="reading__label">fenomeno dominante</span>
+            <span class="reading__value" id="dominantReading">Chiarezza</span>
+          </div>
 
-  <!-- ==============================
-       BOTTOM NAV (mobile-first)
-  ============================== -->
-  <nav class="bottom-nav" aria-label="Navigazione principale" role="tablist">
-    <button class="bottom-nav__item active" id="tab-overview"  role="tab" aria-selected="true"  aria-controls="panel-overview"  data-panel="panel-overview">
-      <span class="nav-icon nav-icon--overview" aria-hidden="true"></span>
-      <span>Overview</span>
-    </button>
-    <button class="bottom-nav__item" id="tab-forecast" role="tab" aria-selected="false" aria-controls="panel-forecast"  data-panel="panel-forecast">
-      <span class="nav-icon nav-icon--forecast" aria-hidden="true"></span>
-      <span>Forecast</span>
-    </button>
-    <button class="bottom-nav__item" id="tab-signals"  role="tab" aria-selected="false" aria-controls="panel-signals"   data-panel="panel-signals">
-      <span class="nav-icon nav-icon--signals" aria-hidden="true"></span>
-      <span>Signals</span>
-    </button>
-    <button class="bottom-nav__item" id="tab-matrix"   role="tab" aria-selected="false" aria-controls="panel-matrix"    data-panel="panel-matrix">
-      <span class="nav-icon nav-icon--matrix" aria-hidden="true"></span>
-      <span>Matrix</span>
-    </button>
-  </nav>
+          <div class="reading-grid">
+            <div class="reading">
+              <span class="reading__label">pressione</span>
+              <span class="reading__value" id="pressureReading">1018 hPa</span>
+            </div>
+            <div class="reading">
+              <span class="reading__label">vento</span>
+              <span class="reading__value" id="windReading">12 km/h · NE</span>
+            </div>
+            <div class="reading">
+              <span class="reading__label">aria</span>
+              <span class="reading__value" id="airReading">AQI 42</span>
+            </div>
+            <div class="reading">
+              <span class="reading__label">luce</span>
+              <span class="reading__value" id="lightReading">tramonto radente</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="terrain" aria-label="Paesaggio generato dai dati">
+        <div class="terrain__viewport" id="terrainViewport">
+          <svg
+            class="terrain__svg"
+            id="terrainSvg"
+            viewBox="0 0 1600 900"
+            preserveAspectRatio="xMidYMid slice"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="terrainStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.14)" />
+                <stop offset="50%" stop-color="rgba(255,255,255,0.6)" />
+                <stop offset="100%" stop-color="rgba(255,255,255,0.12)" />
+              </linearGradient>
+              <filter id="softGlow">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <g id="terrainLayer"></g>
+            <g id="windLayer"></g>
+            <g id="eventLayer"></g>
+          </svg>
+
+          <div class="terrain__atmosphere" id="atmosphereLayer" aria-hidden="true"></div>
+          <div class="terrain__fog" id="fogLayer" aria-hidden="true"></div>
+          <div class="terrain__legend">
+            <span>ADESSO</span>
+            <span class="terrain__legend-sep">·</span>
+            <span id="modeLabel">trasmissione viva</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="bands">
+        <article class="band band--wide" id="panelNow">
+          <div class="band__head">
+            <span class="band__kicker">ADESSO</span>
+            <span class="band__title">La trasmissione viva</span>
+          </div>
+          <p class="band__copy">
+            Il paesaggio si modella sul presente: rilievo, incisione, opacità, luce.
+          </p>
+        </article>
+
+        <article class="band" id="panelToday">
+          <div class="band__head">
+            <span class="band__kicker">OGGI</span>
+            <span class="band__title">Memoria del giorno</span>
+          </div>
+          <div class="timeline" id="todayTimeline"></div>
+        </article>
+
+        <article class="band" id="panelDeep">
+          <div class="band__head">
+            <span class="band__kicker">FONDO</span>
+            <span class="band__title">Strato lento</span>
+          </div>
+          <div class="deep-grid">
+            <div class="deep-item">
+              <span class="deep-item__label">fulmini</span>
+              <span class="deep-item__value" id="lightningReading">03 eventi</span>
+            </div>
+            <div class="deep-item">
+              <span class="deep-item__label">sismicità</span>
+              <span class="deep-item__value" id="quakeReading">M 2.1 locale</span>
+            </div>
+            <div class="deep-item">
+              <span class="deep-item__label">tendenza</span>
+              <span class="deep-item__value" id="trendReading">risalita lenta</span>
+            </div>
+            <div class="deep-item">
+              <span class="deep-item__label">aria storica</span>
+              <span class="deep-item__value" id="memoryReading">velatura moderata</span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Modalità di trasmissione">
+      <button class="bottom-nav__item is-active" data-mode="now">
+        <span class="bottom-nav__label">ADESSO</span>
+      </button>
+      <button class="bottom-nav__item" data-mode="today">
+        <span class="bottom-nav__label">OGGI</span>
+      </button>
+      <button class="bottom-nav__item" data-mode="deep">
+        <span class="bottom-nav__label">FONDO</span>
+      </button>
+    </nav>
+  </div>
 
   <script src="script.js"></script>
 </body>
