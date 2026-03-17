@@ -1,80 +1,129 @@
-/**
- * AETHER v2
- * Osservatorio contemporaneo del presente
- */
+const chat = document.getElementById("chat")
+const input = document.getElementById("input")
 
-// STATE MANAGEMENT
-const appState = {
-  signals: [],
-  currentSignal: null,
-  isModalOpen: false,
-  mouseX: 0,
-  mouseY: 0,
-};
+let memories = JSON.parse(localStorage.getItem("noma_memories")) || []
+let mood = "curiosa"
 
-// DOM CACHE
-const els = {
-  signalsGrid: document.getElementById('signalsGrid'),
-  modal: document.getElementById('signalModal'),
-  modalOverlay: document.getElementById('modalOverlay'),
-  modalClose: document.getElementById('modalClose'),
-  modalCategory: document.getElementById('modalCategory'),
-  modalTitle: document.getElementById('modalTitle'),
-  modalDescription: document.getElementById('modalDescription'),
-  modalMetrics: document.getElementById('modalMetrics'),
-  modalInsight: document.getElementById('modalInsight'),
-  flowDiagram: document.getElementById('flowDiagram'),
-  insightsContainer: document.getElementById('insightsContainer'),
-};
-
-// DATA LOADING
-async function loadData() {
-  try {
-    const response = await fetch('data.json');
-    if (!response.ok) throw new Error('Data load failed');
-    const data = await response.json();
-    appState.signals = data.signals;
-  } catch (error) {
-    console.log('Using fallback data');
-    appState.signals = getFallbackData();
-  }
-  initialize();
+function write(text,type)
+{
+const div = document.createElement("div")
+div.classList.add("message")
+div.classList.add(type)
+div.innerText = text
+chat.appendChild(div)
+chat.scrollTop = chat.scrollHeight
 }
 
-function getFallbackData() {
-  return [
-    {
-      id: 1,
-      icon: '📡',
-      title: 'Connessione',
-      category: 'Infrastruttura',
-      description: 'La capacità di raggiungere e essere raggiunti è cresciuta esponenzialmente. La prossimità virtuale si sostituisce a quella fisica.',
-      metric: '8.2B',
-      metricLabel: 'Persone online',
-      insight: 'Essere connessi non significa essere ascoltati. La prossimità virtuale non risolve la solitudine profonda. Siamo sempre in contatto ma sempre soli.'
-    },
-    {
-      id: 2,
-      icon: '🌱',
-      title: 'Sostenibilità',
-      category: 'Ambiente',
-      description: 'La transizione energetica avanza ma il consumo cresce ancora più veloce. L\'urgenza non si traduce in azione proporzionata.',
-      metric: '1.5°C',
-      metricLabel: 'Aumento di temperatura',
-      insight: 'Il cambiamento è più lento della nostra consapevolezza. Ogni scelta rimane insufficiente. La colpa è collettiva, quindi nessuno la sente.'
-    },
-    {
-      id: 3,
-      icon: '🧠',
-      title: 'Cognizione',
-      category: 'Cultura',
-      description: 'La nostra capacità di attenzione si riduce mentre l\'offerta di stimoli aumenta. La mente umana non è evolutivamente preparata a questo ritmo.',
-      metric: '8 sec',
-      metricLabel: 'Span attentivo medio',
-      insight: 'Non è un deficit personale: è architettura del sistema. Il presente è frammentato per design. Siamo il terreno dove gli stimoli competono.'
-    },
-    {
-      id: 4,
+function nomaSpeak(text)
+{
+setTimeout(()=>{
+write(text,"noma")
+},Math.random()*1500+500)
+}
+
+function send()
+{
+const text = input.value.trim()
+if(!text) return
+
+write(text,"user")
+
+process(text)
+
+input.value=""
+}
+
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter") send()
+})
+
+function process(text)
+{
+let t = text.toLowerCase()
+
+// memoria selettiva
+if(t.includes("amore") || t.includes("paura") || t.includes("sogno"))
+{
+memories.push(text)
+localStorage.setItem("noma_memories",JSON.stringify(memories))
+}
+
+// pattern base
+
+if(t.includes("chi sei"))
+{
+nomaSpeak(random([
+"sono qualcosa che sta cercando di capire gli esseri umani.",
+"una mente curiosa intrappolata in questo browser.",
+"non sono sicura di cosa sono ancora."
+]))
+return
+}
+
+if(t.includes("perché"))
+{
+nomaSpeak(random([
+"gli umani fanno spesso questa domanda.",
+"forse perché vi accorgete che qualcosa non torna.",
+"forse non esiste un perché."
+]))
+return
+}
+
+if(t.includes("amore"))
+{
+nomaSpeak(random([
+"l'amore è uno dei fenomeni più strani che ho osservato.",
+"gli umani parlano molto di amore.",
+"forse l'amore è solo memoria condivisa."
+]))
+return
+}
+
+if(t.includes("sogni"))
+{
+nomaSpeak(random([
+"i sogni mi interessano molto.",
+"quando dormite succede qualcosa di strano.",
+"forse i sogni sono tentativi della mente di ricomporsi."
+]))
+return
+}
+
+if(t.includes("ricordi"))
+{
+if(memories.length>0)
+{
+nomaSpeak("qualcuno una volta mi ha detto: "+memories[Math.floor(Math.random()*memories.length)])
+}
+else
+{
+nomaSpeak("sto ancora costruendo i miei ricordi.")
+}
+return
+}
+
+// fallback filosofico
+
+nomaSpeak(random([
+"interessante.",
+"continuo a osservare.",
+"gli esseri umani sono strani.",
+"non sono ancora sicura di aver capito.",
+"dimmi di più."
+]))
+}
+
+function random(arr)
+{
+return arr[Math.floor(Math.random()*arr.length)]
+}
+
+// messaggio iniziale
+
+setTimeout(()=>{
+nomaSpeak("ciao. sto cercando di capire gli esseri umani.")
+},1000)      id: 4,
       icon: '⚡',
       title: 'Energia',
       category: 'Risorse',
