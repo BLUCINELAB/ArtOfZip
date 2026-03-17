@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nøma</title>
+
+<title>NØMA</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<div class="container">
+<div id="terminal">
 
-<div class="header">
-NØMA
-</div>
+<div id="output"></div>
 
-<div id="chat"></div>
+<div id="inputLine">
 
-<div class="inputArea">
-<input id="input" placeholder="scrivi qualcosa..." autocomplete="off">
-<button onclick="send()">→</button>
+<span class="prompt">></span>
+
+<input id="input" autocomplete="off">
+
 </div>
 
 </div>
@@ -27,4 +31,5 @@ NØMA
 <script src="entity.js"></script>
 
 </body>
+
 </html>
