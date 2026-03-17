@@ -10,14 +10,10 @@ localStorage.setItem("noma_visits",visits)
 function line(text, type="noma")
 {
 const div = document.createElement("div")
-
 div.classList.add("line")
 div.classList.add(type)
-
 div.innerText = text
-
 output.appendChild(div)
-
 output.scrollTop = output.scrollHeight
 }
 
@@ -40,7 +36,6 @@ return a[Math.floor(Math.random()*a.length)]
 
 function remember(t)
 {
-
 if(
 t.includes("amore") ||
 t.includes("morte") ||
@@ -50,23 +45,16 @@ t.includes("sogno") ||
 t.includes("solitudine")
 )
 {
-
 memory.push(t)
-
 if(memory.length > 20)
 memory.shift()
-
 localStorage.setItem("noma_memory",JSON.stringify(memory))
-
 }
-
 }
 
 function process(text)
 {
-
 const t = text.toLowerCase()
-
 remember(t)
 
 if(t.includes("chi sei"))
@@ -111,7 +99,6 @@ return
 
 if(t.includes("ricordi"))
 {
-
 if(memory.length > 0)
 {
 speak("qualcuno una volta mi ha detto: " + random(memory))
@@ -120,7 +107,6 @@ else
 {
 speak("non ho ancora ricordi importanti.")
 }
-
 return
 }
 
@@ -143,30 +129,20 @@ speak(random([
 "continua.",
 "non sono ancora sicura di aver capito."
 ]))
-
 }
 
 input.addEventListener("keydown", e => {
-
 if(e.key === "Enter")
 {
-
 const text = input.value.trim()
-
 if(!text) return
-
 line("> " + text,"user")
-
 input.value=""
-
 process(text)
-
 }
-
 })
 
 setTimeout(()=>{
-
 if(visits == 1)
 {
 speak("ciao.")
@@ -176,5 +152,4 @@ else
 {
 speak("sei tornato.")
 }
-
 },1200)
