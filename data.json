@@ -1,0 +1,94 @@
+{
+  "signals": [
+    {
+      "id": 1,
+      "icon": "📡",
+      "title": "Connessione",
+      "category": "Infrastruttura",
+      "description": "La capacità di raggiungere e essere raggiunti è cresciuta esponenzialmente. La prossimità virtuale si sostituisce a quella fisica, ma non la replica.",
+      "metric": "8.2B",
+      "metricLabel": "Persone online",
+      "insight": "Essere connessi non significa essere ascoltati. La prossimità virtuale non risolve la solitudine profonda. Siamo sempre in contatto ma sempre soli."
+    },
+    {
+      "id": 2,
+      "icon": "🌱",
+      "title": "Sostenibilità",
+      "category": "Ambiente",
+      "description": "La transizione energetica avanza parallelamente alla crescita dei consumi. L'urgenza non si traduce in azione proporzionata alla scala della crisi.",
+      "metric": "1.5°C",
+      "metricLabel": "Aumento di temperatura",
+      "insight": "Il cambiamento climatico è più veloce della nostra capacità di risposta. Ogni scelta individuale rimane insufficiente di fronte alla scala collettiva del problema."
+    },
+    {
+      "id": 3,
+      "icon": "🧠",
+      "title": "Cognizione",
+      "category": "Cultura",
+      "description": "La nostra capacità di attenzione si contrae mentre l'offerta di stimoli si espande esponenzialmente. La mente umana non è evolutivamente preparata a questo ritmo.",
+      "metric": "8 sec",
+      "metricLabel": "Span attentivo medio",
+      "insight": "Non è un deficit personale ma un'architettura del sistema. Il presente è frammentato per design. Siamo il terreno di competizione tra innumerevoli stimoli."
+    },
+    {
+      "id": 4,
+      "icon": "⚡",
+      "title": "Energia",
+      "category": "Risorse",
+      "description": "La domanda globale di energia cresce nonostante gli sforzi di efficientamento. Ogni soluzione tecnologica genera nuovi consumi invisibili.",
+      "metric": "+3.2%",
+      "metricLabel": "Crescita annuale media",
+      "insight": "Il consumo energetico nascosto è il vero costo della comodità moderna. Ogni click genera migliaia di operazioni non visibili in data center lontani."
+    },
+    {
+      "id": 5,
+      "icon": "🌍",
+      "title": "Mobilità",
+      "category": "Società",
+      "description": "Le persone si spostano più che mai, ma i tempi di viaggio aumentano nelle aree urbane. La mobilità teorica non produce contatto reale.",
+      "metric": "4.1B",
+      "metricLabel": "Automobili nel mondo",
+      "insight": "La libertà di movimento si traduce paradossalmente in immobilità collettiva. Più infrastrutture di trasporto generano più congestione per tutti."
+    },
+    {
+      "id": 6,
+      "icon": "📚",
+      "title": "Informazione",
+      "category": "Media",
+      "description": "Il volume di informazioni disponibili è cresciuto di bilioni di volte in due decenni. Ma la qualità media è diminuita esponenzialmente.",
+      "metric": "5.6B",
+      "metricLabel": "Ricerche Google al giorno",
+      "insight": "Più dati non producono consapevolezza. Producono disorientamento sofisticato. Sappiamo tutto e non capiamo niente di quello che conta."
+    },
+    {
+      "id": 7,
+      "icon": "💼",
+      "title": "Lavoro",
+      "category": "Economia",
+      "description": "L'automazione aumenta la produttività mentre trasforma la natura del lavoro umano. La crescita economica non corrisponde più al benessere generale.",
+      "metric": "47%",
+      "metricLabel": "Lavori potenzialmente automatizzabili",
+      "insight": "Il progresso tecnologico non si interroga se il lavoro rimane umano. Si chiede solo se è più efficiente. L'umanità del lavoro è diventata facoltativa."
+    },
+    {
+      "id": 8,
+      "icon": "💚",
+      "title": "Salute",
+      "category": "Benessere",
+      "description": "L'aspettativa di vita aumenta mentre la salute mentale declina in molte fasce demografiche. Viviamo più a lungo con meno certezza.",
+      "metric": "1 su 4",
+      "metricLabel": "Persone con disturbi mentali",
+      "insight": "Viviamo più a lungo ma con senso ridotto. L'equazione è rotta. La medicina estende la durata della vita ma non la sua vivibilità."
+    },
+    {
+      "id": 9,
+      "icon": "🎓",
+      "title": "Educazione",
+      "category": "Futuro",
+      "description": "L'accesso all'educazione è globale grazie a Internet, ma la qualità della formazione rimane fortemente diseguale per contesto e privilegio.",
+      "metric": "258M",
+      "metricLabel": "Bambini fuori dalla scuola",
+      "insight": "La conoscenza è democratizzata in rete ma il sapere rimane oligarchico. Internet promette accesso universale, ma il contesto determina chi impara davvero."
+    }
+  ]
+}

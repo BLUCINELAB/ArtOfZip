@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FAF8F5" />
+  <title>AETHER — Lettura del Presente</title>
+  <meta name="description" content="Osservatorio del presente. Segnali distribuiti, flussi invisibili, letture contemporanee." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HERO TESTUALE PURO -->
+  <header class="hero">
+    <div class="hero-line"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-word">Aether</span>
+      </h1>
+      <p class="hero-tagline">Una lettura del presente<br/>come luce, respiro, archivio</p>
+      <p class="hero-caption">Nove segnali contemporanei. Una rete di connessioni invisibili. Tre meditazioni sul complesso.</p>
+    </div>
+    <div class="hero-divider"></div>
+  </header>
+
+  <!-- SIGNALS: LAYOUT ASIMMETRICO -->
+  <section class="section section-signals">
+    <div class="section-header">
+      <h2>Segnali</h2>
+      <p class="section-tagline">Costellazioni di fenomeni interconnessi</p>
+    </div>
+    <div id="signalsGrid" class="signals-grid">
+      <!-- Compilato da JS -->
+    </div>
+  </section>
+
+  <!-- FLOWS: RETE INVISIBILE -->
+  <section class="section section-flows">
+    <div class="section-header">
+      <h2>Flussi</h2>
+      <p class="section-tagline">Come i segnali si propagano</p>
+    </div>
+    <div class="flows-visualization">
+      <svg id="flowDiagram" class="flow-diagram" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <filter id="softGlow">
+            <feGaussianBlur stdDeviation="1.5" />
+          </filter>
+        </defs>
+        <!-- Compilato da JS -->
+      </svg>
+    </div>
+  </section>
+
+  <!-- INSIGHTS: COMPOSIZIONE EDITORIALE -->
+  <section class="section section-insights">
+    <div class="section-header">
+      <h2>Letture</h2>
+      <p class="section-tagline">Tre meditazioni sul presente complesso</p>
+    </div>
+    <div id="insightsContainer" class="insights-layout">
+      <!-- Compilato da JS -->
+    </div>
+  </section>
+
+  <!-- MODAL RAFFINATO -->
+  <div id="signalModal" class="signal-modal" aria-hidden="true" role="dialog">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Chiudi">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M15 5L5 15M5 5l10 10"/>
+        </svg>
+      </button>
+      <div class="modal-content">
+        <p id="modalCategory" class="modal-category"></p>
+        <h3 id="modalTitle" class="modal-title"></h3>
+        <p id="modalDescription" class="modal-description"></p>
+        <div class="modal-metrics" id="modalMetrics"></div>
+        <p id="modalInsight" class="modal-insight"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER MINIMALISTA -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p class="footer-text">AETHER — Osservatorio contemporaneo</p>
+      <p class="footer-credit">Progettato come oggetto digitale raro</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
