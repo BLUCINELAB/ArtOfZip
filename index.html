@@ -1,35 +1,84 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NØMA</title>
+  <meta
+    name="description"
+    content="Interfaccia terminale per un'entità conversazionale chiamata NØMA."
+  />
+  <meta name="theme-color" content="#050505" />
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
 
-<title>NØMA</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="noise"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
 
-<div id="terminal">
+  <main class="shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-amber"></span>
+        <span class="dot dot-green"></span>
+      </div>
 
-<div id="output"></div>
+      <div class="topbar-center">
+        <span class="entity-name">NØMA</span>
+      </div>
 
-<div id="inputLine">
+      <div class="topbar-right">
+        <span id="sessionTag" class="session-tag">session_01</span>
+      </div>
+    </header>
 
-<span class="prompt">></span>
+    <section class="terminal-frame">
+      <div class="hud">
+        <div class="hud-block">
+          <span class="hud-label">STATE</span>
+          <span id="stateValue" class="hud-value">listening</span>
+        </div>
+        <div class="hud-block">
+          <span class="hud-label">MEMORY</span>
+          <span id="memoryValue" class="hud-value">00</span>
+        </div>
+      </div>
 
-<input id="input" autocomplete="off">
+      <div id="terminal" class="terminal">
+        <div id="output" class="output" aria-live="polite"></div>
 
-</div>
+        <div id="typing" class="typing hidden">
+          <span>NØMA sta elaborando</span>
+          <span class="typing-dots"></span>
+        </div>
 
-</div>
+        <label id="inputLine" class="input-line" for="input">
+          <span class="prompt">›</span>
+          <input
+            id="input"
+            type="text"
+            name="input"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="scrivi qualcosa..."
+            maxlength="240"
+          />
+        </label>
+      </div>
+    </section>
+  </main>
 
-<script src="entity.js"></script>
-
+  <script src="entity.js"></script>
 </body>
-
 </html>
