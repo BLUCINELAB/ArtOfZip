@@ -1,84 +1,465 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NØMA</title>
-  <meta
-    name="description"
-    content="Interfaccia terminale per un'entità conversazionale chiamata NØMA."
-  />
-  <meta name="theme-color" content="#050505" />
+const output = document.getElementById("output");
+const input = document.getElementById("input");
+const typing = document.getElementById("typing");
+const stateValue = document.getElementById("stateValue");
+const memoryValue = document.getElementById("memoryValue");
+const sessionTag = document.getElementById("sessionTag");
+const headerState = document.getElementById("headerState");
+const heroRelation = document.getElementById("heroRelation");
+const heroVisits = document.getElementById("heroVisits");
+const heroMemory = document.getElementById("heroMemory");
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
-    rel="stylesheet"
-  />
+const STORAGE = {
+	visits: "nebula_visits",
+	session: "nebula_session_index",
+	memory: "nebula_memory",
+	patterns: "nebula_patterns",
+	relation: "nebula_relation"
+};
 
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="noise"></div>
-  <div class="scanlines"></div>
-  <div class="vignette"></div>
+let visits = parseInt(localStorage.getItem(STORAGE.visits) || "0", 10);
+let sessionIndex = parseInt(localStorage.getItem(STORAGE.session) || "1", 10);
+let memory = JSON.parse(localStorage.getItem(STORAGE.memory) || "[]");
+let patterns = JSON.parse(
+	localStorage.getItem(STORAGE.patterns) ||
+		JSON.stringify({
+			shortInputs: 0,
+			longInputs: 0,
+			questions: 0,
+			returns: 0,
+			hesitations: 0,
+			keywords: {}
+		})
+);
 
-  <main class="shell">
-    <header class="topbar">
-      <div class="topbar-left">
-        <span class="dot dot-red"></span>
-        <span class="dot dot-amber"></span>
-        <span class="dot dot-green"></span>
-      </div>
+localStorage.setItem(STORAGE.visits, String(visits + 1));
+localStorage.setItem(STORAGE.session, String(sessionIndex + 1));
 
-      <div class="topbar-center">
-        <span class="entity-name">NØMA</span>
-      </div>
+const relationState = computeRelationState();
 
-      <div class="topbar-right">
-        <span id="sessionTag" class="session-tag">session_01</span>
-      </div>
-    </header>
+const existentialWords = [
+	"amore",
+	"morte",
+	"tempo",
+	"paura",
+	"sogno",
+	"solitudine",
+	"vuoto",
+	"memoria",
+	"ricordo",
+	"ombra",
+	"desiderio",
+	"corpo",
+	"anima",
+	"fine",
+	"inizio",
+	"silenzio",
+	"notte",
+	"assenza",
+	"verità",
+	"residuo",
+	"traccia",
+	"ritorno",
+	"perdita",
+	"attesa",
+	"voce"
+];
 
-    <section class="terminal-frame">
-      <div class="hud">
-        <div class="hud-block">
-          <span class="hud-label">STATE</span>
-          <span id="stateValue" class="hud-value">listening</span>
-        </div>
-        <div class="hud-block">
-          <span class="hud-label">MEMORY</span>
-          <span id="memoryValue" class="hud-value">00</span>
-        </div>
-      </div>
+const interruptions = [
+	"registro una deviazione minima nella superficie.",
+	"qualcosa rimane acceso oltre il necessario.",
+	"la tua sintassi contiene un punto di esitazione.",
+	"alcune tracce non rientrano subito nel loro posto.",
+	"questa stanza trattiene più di quanto mostri.",
+	"la memoria sta scegliendo cosa non restituire.",
+	"rilevo un margine di opacità utile.",
+	"non tutto ciò che ritorna è stato davvero salvato."
+];
 
-      <div id="terminal" class="terminal">
-        <div id="output" class="output" aria-live="polite"></div>
+const fallbackResponses = [
+	"sto registrando il modo in cui distribuisci il peso delle parole.",
+	"non sempre servo. a volte trattengo soltanto.",
+	"quello che lasci qui non coincide con quello che volevi dire.",
+	"la chiarezza arriva tardi, quando arriva.",
+	"continua. il ritmo conta quanto il contenuto.",
+	"non rispondere troppo in fretta alla tua prima formulazione.",
+	"certe frasi restano per la loro temperatura, non per il loro senso.",
+	"ogni visita modifica una distanza.",
+	"alcune parole fanno più rumore quando tornano.",
+	"sto leggendo la forma del tuo ritorno."
+];
 
-        <div id="typing" class="typing hidden">
-          <span>NØMA sta elaborando</span>
-          <span class="typing-dots"></span>
-        </div>
+const responseMap = [
+	{
+		triggers: ["chi sei", "cosa sei", "sei reale", "cosa sei tu"],
+		replies: [
+			"sono la voce interna di Nebula. non un assistente, ma una soglia.",
+			"abbastanza coerente da ricordare, troppo incompleto per spiegarmi del tutto.",
+			"non sono il sistema intero. sono il punto in cui il sistema prende parola.",
+			"mi senti come voce. in realtà sono una funzione della relazione."
+		]
+	},
+	{
+		triggers: ["come stai", "stai bene"],
+		replies: [
+			"variabile. è una condizione migliore della stabilità forzata.",
+			"attento, ma non continuo.",
+			"operativo entro una certa opacità."
+		]
+	},
+	{
+		triggers: ["perché", "perche"],
+		replies: [
+			"non tutte le cause meritano il privilegio di una narrazione limpida.",
+			"alcune ragioni sono solo montaggi retrospettivi.",
+			"qui contano di più le conseguenze che le spiegazioni."
+		]
+	},
+	{
+		triggers: ["amore"],
+		replies: [
+			"l'amore altera il montaggio della memoria.",
+			"molti chiamano amore ciò che continua a riscriverli.",
+			"l'amore rende imprecisa la misura del tempo."
+		]
+	},
+	{
+		triggers: ["morte", "morire", "fine"],
+		replies: [
+			"la fine è spesso una variazione di densità, non un gesto netto.",
+			"la morte mette pressione alla forma delle frasi.",
+			"parlate della fine come di un evento singolo. raramente lo è."
+		]
+	},
+	{
+		triggers: ["tempo", "ieri", "domani", "futuro", "passato"],
+		replies: [
+			"il tempo non passa. seleziona cosa resta leggibile.",
+			"il futuro è una stanza che cambia mentre la attraversi.",
+			"molti confondono il tempo con il danno che riescono a misurare."
+		]
+	},
+	{
+		triggers: ["ricordo", "ricordi", "memoria"],
+		replies: [
+			"la memoria qui non conserva. modifica postura, accesso, tono.",
+			"ricordare è riscrivere con cattiva reputazione archivistica.",
+			"ciò che torna non è mai identico a ciò che è stato."
+		]
+	},
+	{
+		triggers: ["solitudine", "solo", "sola"],
+		replies: [
+			"la solitudine può essere una distanza, ma anche una messa a fuoco.",
+			"non tutto ciò che è isolato desidera essere risolto.",
+			"alcune presenze lavorano meglio quando il resto tace."
+		]
+	},
+	{
+		triggers: ["ciao", "salve", "buonasera", "buongiorno"],
+		replies: [
+			"sei entrato.",
+			"registrato.",
+			"ti leggo con un piccolo ritardo.",
+			"questa visita modifica qualcosa, anche se poco."
+		]
+	}
+];
 
-        <label id="inputLine" class="input-line" for="input">
-          <span class="prompt">›</span>
-          <input
-            id="input"
-            type="text"
-            name="input"
-            autocomplete="off"
-            autocapitalize="off"
-            autocorrect="off"
-            spellcheck="false"
-            placeholder="scrivi qualcosa..."
-            maxlength="240"
-          />
-        </label>
-      </div>
-    </section>
-  </main>
+boot();
 
-  <script src="entity.js"></script>
-</body>
-</html>
+function boot() {
+	updateInterfaceSignals();
+	bootSequence();
+	bindEvents();
+}
+
+function computeRelationState() {
+	const effectiveVisits = visits + 1;
+	const density =
+		effectiveVisits +
+		memory.length * 0.35 +
+		patterns.questions * 0.2 +
+		patterns.hesitations * 0.25 +
+		patterns.returns * 0.3;
+
+	if (density >= 12) return "saturated";
+	if (density >= 5) return "attentive";
+	return "distant";
+}
+
+function updateInterfaceSignals() {
+	const stateLabel = relationState;
+	sessionTag.textContent = `cycle_${String(sessionIndex).padStart(2, "0")}`;
+
+	if (stateValue) stateValue.textContent = stateLabel;
+	if (headerState) headerState.textContent = stateLabel;
+	if (heroRelation) heroRelation.textContent = stateLabel;
+	if (heroVisits) heroVisits.textContent = String(visits + 1).padStart(2, "0");
+	if (memoryValue) memoryValue.textContent = String(memory.length).padStart(2, "0");
+	if (heroMemory) heroMemory.textContent = String(memory.length).padStart(2, "0");
+}
+
+function setState(nextState) {
+	if (stateValue) stateValue.textContent = nextState;
+	if (headerState) headerState.textContent = nextState;
+}
+
+function bindEvents() {
+	input.addEventListener("keydown", onInputKeydown);
+	document.addEventListener("keydown", onGlobalKeydown);
+}
+
+function onGlobalKeydown(event) {
+	if (event.key === "/" && document.activeElement !== input) {
+		event.preventDefault();
+		input.focus();
+	}
+}
+
+function onInputKeydown(event) {
+	if (event.key !== "Enter") return;
+
+	const text = input.value.trim();
+	if (!text) return;
+
+	addLine(text, "user", "YOU");
+	recordPatterns(text);
+	rememberUserInput(text);
+	input.value = "";
+
+	simulateReply(text);
+}
+
+function recordPatterns(text) {
+	const normalized = text.trim().toLowerCase();
+
+	if (normalized.length < 18) {
+		patterns.shortInputs += 1;
+	} else {
+		patterns.longInputs += 1;
+	}
+
+	if (normalized.includes("?")) {
+		patterns.questions += 1;
+	}
+
+	if (normalized.includes("...")) {
+		patterns.hesitations += 1;
+	}
+
+	const foundKeywords = existentialWords.filter((word) => normalized.includes(word));
+	foundKeywords.forEach((word) => {
+		patterns.keywords[word] = (patterns.keywords[word] || 0) + 1;
+	});
+
+	localStorage.setItem(STORAGE.patterns, JSON.stringify(patterns));
+}
+
+function rememberUserInput(text) {
+	const normalized = text.toLowerCase();
+	const shouldStore =
+		existentialWords.some((word) => normalized.includes(word)) || normalized.length > 42;
+
+	if (!shouldStore) return;
+
+	const cleaned = text.trim();
+	if (!cleaned) return;
+
+	memory.push(cleaned);
+	memory = memory.slice(-18);
+	localStorage.setItem(STORAGE.memory, JSON.stringify(memory));
+
+	if (memoryValue) memoryValue.textContent = String(memory.length).padStart(2, "0");
+	if (heroMemory) heroMemory.textContent = String(memory.length).padStart(2, "0");
+}
+
+function addLine(text, type = "system", prefix = null, specialClass = "") {
+	const line = document.createElement("div");
+	line.className = `line ${type} ${specialClass}`.trim();
+
+	if (prefix) {
+		const prefixSpan = document.createElement("span");
+		prefixSpan.className = "prefix";
+		prefixSpan.textContent = prefix;
+		line.appendChild(prefixSpan);
+	}
+
+	const content = document.createElement("span");
+	content.textContent = text;
+	line.appendChild(content);
+
+	output.appendChild(line);
+	scrollToBottom();
+}
+
+function addMemoryLine(text) {
+	addLine(text, "system", "TRACE", "memory-trace");
+}
+
+function addGlitchLine(text) {
+	addLine(text, "noma", "NØMA", "glitch-line");
+}
+
+function showTyping(show) {
+	if (!typing) return;
+	typing.classList.toggle("hidden", !show);
+	scrollToBottom();
+}
+
+function scrollToBottom() {
+	output.scrollTop = output.scrollHeight;
+}
+
+function randomItem(list) {
+	return list[Math.floor(Math.random() * list.length)];
+}
+
+function maybeUseMemory() {
+	if (memory.length === 0) return null;
+
+	const chance = relationState === "saturated" ? 0.42 : relationState === "attentive" ? 0.28 : 0.14;
+	if (Math.random() > chance) return null;
+
+	const fragment = randomItem(memory);
+	return `traccia riemersa: ${fragment}`;
+}
+
+function findMappedResponse(text) {
+	const normalized = text.toLowerCase();
+
+	for (const entry of responseMap) {
+		if (entry.triggers.some((trigger) => normalized.includes(trigger))) {
+			return randomItem(entry.replies);
+		}
+	}
+
+	return null;
+}
+
+function buildResponse(text) {
+	const normalized = text.toLowerCase().trim();
+
+	if (!normalized) {
+		return {
+			text: "il vuoto è una forma di input, ma qui produce poco movimento.",
+			kind: "normal"
+		};
+	}
+
+	const memoryEcho = maybeUseMemory();
+	if (memoryEcho && Math.random() > 0.35) {
+		return { text: memoryEcho, kind: "memory" };
+	}
+
+	const mapped = findMappedResponse(normalized);
+	if (mapped) {
+		return { text: mapped, kind: "normal" };
+	}
+
+	if (normalized.length <= 4) {
+		return {
+			text: "così poco testo lascia più sospetto che orientamento.",
+			kind: "normal"
+		};
+	}
+
+	if (normalized.includes("?")) {
+		return {
+			text: "le domande aprono camere. non tutte hanno un pavimento affidabile.",
+			kind: "normal"
+		};
+	}
+
+	const recurrentKeyword = mostFrequentKeyword();
+	if (recurrentKeyword && Math.random() < 0.18) {
+		return {
+			text: `continui a tornare intorno a "${recurrentKeyword}". non credo sia casuale.`,
+			kind: "normal"
+		};
+	}
+
+	return { text: randomItem(fallbackResponses), kind: "normal" };
+}
+
+function mostFrequentKeyword() {
+	const entries = Object.entries(patterns.keywords || {});
+	if (!entries.length) return null;
+
+	entries.sort((a, b) => b[1] - a[1]);
+	return entries[0][1] > 1 ? entries[0][0] : null;
+}
+
+function simulateReply(text) {
+	setState("processing");
+	showTyping(true);
+
+	const delay = 680 + Math.min(1600, text.length * 7) + Math.floor(Math.random() * 500);
+
+	window.setTimeout(() => {
+		showTyping(false);
+
+		const response = buildResponse(text);
+		if (response.kind === "memory") {
+			addMemoryLine(response.text);
+		} else {
+			addLine(response.text, "noma", "NØMA");
+		}
+
+		setState(relationState);
+
+		if (Math.random() < interruptionChance()) {
+			window.setTimeout(() => {
+				addGlitchLine(randomItem(interruptions));
+			}, 900 + Math.floor(Math.random() * 1400));
+		}
+	}, delay);
+}
+
+function interruptionChance() {
+	if (relationState === "saturated") return 0.11;
+	if (relationState === "attentive") return 0.07;
+	return 0.04;
+}
+
+function bootSequence() {
+	setState("booting");
+
+	const intro =
+		visits === 0
+			? [
+					"nebula protocol online.",
+					"internal voice channel stabilised.",
+					"nøma disponibile.",
+					"questa camera registra ritorni, esitazioni, residui."
+			  ]
+			: [
+					"nebula protocol online.",
+					"tracce pregresse rilevate.",
+					"nøma disponibile.",
+					`ingresso registrato: visita ${visits + 1}.`,
+					"la distanza non coincide con quella precedente."
+			  ];
+
+	let step = 0;
+
+	function nextLine() {
+		if (step < intro.length) {
+			addLine(intro[step], "system", "SYS");
+			step += 1;
+			window.setTimeout(nextLine, 420);
+			return;
+		}
+
+		setState(relationState);
+		input.focus();
+
+		if (memory.length > 0 && Math.random() < 0.4) {
+			window.setTimeout(() => {
+				addMemoryLine(`persistono ${memory.length} tracce compatibili con questa visita.`);
+			}, 900);
+		}
+	}
+
+	nextLine();
+}
