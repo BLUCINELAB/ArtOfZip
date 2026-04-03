@@ -1,70 +1,96 @@
 (() => {
   const data = window.SpecimenContent;
 
-  if (!data || !Array.isArray(data.modes) || !Array.isArray(data.entries)) {
-    console.warn("SpecimenContent not available.");
+  if (!data || !Array.isArray(data.modes) || !Array.isArray(data.fragments)) {
+    console.warn("SpecimenContent missing or invalid.");
     return;
   }
 
   const svgNS = "http://www.w3.org/2000/svg";
+  const TAU = Math.PI * 2;
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const entryMap = new Map(data.fragments.map((fragment) => [fragment.id, fragment]));
+  const startingModeIndex = data.modes.findIndex((mode) => mode.id === document.body.dataset.mode);
 
   const $ = (selector, root = document) => root.querySelector(selector);
 
   const dom = {
     body: document.body,
+    prelude: $("#sitePrelude"),
+    preludeEyebrow: $("#preludeEyebrow"),
+    preludeTitle: $("#preludeTitle"),
+    preludeCopy: $("#preludeCopy"),
+    enterFieldButton: $("#enterFieldButton"),
     cursorHalo: $("#cursorHalo"),
-    fieldLabel: $("#fieldLabel"),
+
+    mastheadField: $("#mastheadField"),
     cycleModeButton: $("#cycleModeButton"),
     cycleModeLabel: $("#cycleModeLabel"),
+
     heroKicker: $("#heroKicker"),
     heroTitle: $("#heroTitle"),
     heroDescription: $("#heroDescription"),
     modeStatement: $("#modeStatement"),
     modeTabs: $("#modeTabs"),
-    workspaceMeta: $("#workspaceMeta"),
-    boardState: $("#boardState"),
-    boardYear: $("#boardYear"),
-    axisLabelX: $("#axisLabelX"),
-    axisLabelY: $("#axisLabelY"),
+    ritualList: $("#ritualList"),
+
+    metaRow: $("#metaRow"),
+    fieldState: $("#fieldState"),
+    fieldYear: $("#fieldYear"),
+    axisX: $("#axisX"),
+    axisY: $("#axisY"),
+    fieldBoard: $("#fieldBoard"),
     fieldSvg: $("#fieldSvg"),
-    boardView: $("#boardView"),
     fieldTooltip: $("#fieldTooltip"),
+    fieldCaption: $("#fieldCaption"),
+
     gridButton: $("#gridButton"),
     labelsButton: $("#labelsButton"),
     motionButton: $("#motionButton"),
-    reshuffleButton: $("#reshuffleButton"),
-    archiveGrid: $("#archiveGrid"),
-    archiveNote: $("#archiveNote"),
-    systemNote: $("#systemNote"),
-    metricsList: $("#metricsList"),
-    coordsList: $("#coordsList"),
-    footerRow: $("#footerRow"),
+    constellationButton: $("#constellationButton"),
+    recomposeButton: $("#recomposeButton"),
+
     inspectorStatus: $("#inspectorStatus"),
     inspectorCode: $("#inspectorCode"),
-    inspectorEntryTitle: $("#inspectorEntryTitle"),
+    inspectorHeading: $("#inspectorHeading"),
     inspectorSummary: $("#inspectorSummary"),
-    inspectorMeta: $("#inspectorMeta"),
-    inspectorRelations: $("#inspectorRelations"),
-    inspectorNote: $("#inspectorNote")
+    inspectorGrid: $("#inspectorGrid"),
+    inspectorReading: $("#inspectorReading"),
+    inspectorConnections: $("#inspectorConnections"),
+    manifestLine: $("#manifestLine"),
+
+    statementText: $("#statementText"),
+    metricsList: $("#metricsList"),
+    coordsList: $("#coordsList"),
+
+    archiveNote: $("#archiveNote"),
+    archiveGrid: $("#archiveGrid"),
+
+    codaTitle: $("#codaTitle"),
+    codaText: $("#codaText"),
+    codaRow: $("#codaRow"),
+
+    footerRow: $("#footerRow")
   };
 
   const state = {
-    modeIndex: 0,
-    selectedId: data.entries[0]?.id || null,
+    modeIndex: startingModeIndex >= 0 ? startingModeIndex : 0,
+    selectedId: data.fragments[0]?.id ?? null,
+    hoveredId: null,
     seedOffset: 0,
     showGrid: true,
     showLabels: true,
     showMotion: !prefersReducedMotion.matches,
+    showConstellation: true,
     reducedMotion: prefersReducedMotion.matches,
     scene: null,
     rafId: null,
-    hoverId: null
+    revealObserver: null,
+    introDismissed: false
   };
 
-  const entryMap = new Map(data.entries.map((entry) => [entry.id, entry]));
-
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const mean = (values) => (values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0);
 
   function setText(element, value) {
     if (element) element.textContent = value;
@@ -74,246 +100,373 @@
     if (element) element.innerHTML = value;
   }
 
+  function currentMode() {
+    return data.modes[state.modeIndex] || data.modes[0];
+  }
+
+  function currentFragment() {
+    return entryMap.get(state.selectedId) || data.fragments[0];
+  }
+
+  function metricValue(fragment, key) {
+    const value = fragment?.metrics?.[key];
+    return typeof value === "number" ? value : 0;
+  }
+
+  function formatMetric(value) {
+    return typeof value === "number" ? value.toFixed(2) : String(value);
+  }
+
   function seededRandom(seed) {
     let current = seed % 2147483647;
     if (current <= 0) current += 2147483646;
     return () => (current = (current * 16807) % 2147483647) / 2147483647;
   }
 
-  function entryValue(entry, key) {
-    return entry.metrics[key] ?? 0;
+  function chip(text) {
+    return `<span class="meta-chip">${text}</span>`;
   }
 
-  function currentMode() {
-    return data.modes[state.modeIndex];
-  }
-
-  function currentEntry() {
-    return entryMap.get(state.selectedId) || data.entries[0];
-  }
-
-  function average(values) {
-    return values.reduce((sum, value) => sum + value, 0) / values.length;
-  }
-
-  function formatMetric(value) {
-    return value.toFixed(2);
-  }
-
-  function createMetricList(items) {
+  function metricList(items) {
     return items
       .map(([key, value]) => `<span>${key}</span><strong>${value}</strong>`)
       .join("");
   }
 
-  function createMetaChip(text) {
-    return `<span class="meta-chip">${text}</span>`;
+  function relationNetwork(id) {
+    const set = new Set([id]);
+    if (!state.scene?.scene?.relations) return set;
+
+    state.scene.scene.relations.forEach((relation) => {
+      if (relation.fromId === id || relation.toId === id) {
+        set.add(relation.fromId);
+        set.add(relation.toId);
+      }
+    });
+
+    return set;
+  }
+
+  function buildPrelude() {
+    const prelude = data.site?.prelude;
+    if (!prelude) return;
+
+    setText(dom.preludeEyebrow, prelude.eyebrow);
+    setText(dom.preludeTitle, prelude.title);
+    setText(dom.preludeCopy, prelude.copy);
+    setText(dom.enterFieldButton, prelude.button);
+  }
+
+  function buildRituals() {
+    const rituals = data.site?.rituals || [];
+    setHTML(
+      dom.ritualList,
+      rituals
+        .map(
+          ([key, copy]) => `
+            <div class="ritual-item">
+              <span class="ritual-key">${key}</span>
+              <span class="ritual-copy">${copy}</span>
+            </div>
+          `
+        )
+        .join("")
+    );
+  }
+
+  function buildCoda() {
+    const coda = data.site?.coda;
+    if (!coda) return;
+
+    setText(dom.codaTitle, coda.title);
+    setText(dom.codaText, coda.copy);
+    setHTML(dom.codaRow, (coda.pills || []).map((item) => `<span class="coda-pill">${item}</span>`).join(""));
   }
 
   function buildModeTabs() {
-    dom.modeTabs.innerHTML = data.modes
-      .map(
-        (mode, index) => `
-          <button
-            class="mode-tab"
-            type="button"
-            role="tab"
-            id="mode-tab-${mode.id}"
-            aria-selected="${index === state.modeIndex ? "true" : "false"}"
-            aria-controls="workspaceTitle"
-            data-mode-index="${index}"
-          >
-            ${mode.label}
-          </button>
-        `
-      )
-      .join("");
+    setHTML(
+      dom.modeTabs,
+      data.modes
+        .map(
+          (mode, index) => `
+            <button
+              class="mode-tab"
+              type="button"
+              role="tab"
+              data-mode-index="${index}"
+              aria-selected="${index === state.modeIndex ? "true" : "false"}"
+            >
+              ${mode.label}
+            </button>
+          `
+        )
+        .join("")
+    );
 
     dom.modeTabs.querySelectorAll(".mode-tab").forEach((button) => {
-      button.addEventListener("click", () => {
-        const index = Number(button.dataset.modeIndex);
-        setMode(index);
-      });
+      button.addEventListener("click", () => setMode(Number(button.dataset.modeIndex)));
     });
   }
 
   function buildArchive() {
-    dom.archiveGrid.innerHTML = data.entries
-      .map((entry) => {
-        const active = entry.id === state.selectedId;
-        return `
-          <button
-            class="archive-card"
-            type="button"
-            data-entry-id="${entry.id}"
-            aria-pressed="${active ? "true" : "false"}"
-          >
-            <div class="archive-card-top">
-              <span>${entry.code}</span>
-              <span>${entry.type}</span>
-            </div>
-            <h3 class="archive-card-title">${entry.title}</h3>
-            <p class="archive-card-summary">${entry.summary}</p>
-            <div class="archive-divider" aria-hidden="true"></div>
-            <div class="archive-card-meta">
-              <span>${entry.year}</span>
-              <span>${entry.tags[0]}</span>
-              <span>${entry.tags[1] || entry.tags[0]}</span>
-            </div>
-          </button>
-        `;
-      })
-      .join("");
+    setHTML(
+      dom.archiveGrid,
+      data.fragments
+        .map((fragment) => {
+          const active = fragment.id === state.selectedId;
+          return `
+            <button
+              class="archive-card"
+              type="button"
+              data-fragment-id="${fragment.id}"
+              aria-pressed="${active ? "true" : "false"}"
+            >
+              <div class="archive-card-top">
+                <span>${fragment.code}</span>
+                <span>${fragment.kind}</span>
+              </div>
+
+              <h3 class="archive-card-title">${fragment.title}</h3>
+              <p class="archive-card-summary">${fragment.summary}</p>
+
+              <div class="archive-divider" aria-hidden="true"></div>
+
+              <div class="archive-card-meta">
+                <span>${fragment.year}</span>
+                <span>${fragment.tags[0]}</span>
+                <span>${fragment.tags[1] || fragment.tags[0]}</span>
+              </div>
+            </button>
+          `;
+        })
+        .join("")
+    );
 
     dom.archiveGrid.querySelectorAll(".archive-card").forEach((button) => {
-      button.addEventListener("click", () => selectEntry(button.dataset.entryId, true));
+      button.addEventListener("click", () => selectFragment(button.dataset.fragmentId, true));
     });
   }
 
-  function uniqueRelations(entry) {
-    return entry.relations
-      .map((id) => entryMap.get(id))
-      .filter(Boolean);
+  function renderModeText() {
+    const mode = currentMode();
+
+    setText(dom.mastheadField, data.site?.fieldLabel || "METHOD / DREAM / TRACE");
+    setText(dom.cycleModeLabel, mode.label);
+    setText(dom.heroKicker, mode.kicker);
+    setText(dom.heroTitle, mode.title);
+    setText(dom.heroDescription, mode.description);
+    setText(dom.modeStatement, mode.statement);
+
+    setText(dom.fieldState, `STATE: ${mode.state}`);
+    setText(dom.fieldYear, `YEAR: ${mode.year}`);
+    setText(dom.axisX, mode.axisX);
+    setText(dom.axisY, mode.axisY);
+    setText(dom.fieldCaption, mode.note);
+
+    setText(dom.statementText, mode.thesis);
+    setText(dom.archiveNote, mode.archiveNote);
+
+    setHTML(dom.footerRow, (data.site?.footer || []).map((item) => `<span>${item}</span>`).join(""));
+
+    const xValues = data.fragments.map((fragment) => metricValue(fragment, mode.map.xKey));
+    const yValues = data.fragments.map((fragment) => metricValue(fragment, mode.map.yKey));
+    const focusValues = data.fragments.map((fragment) => metricValue(fragment, mode.map.emphasisKey));
+
+    setHTML(
+      dom.metricsList,
+      metricList([
+        ["entries", String(data.fragments.length)],
+        ["x avg", formatMetric(mean(xValues))],
+        ["y avg", formatMetric(mean(yValues))],
+        ["focus", formatMetric(mean(focusValues))],
+        ...mode.metrics
+      ])
+    );
+
+    setHTML(
+      dom.metaRow,
+      [
+        chip(mode.label),
+        chip(mode.axisX),
+        chip(mode.axisY),
+        chip("interactive portrait")
+      ].join("")
+    );
+
+    dom.modeTabs.querySelectorAll(".mode-tab").forEach((tab, index) => {
+      tab.setAttribute("aria-selected", String(index === state.modeIndex));
+    });
+
+    dom.body.setAttribute("data-mode", mode.id);
   }
 
-  function computeModeMetrics(mode) {
-    const xValues = data.entries.map((entry) => entryValue(entry, mode.map.xKey));
-    const yValues = data.entries.map((entry) => entryValue(entry, mode.map.yKey));
-    const emphasisValues = data.entries.map((entry) => entryValue(entry, mode.map.emphasisKey));
+  function sceneProfile() {
+    const mode = currentMode();
 
-    return [
-      ["entries", String(data.entries.length)],
-      ["x avg", formatMetric(average(xValues))],
-      ["y avg", formatMetric(average(yValues))],
-      ["focus", formatMetric(average(emphasisValues))],
-      ...mode.metrics
-    ];
+    return {
+      layout: {
+        scatterX: mode.layout?.scatterX ?? 0.26,
+        scatterY: mode.layout?.scatterY ?? 0.24,
+        biasX: mode.layout?.biasX ?? 0,
+        biasY: mode.layout?.biasY ?? 0,
+        quantize: Boolean(mode.layout?.quantize),
+        curvature: mode.layout?.curvature ?? 0.16
+      },
+      motion: {
+        driftX: mode.motion?.driftX ?? 0.4,
+        driftY: mode.motion?.driftY ?? 0.3,
+        sway: mode.motion?.sway ?? 0.25,
+        pulse: mode.motion?.pulse ?? 0.06,
+        bandBase: mode.motion?.bandBase ?? 0.24,
+        bandRange: mode.motion?.bandRange ?? 0.04,
+        bandSpeed: mode.motion?.bandSpeed ?? 0.3,
+        svgDriftX: mode.motion?.svgDriftX ?? 0.6,
+        svgDriftY: mode.motion?.svgDriftY ?? 0.35,
+        echoOpacity: mode.motion?.echoOpacity ?? 0.08
+      }
+    };
   }
 
-  function computeNodeData(mode) {
-    const width = 1200;
-    const height = 980;
-    const marginX = 124;
-    const marginY = 96;
-    const rand = seededRandom((state.modeIndex + 1) * 1009 + (state.seedOffset + 1) * 9173);
+  function computeScene() {
+    const mode = currentMode();
+    const profile = sceneProfile();
+    const rand = seededRandom((state.modeIndex + 1) * 2843 + (state.seedOffset + 1) * 7331);
 
-    const nodes = data.entries.map((entry, index) => {
-      const xBase = entryValue(entry, mode.map.xKey);
-      const yBase = entryValue(entry, mode.map.yKey);
-      const cluster = entryValue(entry, mode.map.clusterKey);
-      const emphasis = entryValue(entry, mode.map.emphasisKey);
-      const signal = entryValue(entry, "signal");
-      const jitterX = (rand() - 0.5) * 60 + Math.sin(index * 1.73 + state.seedOffset) * 18;
-      const jitterY = (rand() - 0.5) * 54 + Math.cos(index * 1.51 + state.seedOffset) * 16;
-      const x = marginX + xBase * (width - marginX * 2) + jitterX * (0.24 + cluster * 0.18);
-      const y = height - marginY - yBase * (height - marginY * 2) + jitterY * (0.18 + emphasis * 0.2);
-      const radius = 8 + emphasis * 13;
+    const width = 1320;
+    const height = 940;
+    const marginX = 110;
+    const marginY = 92;
+
+    const nodes = data.fragments.map((fragment, index) => {
+      const xBase = metricValue(fragment, mode.map.xKey);
+      const yBase = metricValue(fragment, mode.map.yKey);
+      const cluster = metricValue(fragment, mode.map.clusterKey);
+      const emphasis = metricValue(fragment, mode.map.emphasisKey);
+      const presence = metricValue(fragment, "presence");
+      const memory = metricValue(fragment, "memory");
+      const residue = metricValue(fragment, "residue");
+
+      let x = marginX + xBase * (width - marginX * 2);
+      let y = height - marginY - yBase * (height - marginY * 2);
+
+      const wobbleX =
+        (rand() - 0.5) * 84 +
+        Math.sin(index * 1.37 + state.seedOffset * 0.8) * (8 + cluster * 28);
+
+      const wobbleY =
+        (rand() - 0.5) * 66 +
+        Math.cos(index * 1.51 + state.seedOffset * 0.7) * (8 + emphasis * 18);
+
+      x += wobbleX * profile.layout.scatterX + profile.layout.biasX * (presence - 0.5) * 140;
+      y += wobbleY * profile.layout.scatterY + profile.layout.biasY * (memory - 0.5) * 120;
+
+      if (mode.id === "vision") {
+        y -= presence * 18;
+      }
+
+      if (mode.id === "system") {
+        x = Math.round(x / 28) * 28;
+        y = Math.round(y / 28) * 28;
+      }
+
+      if (mode.id === "trace") {
+        x -= memory * 20;
+        y += residue * 16;
+      }
+
+      x = clamp(x, 88, width - 88);
+      y = clamp(y, 82, height - 82);
 
       return {
-        id: entry.id,
-        entry,
-        x: clamp(x, 80, width - 80),
-        y: clamp(y, 72, height - 72),
-        radius,
+        id: fragment.id,
+        fragment,
+        x,
+        y,
+        radius: 11 + emphasis * 14,
         emphasis,
         cluster,
-        signal,
-        labelDx: x > width * 0.68 ? -18 : 18,
-        labelAnchor: x > width * 0.68 ? "end" : "start",
-        phase: rand() * Math.PI * 2
+        phase: rand() * TAU,
+        speed: 0.45 + rand() * 0.55,
+        floatX: 4 + cluster * 11,
+        floatY: 3 + emphasis * 9
       };
     });
 
     const nodeMap = new Map(nodes.map((node) => [node.id, node]));
     const relations = [];
-    const relationKeys = new Set();
+    const seen = new Set();
 
-    data.entries.forEach((entry) => {
-      entry.relations.forEach((relatedId) => {
-        const from = nodeMap.get(entry.id);
-        const to = nodeMap.get(relatedId);
-        if (!from || !to) return;
-        const key = [entry.id, relatedId].sort().join(":");
-        if (relationKeys.has(key)) return;
-        relationKeys.add(key);
+    data.fragments.forEach((fragment) => {
+      fragment.relations.forEach((relatedId) => {
+        const a = nodeMap.get(fragment.id);
+        const b = nodeMap.get(relatedId);
+        if (!a || !b) return;
+
+        const key = [a.id, b.id].sort().join(":");
+        if (seen.has(key)) return;
+        seen.add(key);
+
         relations.push({
           key,
-          from,
-          to,
-          signal: Math.max(from.signal, to.signal),
-          active: state.selectedId === from.id || state.selectedId === to.id
+          fromId: a.id,
+          toId: b.id,
+          strength: (a.emphasis + b.emphasis) / 2
         });
       });
     });
 
-    return { width, height, nodes, relations };
+    return {
+      width,
+      height,
+      nodes,
+      relations,
+      zones: mode.zones || [],
+      profile
+    };
   }
 
-  function buildSmoothPath(points) {
-    if (points.length < 2) return "";
-    let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
-
-    for (let i = 1; i < points.length; i += 1) {
-      const prev = points[i - 1];
-      const current = points[i];
-      const controlX = ((prev.x + current.x) / 2).toFixed(2);
-      d += ` Q ${controlX} ${prev.y.toFixed(2)} ${controlX} ${((prev.y + current.y) / 2).toFixed(2)}`;
-      d += ` T ${current.x.toFixed(2)} ${current.y.toFixed(2)}`;
-    }
-
-    return d;
+  function relationPath(from, to) {
+    const curvature = state.scene?.scene?.profile?.layout?.curvature ?? 0.16;
+    const dx = Math.abs(to.x - from.x);
+    const mx = (from.x + to.x) / 2;
+    const my = (from.y + to.y) / 2 - 30 - dx * curvature;
+    return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} Q ${mx.toFixed(2)} ${my.toFixed(2)} ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
   }
 
-  function computeContours(nodes, mode) {
-    const sortedByX = [...nodes].sort((a, b) => a.x - b.x);
-    const high = sortedByX.filter((node) => node.emphasis >= 0.6);
-    const mid = sortedByX.filter((node) => node.emphasis >= 0.42 && node.emphasis < 0.6);
-    const low = sortedByX.filter((node) => node.emphasis < 0.42);
-    const groups = [high, mid, low].filter((group) => group.length >= 2);
-
-    return groups.map((group, index) => {
-      const yShift = index === 0 ? -20 : index === 1 ? 0 : 18;
-      const points = group.map((node, pointIndex) => ({
-        x: node.x,
-        y: clamp(
-          node.y + yShift + Math.sin(pointIndex * 1.3 + state.seedOffset + index) * 10,
-          64,
-          916
-        )
-      }));
-
-      return {
-        path: buildSmoothPath(points),
-        className: `contour ${mode.map.contour === "ember" && index === 0 ? "signal" : ""}`,
-        phase: index * 0.6 + state.seedOffset * 0.2
-      };
-    });
-  }
-
-  function createSvgNode(tag, attributes = {}) {
+  function createSvg(tag, attrs = {}) {
     const element = document.createElementNS(svgNS, tag);
-    Object.entries(attributes).forEach(([key, value]) => {
+    Object.entries(attrs).forEach(([key, value]) => {
       element.setAttribute(key, String(value));
     });
     return element;
   }
 
-  function relationPath(relation) {
-    const { from, to } = relation;
-    const controlX = (from.x + to.x) / 2;
-    const controlY = (from.y + to.y) / 2 - 34 + Math.abs(from.x - to.x) * 0.04;
-    return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} Q ${controlX.toFixed(2)} ${controlY.toFixed(2)} ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
+  function bandPath(zone, width, height) {
+    const x = zone.x * width;
+    const y = zone.y * height;
+    const w = zone.w * width;
+    const h = zone.h * height;
+
+    return `
+      M ${x.toFixed(2)} ${(y + h * 0.14).toFixed(2)}
+      Q ${(x + w * 0.16).toFixed(2)} ${y.toFixed(2)} ${(x + w * 0.5).toFixed(2)} ${(y + h * 0.12).toFixed(2)}
+      T ${(x + w).toFixed(2)} ${(y + h * 0.2).toFixed(2)}
+      Q ${(x + w * 0.84).toFixed(2)} ${(y + h * 0.72).toFixed(2)} ${(x + w * 0.54).toFixed(2)} ${(y + h).toFixed(2)}
+      T ${x.toFixed(2)} ${(y + h * 0.74).toFixed(2)}
+      Q ${(x + w * 0.06).toFixed(2)} ${(y + h * 0.42).toFixed(2)} ${x.toFixed(2)} ${(y + h * 0.14).toFixed(2)}
+    `;
   }
 
-  function updateTooltipPosition(x, y, title, description) {
+  function updateTooltip(clientX, clientY, fragment) {
     const tooltip = dom.fieldTooltip;
     tooltip.hidden = false;
-    tooltip.innerHTML = `<strong>${title}</strong><br>${description}`;
+    tooltip.innerHTML = `<strong>${fragment.title}</strong><br>${fragment.summary}`;
 
-    const containerRect = dom.boardView.getBoundingClientRect();
+    const rect = dom.fieldBoard.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
-    const left = clamp(x - containerRect.left + 18, 16, containerRect.width - tooltipRect.width - 16);
-    const top = clamp(y - containerRect.top - tooltipRect.height - 14, 16, containerRect.height - tooltipRect.height - 16);
+
+    const left = clamp(clientX - rect.left + 18, 16, rect.width - tooltipRect.width - 16);
+    const top = clamp(clientY - rect.top - tooltipRect.height - 16, 16, rect.height - tooltipRect.height - 16);
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -323,330 +476,386 @@
     dom.fieldTooltip.hidden = true;
   }
 
+  function applyNodeVisuals(item, x, y, radius, { active, hovered }) {
+    const modeMotion = state.scene?.scene?.profile?.motion;
+    const echoOpacity = modeMotion?.echoOpacity ?? 0.08;
+    const anchor = x > state.scene.scene.width * 0.72 ? "end" : "start";
+    const dx = anchor === "end" ? -20 : 20;
+
+    item.currentX = x;
+    item.currentY = y;
+    item.currentR = radius;
+
+    item.aura.setAttribute("cx", x.toFixed(2));
+    item.aura.setAttribute("cy", y.toFixed(2));
+    item.aura.setAttribute("r", (radius * (active ? 2.16 : hovered ? 1.94 : 1.72)).toFixed(2));
+    item.aura.style.opacity = (active ? 0.26 : hovered ? 0.2 : 0.12).toFixed(3);
+
+    item.echo.setAttribute("cx", x.toFixed(2));
+    item.echo.setAttribute("cy", y.toFixed(2));
+    item.echo.setAttribute("r", (radius * (active ? 3.16 : 2.56)).toFixed(2));
+    item.echo.style.opacity = (active ? echoOpacity * 1.2 : echoOpacity).toFixed(3);
+
+    item.hit.setAttribute("cx", x.toFixed(2));
+    item.hit.setAttribute("cy", y.toFixed(2));
+    item.hit.setAttribute("r", (radius + 18).toFixed(2));
+
+    item.core.setAttribute("cx", x.toFixed(2));
+    item.core.setAttribute("cy", y.toFixed(2));
+    item.core.setAttribute("r", radius.toFixed(2));
+    item.core.style.opacity = (0.76 + item.node.emphasis * 0.2).toFixed(3);
+
+    item.ring.setAttribute("cx", x.toFixed(2));
+    item.ring.setAttribute("cy", y.toFixed(2));
+    item.ring.setAttribute("r", (radius + 7 + (active ? 1.6 : 0)).toFixed(2));
+
+    item.code.setAttribute("x", (x + dx).toFixed(2));
+    item.code.setAttribute("y", (y - 8).toFixed(2));
+    item.code.setAttribute("text-anchor", anchor);
+    item.code.textContent = item.node.fragment.code;
+
+    item.title.setAttribute("x", (x + dx).toFixed(2));
+    item.title.setAttribute("y", (y + 14).toFixed(2));
+    item.title.setAttribute("text-anchor", anchor);
+    item.title.textContent = item.node.fragment.title;
+  }
+
+  function updateRelationPaths() {
+    if (!state.scene) return;
+
+    const live = new Map(
+      state.scene.nodeElements.map((item) => [
+        item.id,
+        { x: item.currentX ?? item.node.x, y: item.currentY ?? item.node.y }
+      ])
+    );
+
+    state.scene.relationElements.forEach((item, index) => {
+      const from = live.get(item.relation.fromId);
+      const to = live.get(item.relation.toId);
+      if (!from || !to) return;
+
+      item.el.setAttribute("d", relationPath(from, to));
+      item.el.style.opacity = (0.12 + item.relation.strength * 0.28).toFixed(3);
+      item.el.style.strokeDashoffset = String(index * 14);
+    });
+  }
+
   function renderField() {
-    const mode = currentMode();
-    const geometry = computeNodeData(mode);
-    const contours = computeContours(geometry.nodes, mode);
+    const scene = computeScene();
     const svg = dom.fieldSvg;
-
     svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 ${scene.width} ${scene.height}`);
 
-    const defs = createSvgNode("defs");
-    const radial = createSvgNode("radialGradient", {
-      id: "fieldGlow",
-      cx: "50%",
-      cy: "48%",
-      r: "58%"
+    const defs = createSvg("defs");
+
+    const glowFilter = createSvg("filter", {
+      id: "softGlow",
+      x: "-60%",
+      y: "-60%",
+      width: "220%",
+      height: "220%"
     });
 
-    [
-      { offset: "0%", color: "rgba(255,255,255,0.12)" },
-      { offset: "60%", color: "rgba(255,255,255,0.03)" },
-      { offset: "100%", color: "rgba(255,255,255,0)" }
-    ].forEach((stop) => {
-      const element = createSvgNode("stop", {
-        offset: stop.offset,
-        "stop-color": stop.color
-      });
-      radial.appendChild(element);
-    });
+    glowFilter.appendChild(createSvg("feGaussianBlur", { stdDeviation: "18" }));
+    defs.appendChild(glowFilter);
 
-    defs.appendChild(radial);
     svg.appendChild(defs);
 
-    const glow = createSvgNode("ellipse", {
-      cx: geometry.width * 0.52,
-      cy: geometry.height * 0.48,
-      rx: 280,
-      ry: 220,
-      fill: "url(#fieldGlow)"
-    });
-    svg.appendChild(glow);
+    const bandGroup = createSvg("g");
+    const relationGroup = createSvg("g");
+    const nodeGroup = createSvg("g");
 
-    const contourGroup = createSvgNode("g");
-    const relationGroup = createSvgNode("g");
-    const haloGroup = createSvgNode("g");
-    const nodeGroup = createSvgNode("g");
-
-    const contourElements = contours.map((contour) => {
-      const path = createSvgNode("path", {
-        d: contour.path,
-        class: contour.className
+    const bandElements = scene.zones.map((zone, index) => {
+      const path = createSvg("path", {
+        class: "field-band",
+        d: bandPath(zone, scene.width, scene.height)
       });
-      contourGroup.appendChild(path);
-      return { el: path, phase: contour.phase };
+
+      const label = createSvg("text", {
+        class: "band-label",
+        x: 132,
+        y: 104 + index * 28
+      });
+
+      label.textContent = zone.label;
+      bandGroup.appendChild(path);
+      bandGroup.appendChild(label);
+
+      return { path, label, phase: index * 0.9 };
     });
 
-    const relationElements = geometry.relations.map((relation) => {
-      const path = createSvgNode("path", {
-        d: relationPath(relation),
-        class: `relation-line ${relation.signal > 0.72 ? "signal" : ""} ${relation.active ? "active" : ""}`
+    const nodeElements = scene.nodes.map((node, index) => {
+      const group = createSvg("g", {
+        class: "node-group",
+        "data-fragment-id": node.id
       });
+
+      const aura = createSvg("circle", {
+        class: "node-aura",
+        filter: "url(#softGlow)"
+      });
+
+      const echo = createSvg("circle", {
+        class: "node-echo"
+      });
+
+      const hit = createSvg("circle", {
+        class: "node-hit",
+        tabindex: "0",
+        role: "button",
+        "aria-label": `${node.fragment.title}, ${node.fragment.kind}`
+      });
+
+      const core = createSvg("circle", {
+        class: "node-core"
+      });
+
+      const ring = createSvg("circle", {
+        class: "node-ring"
+      });
+
+      const code = createSvg("text", {
+        class: "node-label"
+      });
+
+      const title = createSvg("text", {
+        class: "node-note"
+      });
+
+      const item = {
+        id: node.id,
+        node,
+        group,
+        aura,
+        echo,
+        hit,
+        core,
+        ring,
+        code,
+        title,
+        currentX: node.x,
+        currentY: node.y,
+        currentR: node.radius
+      };
+
+      applyNodeVisuals(item, node.x, node.y, node.radius, {
+        active: node.id === state.selectedId,
+        hovered: false
+      });
+
+      const focusNode = () => selectFragment(node.id, false);
+
+      hit.addEventListener("click", focusNode);
+      hit.addEventListener("focus", () => {
+        state.hoveredId = node.id;
+        syncSelection();
+
+        const rect = dom.fieldBoard.getBoundingClientRect();
+        const x = rect.left + (item.currentX / scene.width) * rect.width;
+        const y = rect.top + (item.currentY / scene.height) * rect.height;
+        updateTooltip(x, y, node.fragment);
+      });
+
+      hit.addEventListener("blur", () => {
+        state.hoveredId = null;
+        syncSelection();
+        hideTooltip();
+      });
+
+      hit.addEventListener("mouseenter", (event) => {
+        state.hoveredId = node.id;
+        syncSelection();
+        updateTooltip(event.clientX, event.clientY, node.fragment);
+      });
+
+      hit.addEventListener("mousemove", (event) => {
+        updateTooltip(event.clientX, event.clientY, node.fragment);
+      });
+
+      hit.addEventListener("mouseleave", () => {
+        state.hoveredId = null;
+        syncSelection();
+        hideTooltip();
+      });
+
+      hit.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          focusNode();
+        }
+      });
+
+      group.appendChild(aura);
+      group.appendChild(echo);
+      group.appendChild(hit);
+      group.appendChild(core);
+      group.appendChild(ring);
+      group.appendChild(code);
+      group.appendChild(title);
+
+      nodeGroup.appendChild(group);
+
+      return item;
+    });
+
+    const relationElements = scene.relations.map((relation) => {
+      const path = createSvg("path", {
+        class: "relation-line"
+      });
+
       relationGroup.appendChild(path);
       return { el: path, relation };
     });
 
-    const haloElements = [];
-    const nodeElements = [];
-
-    geometry.nodes.forEach((node) => {
-      const group = createSvgNode("g", {
-        class: `node-group ${node.id === state.selectedId ? "active" : ""}`,
-        "data-entry-id": node.id
-      });
-
-      const halo = createSvgNode("circle", {
-        class: "halo",
-        cx: node.x.toFixed(2),
-        cy: node.y.toFixed(2),
-        r: (node.radius * 1.9).toFixed(2)
-      });
-      halo.style.opacity = (0.05 + node.emphasis * 0.14).toFixed(3);
-      haloGroup.appendChild(halo);
-      haloElements.push({ el: halo, baseR: node.radius * 1.9, phase: node.phase, entryId: node.id });
-
-      const hit = createSvgNode("circle", {
-        class: "node-hit",
-        cx: node.x.toFixed(2),
-        cy: node.y.toFixed(2),
-        r: (node.radius + 16).toFixed(2),
-        tabindex: "0",
-        role: "button",
-        "aria-label": `${node.entry.title}, ${node.entry.type}, ${node.entry.year}`
-      });
-
-      const core = createSvgNode("circle", {
-        class: `node-core ${node.signal >= 0.72 ? "signal" : ""}`,
-        cx: node.x.toFixed(2),
-        cy: node.y.toFixed(2),
-        r: node.radius.toFixed(2)
-      });
-      core.style.opacity = (0.72 + node.emphasis * 0.24).toFixed(3);
-
-      const ring = createSvgNode("circle", {
-        class: "node-ring",
-        cx: node.x.toFixed(2),
-        cy: node.y.toFixed(2),
-        r: (node.radius + 6).toFixed(2)
-      });
-
-      const label = createSvgNode("text", {
-        class: "node-label",
-        x: (node.x + node.labelDx).toFixed(2),
-        y: (node.y - 8).toFixed(2),
-        "text-anchor": node.labelAnchor
-      });
-      label.textContent = node.entry.code;
-
-      const note = createSvgNode("text", {
-        class: "node-note",
-        x: (node.x + node.labelDx).toFixed(2),
-        y: (node.y + 10).toFixed(2),
-        "text-anchor": node.labelAnchor
-      });
-      note.textContent = node.entry.title;
-
-      hit.addEventListener("click", () => selectEntry(node.id, true));
-      hit.addEventListener("focus", () => {
-        state.hoverId = node.id;
-        showTooltipForNode(node);
-      });
-      hit.addEventListener("blur", () => {
-        state.hoverId = null;
-        hideTooltip();
-      });
-      hit.addEventListener("mouseenter", () => {
-        state.hoverId = node.id;
-      });
-      hit.addEventListener("mouseleave", () => {
-        state.hoverId = null;
-        hideTooltip();
-      });
-      hit.addEventListener("mousemove", (event) => {
-        showTooltipForNode(node, event.clientX, event.clientY);
-      });
-      hit.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          selectEntry(node.id, true);
-        }
-      });
-
-      group.appendChild(hit);
-      group.appendChild(core);
-      group.appendChild(ring);
-      group.appendChild(label);
-      group.appendChild(note);
-      nodeGroup.appendChild(group);
-
-      nodeElements.push({
-        id: node.id,
-        node,
-        group,
-        hit,
-        core,
-        ring,
-        label,
-        note,
-        baseRadius: node.radius
-      });
-    });
-
-    svg.appendChild(contourGroup);
+    svg.appendChild(bandGroup);
     svg.appendChild(relationGroup);
-    svg.appendChild(haloGroup);
     svg.appendChild(nodeGroup);
 
     state.scene = {
-      geometry,
-      contourElements,
+      scene,
+      bandElements,
       relationElements,
-      haloElements,
       nodeElements
     };
 
+    updateRelationPaths();
+    syncSelection();
     startAnimation();
   }
 
-  function showTooltipForNode(node, clientX, clientY) {
-    if (!clientX || !clientY) {
-      const rect = dom.boardView.getBoundingClientRect();
-      const x = rect.left + (node.x / 1200) * rect.width;
-      const y = rect.top + (node.y / 980) * rect.height;
-      updateTooltipPosition(x, y, node.entry.title, node.entry.summary);
-      return;
-    }
-
-    updateTooltipPosition(clientX, clientY, node.entry.title, node.entry.summary);
-  }
-
-  function updateInspector() {
-    const entry = currentEntry();
-    const mode = currentMode();
-    const node = state.scene?.geometry.nodes.find((item) => item.id === entry.id);
-
-    setText(dom.inspectorCode, entry.code);
-    setText(dom.inspectorEntryTitle, entry.title);
-    setText(dom.inspectorSummary, entry.detail);
-    setText(dom.inspectorNote, entry.note);
-    setText(dom.inspectorStatus, `${mode.label}`);
-    dom.inspectorStatus.classList.add("active");
-
-    const metaItems = [
-      ["type", entry.type],
-      ["year", entry.year],
-      ["x", formatMetric(entryValue(entry, mode.map.xKey))],
-      ["y", formatMetric(entryValue(entry, mode.map.yKey))],
-      ["focus", formatMetric(entryValue(entry, mode.map.emphasisKey))],
-      ["links", String(entry.relations.length)]
-    ];
-    setHTML(dom.inspectorMeta, createMetricList(metaItems));
-
-    dom.inspectorRelations.innerHTML = [
-      ...entry.tags.map((tag) => `<span class="tag">${tag}</span>`),
-      ...uniqueRelations(entry).map((related) => `<button class="relation-pill" type="button" data-related-id="${related.id}">${related.code}</button>`)
-    ].join("");
-
-    dom.inspectorRelations.querySelectorAll("[data-related-id]").forEach((button) => {
-      button.addEventListener("click", () => selectEntry(button.dataset.relatedId, true));
-    });
-
-    const coords = [
-      [mode.map.xKey, formatMetric(entryValue(entry, mode.map.xKey))],
-      [mode.map.yKey, formatMetric(entryValue(entry, mode.map.yKey))],
-      ["field", mode.field],
-      ["state", mode.state.toLowerCase()],
-      ["node x", node ? String(Math.round(node.x)) : "—"],
-      ["node y", node ? String(Math.round(node.y)) : "—"]
-    ];
-
-    setHTML(dom.coordsList, createMetricList(coords));
-  }
-
-  function updateArchiveSelection() {
-    dom.archiveGrid.querySelectorAll(".archive-card").forEach((button) => {
-      button.setAttribute("aria-pressed", String(button.dataset.entryId === state.selectedId));
-    });
-  }
-
-  function updateNodeSelection() {
+  function syncSelection() {
     if (!state.scene) return;
 
+    const network = relationNetwork(state.selectedId);
+    const hoveredId = state.hoveredId;
+
     state.scene.nodeElements.forEach((item) => {
-      item.group.classList.toggle("active", item.id === state.selectedId);
+      const active = item.id === state.selectedId;
+      const linked = network.has(item.id);
+      const hovered = item.id === hoveredId;
+      const dimmed = state.showConstellation ? !linked : false;
+
+      item.group.classList.toggle("active", active);
+      item.group.classList.toggle("linked", linked && !active);
+      item.group.classList.toggle("hovered", hovered);
+      item.group.classList.toggle("dimmed", dimmed);
     });
 
     state.scene.relationElements.forEach((item) => {
-      const active = item.relation.from.id === state.selectedId || item.relation.to.id === state.selectedId;
+      const active =
+        item.relation.fromId === state.selectedId || item.relation.toId === state.selectedId;
+
+      const hovered =
+        hoveredId &&
+        (item.relation.fromId === hoveredId || item.relation.toId === hoveredId);
+
+      const linked =
+        network.has(item.relation.fromId) && network.has(item.relation.toId);
+
+      const dimmed = state.showConstellation ? !linked : false;
+
       item.el.classList.toggle("active", active);
+      item.el.classList.toggle("hovered", Boolean(hovered));
+      item.el.classList.toggle("dimmed", dimmed);
+    });
+
+    dom.archiveGrid.querySelectorAll(".archive-card").forEach((card) => {
+      card.setAttribute("aria-pressed", String(card.dataset.fragmentId === state.selectedId));
     });
   }
 
-  function selectEntry(entryId, scrollIntoView = false) {
-    if (!entryMap.has(entryId)) return;
-    state.selectedId = entryId;
-    updateInspector();
-    updateArchiveSelection();
-    updateNodeSelection();
+  function renderInspector() {
+    const mode = currentMode();
+    const fragment = currentFragment();
+    const node = state.scene?.nodeElements.find((item) => item.id === fragment.id);
 
-    if (scrollIntoView) {
-      const activeCard = dom.archiveGrid.querySelector(`[data-entry-id="${entryId}"]`);
-      if (activeCard) {
-        activeCard.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    setText(dom.inspectorStatus, mode.label);
+    setText(dom.inspectorCode, fragment.code);
+    setText(dom.inspectorHeading, fragment.title);
+    setText(dom.inspectorSummary, fragment.summary);
+    setText(dom.inspectorReading, fragment.reading);
+    setText(dom.manifestLine, fragment.line);
+
+    setHTML(
+      dom.inspectorGrid,
+      metricList([
+        ["kind", fragment.kind],
+        ["year", fragment.year],
+        [mode.map.xKey, formatMetric(metricValue(fragment, mode.map.xKey))],
+        [mode.map.yKey, formatMetric(metricValue(fragment, mode.map.yKey))],
+        ["presence", formatMetric(metricValue(fragment, "presence"))],
+        ["method", formatMetric(metricValue(fragment, "method"))]
+      ])
+    );
+
+    setHTML(
+      dom.inspectorConnections,
+      [
+        ...fragment.tags.map((tag) => `<span class="tag">${tag}</span>`),
+        ...fragment.relations
+          .map((id) => entryMap.get(id))
+          .filter(Boolean)
+          .map(
+            (related) =>
+              `<button class="relation-pill" type="button" data-related-id="${related.id}">${related.code}</button>`
+          )
+      ].join("")
+    );
+
+    dom.inspectorConnections.querySelectorAll("[data-related-id]").forEach((button) => {
+      button.addEventListener("click", () => selectFragment(button.dataset.relatedId, true));
+    });
+
+    setHTML(
+      dom.coordsList,
+      metricList([
+        [mode.map.xKey, formatMetric(metricValue(fragment, mode.map.xKey))],
+        [mode.map.yKey, formatMetric(metricValue(fragment, mode.map.yKey))],
+        ["heat", formatMetric(metricValue(fragment, "heat"))],
+        ["research", formatMetric(metricValue(fragment, "research"))],
+        ["node x", node ? Math.round(node.currentX ?? node.node.x) : "—"],
+        ["node y", node ? Math.round(node.currentY ?? node.node.y) : "—"]
+      ])
+    );
+  }
+
+  function renderAll() {
+    renderModeText();
+    buildArchive();
+    renderField();
+    renderInspector();
+  }
+
+  function selectFragment(id, scrollCard) {
+    if (!entryMap.has(id)) return;
+
+    state.selectedId = id;
+    syncSelection();
+    renderInspector();
+
+    if (scrollCard) {
+      const card = dom.archiveGrid.querySelector(`[data-fragment-id="${id}"]`);
+      if (card) {
+        card.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest"
+        });
       }
     }
   }
 
-  function updateModeText() {
-    const mode = currentMode();
-
-    dom.body.setAttribute("data-mode", mode.id);
-    setText(dom.fieldLabel, mode.field);
-    setText(dom.cycleModeLabel, mode.label);
-    setText(dom.heroKicker, mode.kicker);
-    setText(dom.heroTitle, mode.title);
-    setText(dom.heroDescription, mode.description);
-    setText(dom.modeStatement, mode.statement);
-    setText(dom.boardState, `STATE: ${mode.state}`);
-    setText(dom.boardYear, `YEAR: ${mode.year}`);
-    setText(dom.axisLabelX, mode.axisX);
-    setText(dom.axisLabelY, mode.axisY);
-    setText(dom.archiveNote, "L’archivio non replica la board: la rende verificabile. Qui ogni elemento conserva titolo, tipo, anno e funzione nel sistema.");
-    setText(dom.systemNote, mode.note);
-    setHTML(dom.metricsList, createMetricList(computeModeMetrics(mode)));
-    setHTML(dom.footerRow, mode.footer.map((item) => `<span>${item}</span>`).join(""));
-    setHTML(
-      dom.workspaceMeta,
-      [
-        createMetaChip(mode.label),
-        createMetaChip(mode.axisX),
-        createMetaChip(mode.axisY),
-        createMetaChip(`${data.entries.length} entries`)
-      ].join("")
-    );
-
-    dom.modeTabs.querySelectorAll(".mode-tab").forEach((button, index) => {
-      button.setAttribute("aria-selected", String(index === state.modeIndex));
-    });
-  }
-
-  function renderAll() {
-    updateModeText();
-    buildArchive();
-    renderField();
-    updateInspector();
-    updateArchiveSelection();
-  }
-
   function setMode(index) {
-    state.modeIndex = index;
+    state.modeIndex = (index + data.modes.length) % data.modes.length;
     state.seedOffset = 0;
+    state.hoveredId = null;
+    hideTooltip();
     renderAll();
   }
 
   function nextMode() {
-    const nextIndex = (state.modeIndex + 1) % data.modes.length;
-    setMode(nextIndex);
+    setMode(state.modeIndex + 1);
   }
 
   function toggleGrid() {
@@ -668,41 +877,94 @@
     startAnimation();
   }
 
-  function reshuffle() {
+  function toggleConstellation() {
+    state.showConstellation = !state.showConstellation;
+    dom.body.setAttribute("data-constellation", state.showConstellation ? "on" : "off");
+    dom.constellationButton.setAttribute("aria-pressed", String(state.showConstellation));
+    syncSelection();
+  }
+
+  function recompose() {
     state.seedOffset += 1;
     renderField();
-    updateInspector();
-    updateArchiveSelection();
+    renderInspector();
+  }
+
+  function resetSceneVisuals() {
+    if (!state.scene) return;
+
+    dom.fieldSvg.style.transform = "";
+
+    state.scene.nodeElements.forEach((item) => {
+      applyNodeVisuals(item, item.node.x, item.node.y, item.node.radius, {
+        active: item.id === state.selectedId,
+        hovered: item.id === state.hoveredId
+      });
+    });
+
+    state.scene.bandElements.forEach((item) => {
+      item.path.style.opacity = String(state.scene.scene.profile.motion.bandBase);
+      item.label.style.opacity = "1";
+    });
+
+    updateRelationPaths();
   }
 
   function animate(now) {
     if (!state.scene || state.reducedMotion || !state.showMotion) {
-      dom.fieldSvg.style.transform = "";
-      cancelAnimationFrame(state.rafId);
+      if (state.rafId) cancelAnimationFrame(state.rafId);
       state.rafId = null;
+      resetSceneVisuals();
       return;
     }
 
     const t = now * 0.001;
-    const activeId = state.selectedId;
+    const motion = state.scene.scene.profile.motion;
 
-    dom.fieldSvg.style.transform = `translate(${(Math.sin(t * 0.22) * 1.2).toFixed(2)}px, ${(Math.cos(t * 0.2) * 0.8).toFixed(2)}px)`;
+    dom.fieldSvg.style.transform = `translate(${(Math.sin(t * 0.23) * motion.svgDriftX).toFixed(2)}px, ${(Math.cos(t * 0.19) * motion.svgDriftY).toFixed(2)}px)`;
 
-    state.scene.haloElements.forEach((item) => {
-      const isActive = item.entryId === activeId;
-      const pulse = 1 + Math.sin(t * (isActive ? 1.8 : 1.1) + item.phase) * (isActive ? 0.12 : 0.04);
-      item.el.setAttribute("r", (item.baseR * pulse).toFixed(2));
+    state.scene.bandElements.forEach((item, index) => {
+      item.path.style.opacity = (
+        motion.bandBase +
+        Math.sin(t * motion.bandSpeed + item.phase + index) * motion.bandRange
+      ).toFixed(3);
+
+      item.label.style.opacity = (
+        0.18 + Math.sin(t * 0.27 + item.phase) * 0.04
+      ).toFixed(3);
     });
 
-    state.scene.nodeElements.forEach((item) => {
-      const isActive = item.id === activeId;
-      const radius = item.baseRadius * (1 + Math.sin(t * 1.6 + item.node.phase) * (isActive ? 0.06 : 0.02));
-      item.core.setAttribute("r", radius.toFixed(2));
-      item.ring.setAttribute("r", (radius + 6 + (isActive ? 1.4 : 0)).toFixed(2));
+    state.scene.nodeElements.forEach((item, index) => {
+      const active = item.id === state.selectedId;
+      const hovered = item.id === state.hoveredId;
+      const multiplier = active ? 1.26 : hovered ? 1.12 : 1;
+
+      const x =
+        item.node.x +
+        Math.sin(t * item.node.speed + item.node.phase) * item.node.floatX * motion.driftX * multiplier +
+        Math.cos(t * 0.21 + index) * motion.sway;
+
+      const y =
+        item.node.y +
+        Math.cos(t * item.node.speed * 0.92 + item.node.phase) * item.node.floatY * motion.driftY * multiplier;
+
+      const pulse =
+        1 +
+        Math.sin(t * (active ? 1.55 : 1.02) + item.node.phase) *
+          (active ? motion.pulse : motion.pulse * 0.36) +
+        (hovered ? 0.028 : 0);
+
+      const radius = item.node.radius * pulse;
+
+      applyNodeVisuals(item, x, y, radius, { active, hovered });
     });
 
-    state.scene.contourElements.forEach((item, index) => {
-      item.el.style.opacity = (0.48 + Math.sin(t * 0.6 + item.phase + index) * 0.1).toFixed(3);
+    updateRelationPaths();
+
+    state.scene.relationElements.forEach((item, index) => {
+      item.el.style.strokeDashoffset = (
+        (t * (12 + item.relation.strength * 22)) + index * 16
+      ).toFixed(2);
     });
 
     state.rafId = requestAnimationFrame(animate);
@@ -715,39 +977,77 @@
     }
 
     if (state.reducedMotion || !state.showMotion) {
-      dom.fieldSvg.style.transform = "";
+      resetSceneVisuals();
       return;
     }
 
     state.rafId = requestAnimationFrame(animate);
   }
 
-  function handlePointerMove(event) {
+  function handlePointer(event) {
     if (!dom.cursorHalo || state.reducedMotion) return;
     dom.cursorHalo.style.left = `${event.clientX}px`;
     dom.cursorHalo.style.top = `${event.clientY}px`;
   }
 
+  function dismissPrelude() {
+    if (state.introDismissed) return;
+    state.introDismissed = true;
+    dom.body.setAttribute("data-intro", "done");
+    dom.prelude.setAttribute("aria-hidden", "true");
+  }
+
+  function initRevealObserver() {
+    const elements = Array.from(document.querySelectorAll("[data-reveal]"));
+
+    if (!("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    state.revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          state.revealObserver.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -6% 0px"
+      }
+    );
+
+    elements.forEach((element) => state.revealObserver.observe(element));
+  }
+
   function bindEvents() {
+    dom.enterFieldButton.addEventListener("click", dismissPrelude);
     dom.cycleModeButton.addEventListener("click", nextMode);
     dom.gridButton.addEventListener("click", toggleGrid);
     dom.labelsButton.addEventListener("click", toggleLabels);
     dom.motionButton.addEventListener("click", toggleMotion);
-    dom.reshuffleButton.addEventListener("click", reshuffle);
+    dom.constellationButton.addEventListener("click", toggleConstellation);
+    dom.recomposeButton.addEventListener("click", recompose);
 
-    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointermove", handlePointer);
+
     document.addEventListener("keydown", (event) => {
       const key = event.key.toLowerCase();
+
+      if (key === "escape") dismissPrelude();
       if (key === "m") nextMode();
       if (key === "g") toggleGrid();
       if (key === "l") toggleLabels();
       if (key === "d") toggleMotion();
-      if (key === "r") reshuffle();
+      if (key === "c") toggleConstellation();
+      if (key === "r") recompose();
     });
 
     window.addEventListener("resize", () => {
       renderField();
-      updateInspector();
+      renderInspector();
     });
 
     document.addEventListener("visibilitychange", () => {
@@ -759,35 +1059,46 @@
       }
     });
 
+    const motionListener = (event) => {
+      state.reducedMotion = event.matches;
+
+      if (event.matches) {
+        state.showMotion = false;
+      }
+
+      dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
+      dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+      startAnimation();
+    };
+
     if (typeof prefersReducedMotion.addEventListener === "function") {
-      prefersReducedMotion.addEventListener("change", (event) => {
-        state.reducedMotion = event.matches;
-        if (event.matches) state.showMotion = false;
-        dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
-        dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
-        startAnimation();
-      });
+      prefersReducedMotion.addEventListener("change", motionListener);
     } else if (typeof prefersReducedMotion.addListener === "function") {
-      prefersReducedMotion.addListener((event) => {
-        state.reducedMotion = event.matches;
-        if (event.matches) state.showMotion = false;
-        dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
-        dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
-        startAnimation();
-      });
+      prefersReducedMotion.addListener(motionListener);
     }
   }
 
   function init() {
-    buildModeTabs();
     dom.body.setAttribute("data-grid", state.showGrid ? "on" : "off");
     dom.body.setAttribute("data-labels", state.showLabels ? "on" : "off");
     dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
+    dom.body.setAttribute("data-constellation", state.showConstellation ? "on" : "off");
+
     dom.gridButton.setAttribute("aria-pressed", String(state.showGrid));
     dom.labelsButton.setAttribute("aria-pressed", String(state.showLabels));
     dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+    dom.constellationButton.setAttribute("aria-pressed", String(state.showConstellation));
+
+    buildPrelude();
+    buildRituals();
+    buildModeTabs();
+    buildCoda();
     renderAll();
+    initRevealObserver();
     bindEvents();
+
+    const introDelay = state.reducedMotion ? 220 : 1650;
+    window.setTimeout(dismissPrelude, introDelay);
   }
 
   document.addEventListener("DOMContentLoaded", init);
