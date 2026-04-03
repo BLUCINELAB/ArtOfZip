@@ -4,11 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Anton Zip — Method / Dream / Trace</title>
-  <meta
-    name="description"
-    content="Ritratto interattivo di una pratica tra cinema indipendente, sistemi editoriali, arti visive, archivi sensibili e dispositivi digitali."
-  />
+  <meta name="description" content="Ritratto interattivo di una pratica tra cinema indipendente, sistemi editoriali, arti visive, archivi sensibili e dispositivi digitali." />
   <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#070a11" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Anton Zip — Method / Dream / Trace" />
+  <meta property="og:description" content="An interactive portrait of a practice spanning independent cinema, editorial systems, visual arts, sensitive archives and digital devices." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Anton Zip — Method / Dream / Trace" />
+  <meta name="twitter:description" content="An interactive portrait of a practice spanning independent cinema, editorial systems and visual arts." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,8 +36,11 @@
   data-constellation="on"
   data-intro="pending"
 >
+  <div class="reading-progress" aria-hidden="true"></div>
+
   <div class="background background-grid" aria-hidden="true"></div>
   <div class="background background-noise" aria-hidden="true"></div>
+  <div class="background background-scan" aria-hidden="true"></div>
   <div class="background background-vignette" aria-hidden="true"></div>
   <div class="background background-aurora" aria-hidden="true"></div>
   <div class="cursor-halo" id="cursorHalo" aria-hidden="true"></div>
@@ -187,7 +199,7 @@
             <span class="status-pill" id="inspectorStatus">VISION MODE</span>
           </div>
 
-          <div class="inspector-content">
+          <div class="inspector-content" id="inspectorContent">
             <p class="inspector-code" id="inspectorCode">P_01</p>
             <h3 class="inspector-title" id="inspectorHeading">Independent Cinema</h3>
             <p class="inspector-summary" id="inspectorSummary">
@@ -211,7 +223,7 @@
             <section class="inspector-block">
               <p class="panel-label">KEY LINE</p>
               <p class="manifest-line" id="manifestLine">
-                Non separo produzione e immaginazione: costruisco dispositivi che permettono all’una di sostenere l’altra.
+                Non separo produzione e immaginazione: costruisco dispositivi che permettono all'una di sostenere l'altra.
               </p>
             </section>
           </div>
