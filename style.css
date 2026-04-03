@@ -1,3 +1,4 @@
+/* ─── Registered custom properties — enables smooth CSS transitions on colors ─── */
 @property --accent {
   syntax: "<color>";
   inherits: true;
@@ -40,6 +41,7 @@
   initial-value: rgba(131, 176, 215, 0.14);
 }
 
+/* ─── Root tokens ─── */
 :root {
   --bg: #06080d;
   --bg-soft: #0d121b;
@@ -62,7 +64,7 @@
   --radius: 28px;
   --radius-small: 16px;
   --shell-width: 1520px;
-  --display: "Sora", "Inter", system-ui, sans-serif;
+  --display: "Inter", system-ui, sans-serif;
   --sans: "Inter", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   --transition: 180ms ease;
@@ -170,6 +172,7 @@ button {
   border-radius: 6px;
 }
 
+/* ─── Background layers ─── */
 .background {
   position: fixed;
   inset: 0;
@@ -226,6 +229,7 @@ button {
   will-change: transform;
 }
 
+/* ─── Scroll progress bar ─── */
 .reading-progress {
   position: fixed;
   top: 0;
@@ -253,6 +257,7 @@ button {
   }
 }
 
+/* ─── Cursor halo ─── */
 .cursor-halo {
   position: fixed;
   z-index: 1;
@@ -278,6 +283,7 @@ body[data-node-hovered="true"] .cursor-halo {
   height: 300px;
 }
 
+/* ─── Prelude ─── */
 .prelude {
   position: fixed;
   inset: 0;
@@ -318,6 +324,7 @@ body[data-node-hovered="true"] .cursor-halo {
 .prelude-inner > :nth-child(3) { animation-delay: 0.38s; }
 .prelude-inner > :nth-child(4) { animation-delay: 0.56s; }
 
+/* Typography system — refined, cinematic, minimal */
 .prelude-eyebrow,
 .prelude-button,
 .utility-button,
@@ -351,6 +358,8 @@ body[data-node-hovered="true"] .cursor-halo {
 .archive-card-title,
 .coda-panel .section-title {
   font-family: var(--display);
+  font-weight: 650;
+  letter-spacing: -0.05em;
 }
 
 .prelude-title {
@@ -368,6 +377,7 @@ body[data-node-hovered="true"] .cursor-halo {
   font-size: 15px;
   line-height: 1.84;
   color: var(--text-soft);
+  text-wrap: pretty;
 }
 
 .prelude-actions {
@@ -415,6 +425,7 @@ body[data-node-hovered="true"] .cursor-halo {
   box-shadow: 0 0 24px var(--accent-soft);
 }
 
+/* ─── Shell ─── */
 .shell {
   position: relative;
   z-index: 2;
@@ -519,6 +530,7 @@ body[data-node-hovered="true"] .cursor-halo {
   color: var(--text-soft);
 }
 
+/* ─── Hero ─── */
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
@@ -539,11 +551,12 @@ body[data-node-hovered="true"] .cursor-halo {
   letter-spacing: -0.065em;
   font-weight: 700;
   text-wrap: balance;
-  background: linear-gradient(128deg, var(--text) 0%, var(--text) 36%, var(--accent) 66%, var(--electric) 100%);
-  background-size: 200% 200%;
+  background: linear-gradient(135deg, rgba(241, 237, 230, 0.98) 0%, rgba(241, 237, 230, 0.92) 34%, rgba(211, 176, 141, 0.92) 62%, rgba(124, 217, 255, 0.9) 100%);
+  background-size: 180% 180%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 0 24px rgba(124, 217, 255, 0.06);
   animation: gradientFlow 9s ease-in-out infinite;
   transition: background 0.84s var(--ease-cinematic);
 }
@@ -557,8 +570,7 @@ body[data-node-hovered="true"] .cursor-halo {
 .statement-text,
 .manifest-line,
 .archive-card-summary,
-.beat-copy,
-.prelude-copy {
+.beat-copy {
   text-wrap: pretty;
 }
 
@@ -596,6 +608,7 @@ body[data-node-hovered="true"] .cursor-halo {
   gap: 16px;
 }
 
+/* ─── Panels & Cards ─── */
 .panel,
 .beat-card,
 .archive-card {
@@ -663,6 +676,7 @@ body[data-node-hovered="true"] .cursor-halo {
   font-family: var(--mono);
 }
 
+/* ─── Mode tabs ─── */
 .mode-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -696,6 +710,7 @@ body[data-node-hovered="true"] .cursor-halo {
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* ─── Rituals ─── */
 .ritual-list {
   display: grid;
   gap: 10px;
@@ -727,6 +742,7 @@ body[data-node-hovered="true"] .cursor-halo {
   line-height: 1.5;
 }
 
+/* ─── Stage ─── */
 .stage,
 .sequence,
 .archive {
@@ -785,6 +801,7 @@ body[data-node-hovered="true"] .cursor-halo {
   gap: 18px;
 }
 
+/* ─── Field (SVG interactive area) ─── */
 .field-shell {
   position: relative;
   display: grid;
@@ -991,6 +1008,7 @@ body[data-node-hovered="true"] .cursor-halo {
   border: 1px solid var(--text-soft);
 }
 
+/* ─── Inspector ─── */
 .inspector {
   padding: 20px 20px 22px;
 }
@@ -1091,6 +1109,7 @@ body[data-node-hovered="true"] .cursor-halo {
   color: var(--text);
 }
 
+/* ─── Manifesto ─── */
 .manifesto {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.94fr) minmax(0, 0.94fr);
@@ -1098,6 +1117,7 @@ body[data-node-hovered="true"] .cursor-halo {
   margin-bottom: 60px;
 }
 
+/* ─── Beat cards ─── */
 .beat-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1134,6 +1154,7 @@ body[data-node-hovered="true"] .cursor-halo {
   color: var(--text-soft);
 }
 
+/* ─── Archive grid ─── */
 .archive-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1182,6 +1203,7 @@ body[data-node-hovered="true"] .cursor-halo {
   margin: 14px 0;
 }
 
+/* ─── Coda & Footer ─── */
 .coda {
   margin-bottom: 36px;
   content-visibility: auto;
@@ -1216,6 +1238,7 @@ body[data-node-hovered="true"] .cursor-halo {
   border: 0;
 }
 
+/* ─── Reveal animation ─── */
 [data-reveal] {
   opacity: 0;
   transform: translateY(22px);
@@ -1229,6 +1252,7 @@ body[data-node-hovered="true"] .cursor-halo {
   transform: translateY(0);
 }
 
+/* ─── SVG field specific styles ─── */
 .field-svg .field-band {
   fill: rgba(255, 255, 255, 0.014);
   stroke: rgba(243, 238, 231, 0.08);
@@ -1358,7 +1382,8 @@ body[data-node-hovered="true"] .cursor-halo {
 
 .field-svg .node-note {
   font-family: var(--sans);
-  font-size: 12px;
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
   fill: rgba(243, 238, 231, 0.62);
 }
 
@@ -1375,12 +1400,14 @@ body[data-node-hovered="true"] .cursor-halo {
   pointer-events: none;
 }
 
+/* ─── View transitions ─── */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 0.48s;
   animation-timing-function: var(--ease-cinematic);
 }
 
+/* ─── Keyframes ─── */
 @keyframes grainShift {
   0%   { transform: translate(0, 0) scale(1.02); }
   11%  { transform: translate(-2%, -1%) scale(1.02); }
@@ -1431,6 +1458,7 @@ body[data-node-hovered="true"] .cursor-halo {
   50% { opacity: 0.32; }
 }
 
+/* ─── Scroll-driven parallax (progressive enhancement) ─── */
 @supports (animation-timeline: scroll()) {
   .hero {
     animation: heroParallax linear both;
@@ -1446,6 +1474,7 @@ body[data-node-hovered="true"] .cursor-halo {
   }
 }
 
+/* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -1466,9 +1495,11 @@ body[data-node-hovered="true"] .cursor-halo {
   .hero-title {
     background: none;
     -webkit-text-fill-color: var(--text);
+    text-shadow: none;
   }
 }
 
+/* ─── Responsive breakpoints ─── */
 @media (max-width: 1240px) {
   .hero,
   .stage-grid,
@@ -1536,8 +1567,44 @@ body[data-node-hovered="true"] .cursor-halo {
     grid-template-columns: 1fr;
   }
 
+  .field-shell {
+    padding: 34px 14px 96px;
+  }
+
+  .field-board {
+    aspect-ratio: 1 / 1.14;
+  }
+
+  .field-caption {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.58;
+    max-width: 32ch;
+  }
+
+  .field-controls {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    gap: 8px;
+  }
+
   .control-button {
     flex: 1 1 calc(50% - 10px);
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .hero-title {
+    max-width: 9.6ch;
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+  }
+
+  .hero-description {
+    max-width: 30ch;
   }
 
   .field-topline,
@@ -1550,10 +1617,6 @@ body[data-node-hovered="true"] .cursor-halo {
   .field-frame {
     width: 42px;
     height: 42px;
-  }
-
-  .field-board {
-    aspect-ratio: 1 / 1.02;
   }
 
   .prelude-inner {
