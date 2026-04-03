@@ -1,7 +1,7 @@
 window.SpecimenContent = {
   site: {
     fieldLabel: "METHOD / DREAM / TRACE",
-    footer: ["VERSION 2.0", "STATIC / GITHUB PAGES", "METHOD + DREAM + TRACE"],
+    footer: ["VERSION 3.0", "STATIC / GITHUB PAGES", "METHOD + DREAM + TRACE"],
     prelude: {
       eyebrow: "METHOD / DREAM / TRACE",
       title: "A field for reading a living practice.",
@@ -37,12 +37,16 @@ window.SpecimenContent = {
         "Lavoro nel punto in cui immaginazione, rigore e costruzione sensibile si incontrano. Qui il sito si comporta come un atlante di possibilità e attrazioni.",
       thesis:
         "La mia pratica non nasce da un medium solo. Nasce da una regia di relazioni tra immagine, produzione, testo, spazio e percezione.",
+      sequenceNote:
+        "Qui il frammento selezionato viene letto come una piccola scena: comparsa, intensificazione, permanenza.",
+      archiveNote:
+        "Questa lettura privilegia i frammenti che producono immaginario, densità simbolica, tensione scenica e forza di attrazione.",
+      ambient:
+        "Vision Mode apre il campo, allunga il respiro, aumenta il bagliore e lascia che i nodi sembrino quasi stelle operative.",
       axisX: "X / IMAGINATION",
       axisY: "Y / NARRATIVE PRESSURE",
       note:
-        "Vision Mode misura quanto ogni area del lavoro riesce a generare universo, intensità, desiderio di permanenza e capacità di immaginazione.",
-      archiveNote:
-        "Questa lettura privilegia i frammenti che producono immaginario, densità simbolica, tensione scenica e forza di attrazione.",
+        "La lente attiva dilata il campo: qui ogni frammento viene misurato per intensità percettiva, pressione narrativa e capacità di generare universo.",
       metrics: [
         ["lens", "vision"],
         ["tone", "cinematic"],
@@ -95,12 +99,16 @@ window.SpecimenContent = {
         "Il sito si fa macchina operativa. Non mostra solo cosa immagino, ma come lo rendo praticabile, condivisibile, coordinato e durevole.",
       thesis:
         "Per me la struttura non è un contenitore neutro. È un gesto estetico e politico: decide cosa può accadere, con quale tenuta e con quale chiarezza.",
+      sequenceNote:
+        "Qui il frammento è letto come una catena di decisioni: assetto, tenuta, esecuzione.",
+      archiveNote:
+        "Qui emergono i frammenti che tengono insieme calendario, budget, linguaggio, decisioni, mediazione e possibilità di esecuzione.",
+      ambient:
+        "System Mode raffredda il campo, riduce la deriva, rende i legami più leggibili e porta la complessità a una forma governabile.",
       axisX: "X / COMPLEXITY",
       axisY: "Y / CONTROL",
       note:
-        "System Mode rende visibile la parte spesso invisibile del lavoro: metodo, coordinamento, gerarchia, progettazione, precisione e affidabilità.",
-      archiveNote:
-        "Qui emergono i frammenti che tengono insieme calendario, budget, linguaggio, decisioni, mediazione e possibilità di esecuzione.",
+        "La lente attiva compatta il campo: qui ogni frammento viene misurato per complessità, controllo, affidabilità e forza di metodo.",
       metrics: [
         ["lens", "system"],
         ["tone", "rigorous"],
@@ -153,12 +161,16 @@ window.SpecimenContent = {
         "Qui il sito smette di sembrare una mappa funzionale e diventa un campo di sopravvivenze, echi, prove, scarti e materiali che continuano a fare pressione.",
       thesis:
         "L'archivio non è deposito. È materia viva che restituisce ferita, ritorno, vibrazione e possibilità di nuova lettura.",
+      sequenceNote:
+        "Qui il frammento selezionato viene letto come residuo attivo: deposito, ritorno, combustione lenta.",
+      archiveNote:
+        "Questa lente privilegia i frammenti in cui documento, archivio, resti, dopoimmagini e risonanze diventano ancora materiali attivi.",
+      ambient:
+        "Trace Mode abbassa la luce frontale, lascia più alone, più eco, più lentezza: il campo sembra ricordare prima di parlare.",
       axisX: "X / MEMORY",
       axisY: "Y / MATERIAL RESIDUE",
       note:
-        "Trace Mode porta in primo piano ciò che resta: la memoria visiva, il documento, la traccia sonora, il bordo, il frammento e il ritorno.",
-      archiveNote:
-        "Questa lente privilegia i frammenti in cui documento, archivio, resti, dopoimmagini e risonanze diventano ancora materiali attivi.",
+        "La lente attiva rende il campo più residuale: qui ogni frammento viene misurato per memoria, traccia, risonanza e capacità di ritornare.",
       metrics: [
         ["lens", "trace"],
         ["tone", "residual"],
@@ -212,6 +224,23 @@ window.SpecimenContent = {
         "Qui il cinema non è solo formato finale. È un principio compositivo che informa anche installazioni, archivi, comunicazione e dispositivi editoriali.",
       line:
         "Il film è il luogo in cui la visione deve reggere sia come intensità simbolica sia come costruzione concreta.",
+      beats: [
+        {
+          title: "Threshold",
+          copy:
+            "L'immagine appare come soglia: non introduce soltanto un racconto, ma imposta da subito una temperatura di mondo."
+        },
+        {
+          title: "Pressure",
+          copy:
+            "Il lavoro cinematografico concentra ritmo, materia e decisione fino a rendere leggibile una tensione che altrove resta diffusa."
+        },
+        {
+          title: "Persistence",
+          copy:
+            "Quando funziona, il film non finisce sullo schermo: continua a organizzare memoria, linguaggio e desiderio di ritorno."
+        }
+      ],
       tags: ["direction", "narrative", "mise-en-scène"],
       metrics: {
         imagination: 0.95,
@@ -241,6 +270,23 @@ window.SpecimenContent = {
         "La fotografia agisce come banco di prova del linguaggio. Mi permette di isolare ritmo, luce, superficie e soglia prima, oltre o attorno al racconto.",
       line:
         "La singola immagine è una ferita controllata: ferma il tempo ma lascia uscire una vibrazione.",
+      beats: [
+        {
+          title: "Fixing",
+          copy:
+            "La fotografia trattiene l'istante abbastanza a lungo da far emergere ciò che nel flusso resterebbe invisibile."
+        },
+        {
+          title: "Surface",
+          copy:
+            "La luce diventa materiale critico: non descrive soltanto le cose, ma ne misura densità, distanza e temperatura."
+        },
+        {
+          title: "Afterimage",
+          copy:
+            "Una volta guardata, l'immagine continua a operare come resto attivo, quasi più forte del suo stesso momento di apparizione."
+        }
+      ],
       tags: ["stillness", "light", "surface"],
       metrics: {
         imagination: 0.83,
@@ -270,6 +316,23 @@ window.SpecimenContent = {
         "Qui il lavoro si apre alla dimensione situata. Non mostro solo contenuti: progetto condizioni percettive, soglie d'accesso e dinamiche di presenza.",
       line:
         "L'installazione è cinema espanso: non più schermo davanti allo sguardo, ma spazio che organizza il modo di stare.",
+      beats: [
+        {
+          title: "Entry",
+          copy:
+            "Il corpo entra in un dispositivo che non si limita a mostrare, ma costruisce già una postura, un ritmo, una relazione."
+        },
+        {
+          title: "Immersion",
+          copy:
+            "Lo spazio smette di essere cornice e diventa montaggio vivo: presenza, orientamento e durata vengono ridisegnati."
+        },
+        {
+          title: "Exit Residue",
+          copy:
+            "Anche dopo l'uscita, l'ambiente continua a lavorare come memoria corporale e come diagramma di esperienza."
+        }
+      ],
       tags: ["space", "presence", "experience"],
       metrics: {
         imagination: 0.89,
@@ -299,6 +362,23 @@ window.SpecimenContent = {
         "La produzione non è il retrobottega del lavoro. È la parte che permette all'intuizione di attraversare il reale senza perdere orientamento.",
       line:
         "Per me coordinare è una forma di regia: significa distribuire energia, non solo controllare risorse.",
+      beats: [
+        {
+          title: "Architecture",
+          copy:
+            "Ogni progetto viene aperto come sistema: priorità, margini, rischi e risorse entrano in una stessa sintassi operativa."
+        },
+        {
+          title: "Tension Control",
+          copy:
+            "Coordinare non significa neutralizzare il caos, ma contenerlo abbastanza da lasciarlo ancora produttivo."
+        },
+        {
+          title: "Delivery",
+          copy:
+            "La riuscita non è solo esecuzione corretta: è il punto in cui metodo e qualità sensibile smettono di apparire separati."
+        }
+      ],
       tags: ["coordination", "budget", "execution"],
       metrics: {
         imagination: 0.58,
@@ -328,6 +408,23 @@ window.SpecimenContent = {
         "Questa parte del lavoro costruisce chiarezza senza impoverire. Traduce complessità in strumenti leggibili, condivisibili e orientanti.",
       line:
         "Un buon dossier non serve a semplificare un'opera, ma a darle una soglia di accesso forte.",
+      beats: [
+        {
+          title: "Framing",
+          copy:
+            "Il dispositivo editoriale definisce una soglia d'ingresso: stabilisce cosa può essere letto e in quale ordine di intensità."
+        },
+        {
+          title: "Legibility",
+          copy:
+            "La complessità non viene ridotta, ma articolata. La pagina diventa luogo di montaggio e di allineamento percettivo."
+        },
+        {
+          title: "Transmission",
+          copy:
+            "Quando regge, un supporto editoriale continua a lavorare come interfaccia mentale ben oltre il suo uso immediato."
+        }
+      ],
       tags: ["writing", "framing", "clarity"],
       metrics: {
         imagination: 0.69,
@@ -357,6 +454,23 @@ window.SpecimenContent = {
         "Non penso la comunicazione come confezione finale. La considero una drammaturgia di accesso che decide come un progetto può essere ricevuto.",
       line:
         "Comunicare bene significa costruire una distanza giusta: abbastanza chiara da orientare, abbastanza aperta da far desiderare.",
+      beats: [
+        {
+          title: "Address",
+          copy:
+            "Ogni progetto deve trovare il suo modo di rivolgersi ai pubblici senza tradire la propria densità interna."
+        },
+        {
+          title: "Mediation",
+          copy:
+            "La mediazione culturale non addomestica: costruisce condizioni di accesso che mantengono attiva la complessità."
+        },
+        {
+          title: "Reception",
+          copy:
+            "Il risultato non è la semplice visibilità, ma una ricezione più attenta, più giusta, più disponibile alla permanenza."
+        }
+      ],
       tags: ["publics", "strategy", "mediation"],
       metrics: {
         imagination: 0.54,
@@ -386,6 +500,23 @@ window.SpecimenContent = {
         "La ricerca non arriva dopo la pratica. È una sua tensione interna. Insegno e studio per riformulare il modo in cui costruisco opere e processi.",
       line:
         "Ogni progetto forte contiene una pedagogia implicita: mostra anche un modo di guardare, pensare e organizzare il sensibile.",
+      beats: [
+        {
+          title: "Question",
+          copy:
+            "La ricerca apre il progetto da dentro: trasforma intuizioni implicite in domande operative, condivisibili, criticabili."
+        },
+        {
+          title: "Transmission",
+          copy:
+            "L'insegnamento non replica forme già date, ma rende leggibili i processi che fanno nascere quelle forme."
+        },
+        {
+          title: "Return",
+          copy:
+            "Quello che viene studiato e trasmesso rientra poi nella pratica come nuova precisione, nuovo rischio, nuova ipotesi."
+        }
+      ],
       tags: ["analysis", "transmission", "reflection"],
       metrics: {
         imagination: 0.72,
@@ -415,6 +546,23 @@ window.SpecimenContent = {
         "L'archivio è una zona viva della pratica. Non conserva soltanto il passato: riapre possibilità, ritorni, montaggi futuri e risonanze inattese.",
       line:
         "Mi interessa l'archivio quando smette di essere deposito e torna a comportarsi come materia narrativa.",
+      beats: [
+        {
+          title: "Deposit",
+          copy:
+            "I materiali entrano nell'archivio come residui, ma non perdono energia: trattengono ancora un margine di combustione."
+        },
+        {
+          title: "Reactivation",
+          copy:
+            "La lettura archiviale non è neutra: riattiva scarti, dettagli, documenti e prove come nuove possibilità di montaggio."
+        },
+        {
+          title: "Future Memory",
+          copy:
+            "Quando il resto torna a vibrare, l'archivio smette di essere passato e diventa materiale per ciò che ancora non esiste."
+        }
+      ],
       tags: ["documents", "memory", "afterimage"],
       metrics: {
         imagination: 0.78,
@@ -444,6 +592,23 @@ window.SpecimenContent = {
         "Il digitale mi interessa quando diventa linguaggio, alleato operativo e macchina concettuale. Non come ornamento futurista, ma come dispositivo preciso.",
       line:
         "L'innovazione mi interessa solo quando produce nuova leggibilità, nuova forza e nuova possibilità di esperienza.",
+      beats: [
+        {
+          title: "Interface",
+          copy:
+            "La superficie digitale non è un contenitore neutro: decide in che modo il pensiero diventa accesso, attrito, esperienza."
+        },
+        {
+          title: "Systemic Intelligence",
+          copy:
+            "Gli strumenti generativi diventano interessanti solo quando aiutano a vedere, ordinare o aprire complessità reale."
+        },
+        {
+          title: "Critical Extension",
+          copy:
+            "Il digitale conta quando estende la pratica senza sostituirla: come macchina critica, non come semplice spettacolo."
+        }
+      ],
       tags: ["interface", "AI", "creative coding"],
       metrics: {
         imagination: 0.86,
@@ -459,281 +624,6 @@ window.SpecimenContent = {
         heat: 0.52
       },
       relations: ["p03", "p04", "p05", "p08"]
-    }
-  ]
-};      }
-    },
-    {
-      id: "sumi",
-      label: "SUMI MODE",
-      field: "FIELD_09",
-      state: "SUSPENSION",
-      year: "2026",
-      kicker: "INTERVAL / TRACE / RESERVE",
-      title: "A field built from reserve and interval.",
-      description:
-        "La modalità sumi riorienta il materiale lungo l’asse della traccia e della sottrazione. Conta meno ciò che occupa spazio, più ciò che lo trattiene.",
-      statement:
-        "Ogni frammento viene valutato per capacità di trattenere forma con il minimo gesto. L’assenza diventa criterio, non vuoto.",
-      note:
-        "Sumi riduce il rumore e fa emergere il ritmo interno del materiale. La board non è più una costellazione: è una respirazione misurata.",
-      axisX: "X / RESERVE",
-      axisY: "Y / TRACE",
-      footer: ["VERSION 0.8", "SUMI / FIELD / JS", "INTERVAL MODE"],
-      metrics: [
-        ["lens", "subtraction"],
-        ["density", "rarefied"],
-        ["signal", "faint"],
-        ["logic", "interval"]
-      ],
-      map: {
-        xKey: "void",
-        yKey: "trace",
-        clusterKey: "silence",
-        emphasisKey: "discipline",
-        contour: "sumi"
-      }
-    },
-    {
-      id: "ember",
-      label: "EMBER MODE",
-      field: "FIELD_10",
-      state: "RESIDUAL HEAT",
-      year: "2026",
-      kicker: "RESIDUE / HEAT / EVIDENCE",
-      title: "A field where the archive keeps glowing.",
-      description:
-        "La modalità ember rilegge gli stessi frammenti come tracce termiche. Non cambia il materiale: cambia il livello di pressione che gli viene riconosciuto.",
-      statement:
-        "Qui l’archivio smette di sembrare neutro. Le relazioni diventano cicatrici, le concentrazioni diventano prove di intensità.",
-      note:
-        "Ember non aggiunge dramma ornamentale. Rende visibile il calore già presente nei frammenti e nelle loro prossimità narrative.",
-      axisX: "X / HEAT",
-      axisY: "Y / RESIDUE",
-      footer: ["VERSION 0.8", "EMBER / FIELD / JS", "THERMAL MODE"],
-      metrics: [
-        ["lens", "evidence"],
-        ["density", "compressed"],
-        ["signal", "active"],
-        ["logic", "residual"]
-      ],
-      map: {
-        xKey: "heat",
-        yKey: "residue",
-        clusterKey: "signal",
-        emphasisKey: "heat",
-        contour: "ember"
-      }
-    }
-  ],
-  entries: [
-    {
-      id: "a01",
-      code: "A_01",
-      slug: "threshold-notes",
-      type: "note",
-      year: "2026",
-      title: "Threshold Notes",
-      summary:
-        "Appunti sul margine come punto di montaggio, attesa e cambio di stato.",
-      detail:
-        "Una sequenza di annotazioni che usa la soglia come dispositivo di lettura. Non descrive opere finite: prepara il loro ingresso nel campo.",
-      note:
-        "Funziona come soglia semantica. Apre il sistema e lo ancora a un gesto curatoriale preciso.",
-      tags: ["margin", "editing", "entry point"],
-      metrics: {
-        silence: 0.78,
-        structure: 0.63,
-        residue: 0.32,
-        heat: 0.26,
-        trace: 0.84,
-        void: 0.8,
-        discipline: 0.74,
-        signal: 0.28
-      },
-      relations: ["a02", "a04", "a08"]
-    },
-    {
-      id: "a02",
-      code: "A_02",
-      slug: "image-residue-atlas",
-      type: "atlas",
-      year: "2026",
-      title: "Image Residue Atlas",
-      summary:
-        "Atlante di fotogrammi periferici, bordi, fuori fuoco e residui di scena.",
-      detail:
-        "Una raccolta di immagini minori trattate come prove, non come scarti. Serve a mostrare come il residuo possa reggere un’immaginazione intera.",
-      note:
-        "È il nucleo iconografico più denso del sistema. Non spiega il progetto: ne custodisce la materia.",
-      tags: ["still", "residue", "archive"],
-      metrics: {
-        silence: 0.42,
-        structure: 0.61,
-        residue: 0.91,
-        heat: 0.62,
-        trace: 0.56,
-        void: 0.35,
-        discipline: 0.58,
-        signal: 0.72
-      },
-      relations: ["a01", "a03", "a06", "a07"]
-    },
-    {
-      id: "a03",
-      code: "A_03",
-      slug: "signal-board",
-      type: "diagram",
-      year: "2026",
-      title: "Signal Board",
-      summary:
-        "Schema relazionale tra scene, note, elementi sonori e intensità percettive.",
-      detail:
-        "Una board che traduce il materiale in coordinate operative. Tiene insieme immaginario e produzione senza ridurre l’uno all’altra.",
-      note:
-        "È il frammento più sistemico. Selezionarlo dovrebbe sempre far capire che il progetto è un dispositivo, non solo un’immagine.",
-      tags: ["mapping", "production", "system"],
-      metrics: {
-        silence: 0.34,
-        structure: 0.9,
-        residue: 0.58,
-        heat: 0.44,
-        trace: 0.63,
-        void: 0.26,
-        discipline: 0.88,
-        signal: 0.67
-      },
-      relations: ["a02", "a04", "a05", "a08"]
-    },
-    {
-      id: "a04",
-      code: "A_04",
-      slug: "voice-fragment-study",
-      type: "audio",
-      year: "2026",
-      title: "Voice Fragment Study",
-      summary:
-        "Studio su voci spezzate, frasi non concluse e presenze acustiche laterali.",
-      detail:
-        "Lavora sul frammento sonoro come presenza intermittente. Il contenuto non viene normalizzato: resta esposto nel suo carattere incompleto.",
-      note:
-        "Introduce temperatura e vulnerabilità. È una voce che non occupa il centro ma cambia il clima dell’intero insieme.",
-      tags: ["voice", "fragment", "breath"],
-      metrics: {
-        silence: 0.61,
-        structure: 0.49,
-        residue: 0.47,
-        heat: 0.78,
-        trace: 0.82,
-        void: 0.51,
-        discipline: 0.46,
-        signal: 0.73
-      },
-      relations: ["a01", "a03", "a06"]
-    },
-    {
-      id: "a05",
-      code: "A_05",
-      slug: "curatorial-protocol",
-      type: "protocol",
-      year: "2026",
-      title: "Curatorial Protocol",
-      summary:
-        "Regole minime per ordinare materiali eterogenei senza appiattirne la differenza.",
-      detail:
-        "Un protocollo operativo che stabilisce soglie, priorità e criteri di vicinanza. Fa da spina dorsale al campo senza diventare norma opaca.",
-      note:
-        "È il punto in cui il progetto smette di essere solo atmosfera e dimostra di saper prendere decisioni.",
-      tags: ["method", "criteria", "sequence"],
-      metrics: {
-        silence: 0.52,
-        structure: 0.95,
-        residue: 0.36,
-        heat: 0.24,
-        trace: 0.42,
-        void: 0.48,
-        discipline: 0.93,
-        signal: 0.31
-      },
-      relations: ["a03", "a06", "a08"]
-    },
-    {
-      id: "a06",
-      code: "A_06",
-      slug: "dark-room-index",
-      type: "index",
-      year: "2026",
-      title: "Dark Room Index",
-      summary:
-        "Indice di prove visive e sonore ordinate per intensità, scarsità e permanenza.",
-      detail:
-        "L’indice non serve a chiudere il progetto ma a renderlo attraversabile. Ogni voce è una soglia d’accesso a una costellazione più ampia.",
-      note:
-        "Ha una funzione di orientamento reale. È uno dei luoghi in cui l’utente capisce perché restare nella pagina.",
-      tags: ["index", "orientation", "archive"],
-      metrics: {
-        silence: 0.66,
-        structure: 0.77,
-        residue: 0.69,
-        heat: 0.41,
-        trace: 0.58,
-        void: 0.62,
-        discipline: 0.82,
-        signal: 0.54
-      },
-      relations: ["a02", "a04", "a05", "a07"]
-    },
-    {
-      id: "a07",
-      code: "A_07",
-      slug: "scar-plate",
-      type: "plate",
-      year: "2026",
-      title: "Scar Plate",
-      summary:
-        "Lastra visiva trattata come superficie ferita, con picchi di calore e memoria residua.",
-      detail:
-        "Una composizione che conserva segni di pressione, abrasione e sopravvivenza. È l’elemento più vicino a una prova fisica del campo.",
-      note:
-        "Porta dentro il sistema una ferita visiva concreta. In ember deve stare vicino al centro della tensione.",
-      tags: ["plate", "scar", "evidence"],
-      metrics: {
-        silence: 0.24,
-        structure: 0.53,
-        residue: 0.96,
-        heat: 0.92,
-        trace: 0.38,
-        void: 0.16,
-        discipline: 0.44,
-        signal: 0.95
-      },
-      relations: ["a02", "a06", "a08"]
-    },
-    {
-      id: "a08",
-      code: "A_08",
-      slug: "return-loop",
-      type: "sequence",
-      year: "2026",
-      title: "Return Loop",
-      summary:
-        "Sequenza che rimonta gli stessi materiali per verificare cosa resta e cosa cambia.",
-      detail:
-        "Un loop di ritorno che misura la capacità dei frammenti di reggere riletture successive. È insieme verifica critica e dispositivo ritmico.",
-      note:
-        "Tiene insieme archivio e temporalità. È il frammento che più chiaramente lascia una traccia di metodo nel tempo.",
-      tags: ["loop", "time", "verification"],
-      metrics: {
-        silence: 0.57,
-        structure: 0.72,
-        residue: 0.64,
-        heat: 0.57,
-        trace: 0.75,
-        void: 0.54,
-        discipline: 0.69,
-        signal: 0.66
-      },
-      relations: ["a01", "a03", "a05", "a07"]
     }
   ]
 };
