@@ -178,7 +178,7 @@ button {
 }
 
 .prelude-inner {
-  width: min(100%, 760px);
+  width: min(100%, 780px);
   padding: clamp(24px, 5vw, 42px);
   border: 1px solid var(--line);
   border-radius: 28px;
@@ -198,7 +198,9 @@ button {
 .status-pill,
 .tag,
 .relation-pill,
-.ritual-key {
+.ritual-key,
+.beat-index,
+.coda-pill {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.16em;
@@ -216,14 +218,21 @@ button {
   line-height: 0.94;
   letter-spacing: -0.05em;
   font-weight: 700;
+  text-wrap: balance;
 }
 
 .prelude-copy {
-  width: min(100%, 56ch);
+  width: min(100%, 58ch);
   margin: 22px auto 0;
   font-size: 15px;
   line-height: 1.8;
   color: var(--text-soft);
+}
+
+.prelude-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
 }
 
 .prelude-button {
@@ -232,7 +241,6 @@ button {
   justify-content: center;
   min-height: 44px;
   padding: 0 18px;
-  margin-top: 28px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.025);
@@ -263,6 +271,7 @@ button {
 .hero,
 .stage,
 .manifesto,
+.sequence,
 .archive,
 .coda,
 .site-footer {
@@ -362,7 +371,8 @@ button {
 .panel-copy,
 .inspector-summary,
 .section-note,
-.field-caption {
+.field-caption,
+.ambient-meta {
   margin: 0;
   font-size: 15px;
   line-height: 1.78;
@@ -372,6 +382,26 @@ button {
 .hero-description {
   max-width: 62ch;
   margin-top: 22px;
+}
+
+.hero-ambient {
+  display: grid;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.ambient-line {
+  height: 1px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--line) 8%,
+      var(--accent-soft) 38%,
+      var(--electric-soft) 62%,
+      var(--line) 92%,
+      transparent 100%
+    );
 }
 
 .hero-side {
@@ -467,8 +497,10 @@ button {
   line-height: 1.45;
 }
 
-.stage {
-  margin-bottom: 22px;
+.stage,
+.sequence,
+.archive {
+  margin-bottom: 52px;
 }
 
 .stage-topline,
@@ -499,7 +531,8 @@ button {
 .meta-chip,
 .status-pill,
 .tag,
-.relation-pill {
+.relation-pill,
+.coda-pill {
   display: inline-flex;
   align-items: center;
   min-height: 28px;
@@ -591,9 +624,9 @@ button {
 
 .field-board {
   position: relative;
-  width: min(100%, 1120px);
+  width: min(100%, 1140px);
   margin: 0 auto;
-  aspect-ratio: 1320 / 940;
+  aspect-ratio: 1360 / 960;
 }
 
 .field-axis {
@@ -812,8 +845,46 @@ button {
   margin-bottom: 56px;
 }
 
-.archive {
-  margin-bottom: 52px;
+.beat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.beat-card {
+  padding: 20px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
+    rgba(255, 255, 255, 0.01);
+  box-shadow: var(--shadow);
+}
+
+.beat-index {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.beat-title {
+  margin: 16px 0 10px;
+  font-size: 22px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 680;
+}
+
+.beat-copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.72;
+  color: var(--text-soft);
 }
 
 .archive-grid {
@@ -880,16 +951,6 @@ button {
 
 .coda-row {
   margin-top: 18px;
-}
-
-.coda-pill {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.02);
 }
 
 .site-footer {
@@ -1058,7 +1119,8 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .archive-grid {
+  .archive-grid,
+  .beat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1098,7 +1160,8 @@ button {
 }
 
 @media (max-width: 580px) {
-  .archive-grid {
+  .archive-grid,
+  .beat-grid {
     grid-template-columns: 1fr;
   }
 
