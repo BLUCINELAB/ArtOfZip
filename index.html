@@ -3,141 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Specimen Interface — v2</title>
-  <meta name="description" content="Single page artistica diagrammatica e austera" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Anton Zip — Specimen Field</title>
+  <meta
+    name="description"
+    content="Archivio espositivo digitale tra tracce, studi, sistemi visivi e dispositivi curatoriali."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="noise"></div>
-  <div class="grid-overlay" id="gridOverlay"></div>
-  <div class="vignette"></div>
+<body data-mode="quiet" data-grid="on" data-notes="on">
+  <div class="background-layer background-layer-grid"></div>
+  <div class="background-layer background-layer-noise"></div>
+  <div class="background-layer background-layer-vignette"></div>
+  <div class="cursor-halo" id="cursorHalo"></div>
 
-  <main class="page">
-    <header class="topbar">
-      <div class="topbar-left">
-        <span class="system-label">SPECIMEN INTERFACE</span>
-        <span class="system-sep"></span>
-        <span class="system-meta">FIELD_02</span>
+  <main class="shell">
+    <header class="masthead">
+      <div class="masthead-left">
+        <span id="systemLabel">SPECIMEN FIELD</span>
+        <span class="divider"></span>
+        <span id="fieldLabel">FIELD_05</span>
       </div>
-      <div class="topbar-right">
-        <span class="system-meta">STATE: OBSERVATION</span>
-        <span class="system-meta">YEAR: 2026</span>
+
+      <div class="masthead-right">
+        <a class="utility-link" href="/" aria-label="Back home">antonzip</a>
+        <button class="utility-button" id="modeButton" type="button" aria-label="Change mode">
+          <span class="utility-button-dot"></span>
+          <span id="modeButtonLabel">QUIET MODE</span>
+        </button>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">ARCHIVE / VISUAL FIELD / INDEX</p>
-        <h1 class="hero-title">
-          A silent<br />
-          contemporary system.
+    <section class="hero-block">
+      <div class="hero-main">
+        <p class="hero-kicker" id="heroKicker">ARCHIVE / FIELD / SPECIMEN</p>
+        <h1 class="hero-title" id="heroTitle">
+          A quiet<br />
+          exhibition<br />
+          system.
         </h1>
-        <p class="hero-text">
-          No portfolio. No spectacle. Only field, measure, trace.
+        <p class="hero-description" id="heroDescription">
+          A public test space for traces, studies, fragments and measured atmospheres.
+          Not a portfolio. A living curatorial field.
         </p>
       </div>
 
-      <aside class="hero-side">
-        <div class="side-block">
-          <div class="side-title">INDEX</div>
-          <ul class="side-list">
-            <li>01 / field mass</li>
-            <li>02 / annotation</li>
-            <li>03 / axis drift</li>
-            <li>04 / node state</li>
-            <li>05 / grid control</li>
-          </ul>
-        </div>
+      <aside class="hero-aside">
+        <article class="info-card">
+          <p class="card-label" id="indexCardLabel">INDEX</p>
+          <div class="mode-list" id="indexCardList"></div>
+        </article>
 
-        <div class="side-block">
-          <div class="side-title">SPEC</div>
-          <p>grid: adaptive / toggle</p>
-          <p>mode: overlay + drift</p>
-          <p>motion: 0.2°</p>
-          <p>depth: 2 layers</p>
-        </div>
+        <article class="info-card compact-card">
+          <p class="card-label" id="specCardLabel">SPEC</p>
+          <div class="metric-grid" id="specCardList"></div>
+        </article>
       </aside>
     </section>
 
-    <section class="specimen-board" id="specimenBoard">
+    <section class="board-panel" id="boardPanel">
       <div class="board-frame board-frame-top-left"></div>
       <div class="board-frame board-frame-top-right"></div>
       <div class="board-frame board-frame-bottom-left"></div>
       <div class="board-frame board-frame-bottom-right"></div>
 
-      <div class="board-axis board-axis-x"></div>
-      <div class="board-axis board-axis-y"></div>
-
-      <div class="board-label board-label-a">AXIS / Y</div>
-      <div class="board-label board-label-b">FIELD / CENTRAL</div>
-      <div class="board-label board-label-c">ANNOTATION / ACTIVE</div>
-
-      <div id="specimen-svg-wrap" class="specimen-svg-wrap"></div>
-
-      <div class="note note-1">
-        <span class="note-index">[01]</span>
-        <span class="note-text">FIELD / MASS / 0.71</span>
+      <div class="board-topline">
+        <span id="toplineLeft">STATE: OBSERVATION</span>
+        <span id="toplineRight">YEAR: 2026</span>
       </div>
 
-      <div class="note note-2">
-        <span class="note-index">[02]</span>
-        <span class="note-text">TRACE / SECONDARY</span>
+      <div class="board-view">
+        <div class="board-axis board-axis-horizontal"></div>
+        <div class="board-axis board-axis-vertical"></div>
+
+        <div class="board-axis-label board-axis-label-y" id="axisLabelY">AXIS / Y</div>
+        <div class="board-axis-label board-axis-label-x" id="axisLabelX">FIELD / RESIDUE</div>
+
+        <svg
+          class="field-svg"
+          id="fieldSvg"
+          viewBox="0 0 1200 1480"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        ></svg>
+
+        <div class="board-glow"></div>
+
+        <div class="annotation-layer" id="annotationLayer"></div>
       </div>
 
-      <div class="note note-3">
-        <span class="note-index">[03]</span>
-        <span class="note-text">DRIFT / 0.14°</span>
+      <div class="board-controls">
+        <button class="control-button" id="gridButton" type="button" aria-pressed="true">
+          <span class="control-dot"></span>
+          <span>GRID</span>
+        </button>
+
+        <button class="control-button" id="notesButton" type="button" aria-pressed="true">
+          <span class="control-dot"></span>
+          <span>NOTES</span>
+        </button>
+
+        <button class="control-button" id="regenButton" type="button">
+          <span class="control-dot"></span>
+          <span>REGENERATE</span>
+        </button>
       </div>
-
-      <div class="marker marker-1"></div>
-      <div class="marker marker-2"></div>
-      <div class="marker marker-3"></div>
-
-      <button class="grid-toggle" id="gridToggle" type="button" aria-pressed="true" aria-label="Toggle grid overlay">
-        <span class="toggle-dot" aria-hidden="true"></span>
-        <span class="toggle-label">GRID OVERLAY</span>
-      </button>
     </section>
 
-    <section class="lower-apparatus">
-      <div class="apparatus-left">
-        <p class="apparatus-label">READING NOTES</p>
-        <p class="apparatus-text">
-          The field is suspended between diagram and artifact.
-          Annotations function as reading apparatus, not explanation.
+    <section class="archive-strip">
+      <p class="section-kicker" id="entriesLabel">ARCHIVE ENTRIES</p>
+      <p class="section-note" id="entriesNote">
+        Small studies, visual residues and speculative interfaces collected as an open sequence.
+      </p>
+
+      <div class="entry-list" id="entryList"></div>
+    </section>
+
+    <section class="lower-grid">
+      <article class="lower-block">
+        <p class="block-label" id="notesLabel">READING NOTES</p>
+        <p class="block-copy" id="notesCopy">
+          The page behaves like an exhibition plate. Elements do not explain the work,
+          they frame a way of reading it.
         </p>
-      </div>
+      </article>
 
-      <div class="apparatus-center">
-        <div class="micro-grid">
-          <span>density</span><span>0.72</span>
-          <span>drift</span><span>0.14</span>
-          <span>noise</span><span>0.03</span>
-          <span>state</span><span>stable</span>
-        </div>
-      </div>
+      <article class="lower-block mono-block">
+        <p class="block-label" id="metricsLabel">SYSTEM METRICS</p>
+        <div class="metric-grid" id="metricsGrid"></div>
+      </article>
 
-      <div class="apparatus-right">
-        <p class="apparatus-label">COORDINATES</p>
-        <p class="apparatus-mono">X: 118.24 / Y: 08.93</p>
-        <p class="apparatus-mono">DRIFT: ACTIVE</p>
-        <p class="apparatus-mono">MODE: CURATORIAL</p>
-      </div>
+      <article class="lower-block mono-block">
+        <p class="block-label" id="coordsLabel">COORDINATES</p>
+        <div class="mode-list" id="coordsList"></div>
+      </article>
     </section>
 
-    <footer class="footer">
+    <footer class="site-footer">
       <div class="footer-line"></div>
-      <div class="footer-meta">
-        <span>VERSION 0.2</span>
+      <div class="footer-row" id="footerRow">
+        <span>VERSION 0.4</span>
         <span>HTML / CSS / JS</span>
-        <span>NO EXTERNAL MEDIA</span>
+        <span>PUBLIC TEST FIELD</span>
       </div>
     </footer>
   </main>
 
+  <script src="content.js"></script>
   <script src="entity.js"></script>
 </body>
 </html>
