@@ -1,482 +1,793 @@
 (() => {
-  const content = window.SpecimenContent;
-  if (!content || !Array.isArray(content.modes) || !content.modes.length) {
-    console.warn("SpecimenContent not found.");
+  const data = window.SpecimenContent;
+
+  if (!data || !Array.isArray(data.modes) || !Array.isArray(data.entries)) {
+    console.warn("SpecimenContent not available.");
     return;
   }
 
   const svgNS = "http://www.w3.org/2000/svg";
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  const $ = (s, root = document) => root.querySelector(s);
+  const $ = (selector, root = document) => root.querySelector(selector);
 
-  const els = {
+  const dom = {
     body: document.body,
     cursorHalo: $("#cursorHalo"),
-
-    systemLabel: $("#systemLabel"),
     fieldLabel: $("#fieldLabel"),
-    modeButton: $("#modeButton"),
-    modeButtonLabel: $("#modeButtonLabel"),
-
+    cycleModeButton: $("#cycleModeButton"),
+    cycleModeLabel: $("#cycleModeLabel"),
     heroKicker: $("#heroKicker"),
     heroTitle: $("#heroTitle"),
     heroDescription: $("#heroDescription"),
-
-    indexCardLabel: $("#indexCardLabel"),
-    indexCardList: $("#indexCardList"),
-    specCardLabel: $("#specCardLabel"),
-    specCardList: $("#specCardList"),
-
-    toplineLeft: $("#toplineLeft"),
-    toplineRight: $("#toplineRight"),
-
-    axisLabelY: $("#axisLabelY"),
+    modeStatement: $("#modeStatement"),
+    modeTabs: $("#modeTabs"),
+    workspaceMeta: $("#workspaceMeta"),
+    boardState: $("#boardState"),
+    boardYear: $("#boardYear"),
     axisLabelX: $("#axisLabelX"),
-
+    axisLabelY: $("#axisLabelY"),
     fieldSvg: $("#fieldSvg"),
-    annotationLayer: $("#annotationLayer"),
-
+    boardView: $("#boardView"),
+    fieldTooltip: $("#fieldTooltip"),
     gridButton: $("#gridButton"),
-    notesButton: $("#notesButton"),
-    regenButton: $("#regenButton"),
-
-    entriesLabel: $("#entriesLabel"),
-    entriesNote: $("#entriesNote"),
-    entryList: $("#entryList"),
-
-    notesLabel: $("#notesLabel"),
-    notesCopy: $("#notesCopy"),
-    metricsLabel: $("#metricsLabel"),
-    metricsGrid: $("#metricsGrid"),
-    coordsLabel: $("#coordsLabel"),
+    labelsButton: $("#labelsButton"),
+    motionButton: $("#motionButton"),
+    reshuffleButton: $("#reshuffleButton"),
+    archiveGrid: $("#archiveGrid"),
+    archiveNote: $("#archiveNote"),
+    systemNote: $("#systemNote"),
+    metricsList: $("#metricsList"),
     coordsList: $("#coordsList"),
-
-    footerRow: $("#footerRow")
+    footerRow: $("#footerRow"),
+    inspectorStatus: $("#inspectorStatus"),
+    inspectorCode: $("#inspectorCode"),
+    inspectorEntryTitle: $("#inspectorEntryTitle"),
+    inspectorSummary: $("#inspectorSummary"),
+    inspectorMeta: $("#inspectorMeta"),
+    inspectorRelations: $("#inspectorRelations"),
+    inspectorNote: $("#inspectorNote")
   };
 
-  let currentModeIndex = 0;
-  let rafId = null;
-  let timeStart = performance.now();
-  let scene = null;
-  let regenOffset = 0;
+  const state = {
+    modeIndex: 0,
+    selectedId: data.entries[0]?.id || null,
+    seedOffset: 0,
+    showGrid: true,
+    showLabels: true,
+    showMotion: !prefersReducedMotion.matches,
+    reducedMotion: prefersReducedMotion.matches,
+    scene: null,
+    rafId: null,
+    hoverId: null
+  };
 
-  function setText(el, value) {
-    if (el) el.textContent = value;
+  const entryMap = new Map(data.entries.map((entry) => [entry.id, entry]));
+
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+  function setText(element, value) {
+    if (element) element.textContent = value;
   }
 
-  function buildPairs(container, pairs, className = "mode-item") {
-    if (!container) return;
-    container.innerHTML = pairs
-      .map(
-        ([a, b]) =>
-          `<div class="${className}"><span class="mode-name">${a}</span><strong>${b}</strong></div>`
-      )
+  function setHTML(element, value) {
+    if (element) element.innerHTML = value;
+  }
+
+  function seededRandom(seed) {
+    let current = seed % 2147483647;
+    if (current <= 0) current += 2147483646;
+    return () => (current = (current * 16807) % 2147483647) / 2147483647;
+  }
+
+  function entryValue(entry, key) {
+    return entry.metrics[key] ?? 0;
+  }
+
+  function currentMode() {
+    return data.modes[state.modeIndex];
+  }
+
+  function currentEntry() {
+    return entryMap.get(state.selectedId) || data.entries[0];
+  }
+
+  function average(values) {
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+  }
+
+  function formatMetric(value) {
+    return value.toFixed(2);
+  }
+
+  function createMetricList(items) {
+    return items
+      .map(([key, value]) => `<span>${key}</span><strong>${value}</strong>`)
       .join("");
   }
 
-  function buildIndexList(container, items) {
-    if (!container) return;
-    container.innerHTML = items
-      .map(
-        (item) =>
-          `<div class="mode-item"><span class="mode-name">${item}</span><strong>•</strong></div>`
-      )
-      .join("");
+  function createMetaChip(text) {
+    return `<span class="meta-chip">${text}</span>`;
   }
 
-  function buildEntries(entries) {
-    els.entryList.innerHTML = entries
+  function buildModeTabs() {
+    dom.modeTabs.innerHTML = data.modes
       .map(
-        (entry) => `
-          <article class="entry-card">
-            <div class="entry-topline">
+        (mode, index) => `
+          <button
+            class="mode-tab"
+            type="button"
+            role="tab"
+            id="mode-tab-${mode.id}"
+            aria-selected="${index === state.modeIndex ? "true" : "false"}"
+            aria-controls="workspaceTitle"
+            data-mode-index="${index}"
+          >
+            ${mode.label}
+          </button>
+        `
+      )
+      .join("");
+
+    dom.modeTabs.querySelectorAll(".mode-tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        const index = Number(button.dataset.modeIndex);
+        setMode(index);
+      });
+    });
+  }
+
+  function buildArchive() {
+    dom.archiveGrid.innerHTML = data.entries
+      .map((entry) => {
+        const active = entry.id === state.selectedId;
+        return `
+          <button
+            class="archive-card"
+            type="button"
+            data-entry-id="${entry.id}"
+            aria-pressed="${active ? "true" : "false"}"
+          >
+            <div class="archive-card-top">
               <span>${entry.code}</span>
               <span>${entry.type}</span>
             </div>
-            <h3 class="entry-title">${entry.title}</h3>
-            <p class="entry-description">${entry.description}</p>
-            <div class="entry-line"></div>
-            <div class="entry-meta">
-              <span>${entry.metaLeft}</span>
+            <h3 class="archive-card-title">${entry.title}</h3>
+            <p class="archive-card-summary">${entry.summary}</p>
+            <div class="archive-divider" aria-hidden="true"></div>
+            <div class="archive-card-meta">
               <span>${entry.year}</span>
-              <span>${entry.metaRight}</span>
+              <span>${entry.tags[0]}</span>
+              <span>${entry.tags[1] || entry.tags[0]}</span>
             </div>
-          </article>
-        `
-      )
+          </button>
+        `;
+      })
       .join("");
+
+    dom.archiveGrid.querySelectorAll(".archive-card").forEach((button) => {
+      button.addEventListener("click", () => selectEntry(button.dataset.entryId, true));
+    });
   }
 
-  function buildAnnotations(annotations) {
-    els.annotationLayer.innerHTML = annotations
-      .map(
-        (item) => `
-          <article class="annotation-card" style="left:${item.x}%; top:${item.y}%;">
-            <span class="annotation-index">${item.index}</span>
-            <span class="annotation-tag">${item.tag}</span>
-            <p class="annotation-copy">${item.copy}</p>
-          </article>
-        `
-      )
-      .join("");
+  function uniqueRelations(entry) {
+    return entry.relations
+      .map((id) => entryMap.get(id))
+      .filter(Boolean);
   }
 
-  function applyMode(mode) {
-    els.body.setAttribute("data-mode", mode.id);
+  function computeModeMetrics(mode) {
+    const xValues = data.entries.map((entry) => entryValue(entry, mode.map.xKey));
+    const yValues = data.entries.map((entry) => entryValue(entry, mode.map.yKey));
+    const emphasisValues = data.entries.map((entry) => entryValue(entry, mode.map.emphasisKey));
 
-    setText(els.systemLabel, "SPECIMEN FIELD");
-    setText(els.fieldLabel, mode.field);
-    setText(els.modeButtonLabel, mode.label);
+    return [
+      ["entries", String(data.entries.length)],
+      ["x avg", formatMetric(average(xValues))],
+      ["y avg", formatMetric(average(yValues))],
+      ["focus", formatMetric(average(emphasisValues))],
+      ...mode.metrics
+    ];
+  }
 
-    setText(els.heroKicker, mode.kicker);
-    els.heroTitle.innerHTML = mode.title.join("<br />");
-    setText(els.heroDescription, mode.description);
+  function computeNodeData(mode) {
+    const width = 1200;
+    const height = 980;
+    const marginX = 124;
+    const marginY = 96;
+    const rand = seededRandom((state.modeIndex + 1) * 1009 + (state.seedOffset + 1) * 9173);
 
-    setText(els.indexCardLabel, mode.indexLabel);
-    buildIndexList(els.indexCardList, mode.indexItems);
+    const nodes = data.entries.map((entry, index) => {
+      const xBase = entryValue(entry, mode.map.xKey);
+      const yBase = entryValue(entry, mode.map.yKey);
+      const cluster = entryValue(entry, mode.map.clusterKey);
+      const emphasis = entryValue(entry, mode.map.emphasisKey);
+      const signal = entryValue(entry, "signal");
+      const jitterX = (rand() - 0.5) * 60 + Math.sin(index * 1.73 + state.seedOffset) * 18;
+      const jitterY = (rand() - 0.5) * 54 + Math.cos(index * 1.51 + state.seedOffset) * 16;
+      const x = marginX + xBase * (width - marginX * 2) + jitterX * (0.24 + cluster * 0.18);
+      const y = height - marginY - yBase * (height - marginY * 2) + jitterY * (0.18 + emphasis * 0.2);
+      const radius = 8 + emphasis * 13;
 
-    setText(els.specCardLabel, mode.specLabel);
-    buildPairs(els.specCardList, mode.specItems);
+      return {
+        id: entry.id,
+        entry,
+        x: clamp(x, 80, width - 80),
+        y: clamp(y, 72, height - 72),
+        radius,
+        emphasis,
+        cluster,
+        signal,
+        labelDx: x > width * 0.68 ? -18 : 18,
+        labelAnchor: x > width * 0.68 ? "end" : "start",
+        phase: rand() * Math.PI * 2
+      };
+    });
 
-    setText(els.toplineLeft, `STATE: ${mode.state}`);
-    setText(els.toplineRight, `YEAR: ${mode.year}`);
+    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+    const relations = [];
+    const relationKeys = new Set();
 
-    setText(els.axisLabelY, mode.axisY);
-    setText(els.axisLabelX, mode.axisX);
+    data.entries.forEach((entry) => {
+      entry.relations.forEach((relatedId) => {
+        const from = nodeMap.get(entry.id);
+        const to = nodeMap.get(relatedId);
+        if (!from || !to) return;
+        const key = [entry.id, relatedId].sort().join(":");
+        if (relationKeys.has(key)) return;
+        relationKeys.add(key);
+        relations.push({
+          key,
+          from,
+          to,
+          signal: Math.max(from.signal, to.signal),
+          active: state.selectedId === from.id || state.selectedId === to.id
+        });
+      });
+    });
 
-    setText(els.entriesLabel, mode.entriesLabel);
-    setText(els.entriesNote, mode.entriesNote);
-    buildEntries(mode.entries);
+    return { width, height, nodes, relations };
+  }
 
-    setText(els.notesLabel, mode.notesLabel);
-    setText(els.notesCopy, mode.notesCopy);
+  function buildSmoothPath(points) {
+    if (points.length < 2) return "";
+    let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
 
-    setText(els.metricsLabel, mode.metricsLabel);
-    buildPairs(els.metricsGrid, mode.metrics);
+    for (let i = 1; i < points.length; i += 1) {
+      const prev = points[i - 1];
+      const current = points[i];
+      const controlX = ((prev.x + current.x) / 2).toFixed(2);
+      d += ` Q ${controlX} ${prev.y.toFixed(2)} ${controlX} ${((prev.y + current.y) / 2).toFixed(2)}`;
+      d += ` T ${current.x.toFixed(2)} ${current.y.toFixed(2)}`;
+    }
 
-    setText(els.coordsLabel, mode.coordsLabel);
-    buildPairs(els.coordsList, mode.coords);
+    return d;
+  }
 
-    els.footerRow.innerHTML = mode.footer.map((item) => `<span>${item}</span>`).join("");
+  function computeContours(nodes, mode) {
+    const sortedByX = [...nodes].sort((a, b) => a.x - b.x);
+    const high = sortedByX.filter((node) => node.emphasis >= 0.6);
+    const mid = sortedByX.filter((node) => node.emphasis >= 0.42 && node.emphasis < 0.6);
+    const low = sortedByX.filter((node) => node.emphasis < 0.42);
+    const groups = [high, mid, low].filter((group) => group.length >= 2);
 
-    buildAnnotations(mode.annotations);
-    buildField(mode.visual);
+    return groups.map((group, index) => {
+      const yShift = index === 0 ? -20 : index === 1 ? 0 : 18;
+      const points = group.map((node, pointIndex) => ({
+        x: node.x,
+        y: clamp(
+          node.y + yShift + Math.sin(pointIndex * 1.3 + state.seedOffset + index) * 10,
+          64,
+          916
+        )
+      }));
+
+      return {
+        path: buildSmoothPath(points),
+        className: `contour ${mode.map.contour === "ember" && index === 0 ? "signal" : ""}`,
+        phase: index * 0.6 + state.seedOffset * 0.2
+      };
+    });
+  }
+
+  function createSvgNode(tag, attributes = {}) {
+    const element = document.createElementNS(svgNS, tag);
+    Object.entries(attributes).forEach(([key, value]) => {
+      element.setAttribute(key, String(value));
+    });
+    return element;
+  }
+
+  function relationPath(relation) {
+    const { from, to } = relation;
+    const controlX = (from.x + to.x) / 2;
+    const controlY = (from.y + to.y) / 2 - 34 + Math.abs(from.x - to.x) * 0.04;
+    return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} Q ${controlX.toFixed(2)} ${controlY.toFixed(2)} ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
+  }
+
+  function updateTooltipPosition(x, y, title, description) {
+    const tooltip = dom.fieldTooltip;
+    tooltip.hidden = false;
+    tooltip.innerHTML = `<strong>${title}</strong><br>${description}`;
+
+    const containerRect = dom.boardView.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const left = clamp(x - containerRect.left + 18, 16, containerRect.width - tooltipRect.width - 16);
+    const top = clamp(y - containerRect.top - tooltipRect.height - 14, 16, containerRect.height - tooltipRect.height - 16);
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  }
+
+  function hideTooltip() {
+    dom.fieldTooltip.hidden = true;
+  }
+
+  function renderField() {
+    const mode = currentMode();
+    const geometry = computeNodeData(mode);
+    const contours = computeContours(geometry.nodes, mode);
+    const svg = dom.fieldSvg;
+
+    svg.innerHTML = "";
+
+    const defs = createSvgNode("defs");
+    const radial = createSvgNode("radialGradient", {
+      id: "fieldGlow",
+      cx: "50%",
+      cy: "48%",
+      r: "58%"
+    });
+
+    [
+      { offset: "0%", color: "rgba(255,255,255,0.12)" },
+      { offset: "60%", color: "rgba(255,255,255,0.03)" },
+      { offset: "100%", color: "rgba(255,255,255,0)" }
+    ].forEach((stop) => {
+      const element = createSvgNode("stop", {
+        offset: stop.offset,
+        "stop-color": stop.color
+      });
+      radial.appendChild(element);
+    });
+
+    defs.appendChild(radial);
+    svg.appendChild(defs);
+
+    const glow = createSvgNode("ellipse", {
+      cx: geometry.width * 0.52,
+      cy: geometry.height * 0.48,
+      rx: 280,
+      ry: 220,
+      fill: "url(#fieldGlow)"
+    });
+    svg.appendChild(glow);
+
+    const contourGroup = createSvgNode("g");
+    const relationGroup = createSvgNode("g");
+    const haloGroup = createSvgNode("g");
+    const nodeGroup = createSvgNode("g");
+
+    const contourElements = contours.map((contour) => {
+      const path = createSvgNode("path", {
+        d: contour.path,
+        class: contour.className
+      });
+      contourGroup.appendChild(path);
+      return { el: path, phase: contour.phase };
+    });
+
+    const relationElements = geometry.relations.map((relation) => {
+      const path = createSvgNode("path", {
+        d: relationPath(relation),
+        class: `relation-line ${relation.signal > 0.72 ? "signal" : ""} ${relation.active ? "active" : ""}`
+      });
+      relationGroup.appendChild(path);
+      return { el: path, relation };
+    });
+
+    const haloElements = [];
+    const nodeElements = [];
+
+    geometry.nodes.forEach((node) => {
+      const group = createSvgNode("g", {
+        class: `node-group ${node.id === state.selectedId ? "active" : ""}`,
+        "data-entry-id": node.id
+      });
+
+      const halo = createSvgNode("circle", {
+        class: "halo",
+        cx: node.x.toFixed(2),
+        cy: node.y.toFixed(2),
+        r: (node.radius * 1.9).toFixed(2)
+      });
+      halo.style.opacity = (0.05 + node.emphasis * 0.14).toFixed(3);
+      haloGroup.appendChild(halo);
+      haloElements.push({ el: halo, baseR: node.radius * 1.9, phase: node.phase, entryId: node.id });
+
+      const hit = createSvgNode("circle", {
+        class: "node-hit",
+        cx: node.x.toFixed(2),
+        cy: node.y.toFixed(2),
+        r: (node.radius + 16).toFixed(2),
+        tabindex: "0",
+        role: "button",
+        "aria-label": `${node.entry.title}, ${node.entry.type}, ${node.entry.year}`
+      });
+
+      const core = createSvgNode("circle", {
+        class: `node-core ${node.signal >= 0.72 ? "signal" : ""}`,
+        cx: node.x.toFixed(2),
+        cy: node.y.toFixed(2),
+        r: node.radius.toFixed(2)
+      });
+      core.style.opacity = (0.72 + node.emphasis * 0.24).toFixed(3);
+
+      const ring = createSvgNode("circle", {
+        class: "node-ring",
+        cx: node.x.toFixed(2),
+        cy: node.y.toFixed(2),
+        r: (node.radius + 6).toFixed(2)
+      });
+
+      const label = createSvgNode("text", {
+        class: "node-label",
+        x: (node.x + node.labelDx).toFixed(2),
+        y: (node.y - 8).toFixed(2),
+        "text-anchor": node.labelAnchor
+      });
+      label.textContent = node.entry.code;
+
+      const note = createSvgNode("text", {
+        class: "node-note",
+        x: (node.x + node.labelDx).toFixed(2),
+        y: (node.y + 10).toFixed(2),
+        "text-anchor": node.labelAnchor
+      });
+      note.textContent = node.entry.title;
+
+      hit.addEventListener("click", () => selectEntry(node.id, true));
+      hit.addEventListener("focus", () => {
+        state.hoverId = node.id;
+        showTooltipForNode(node);
+      });
+      hit.addEventListener("blur", () => {
+        state.hoverId = null;
+        hideTooltip();
+      });
+      hit.addEventListener("mouseenter", () => {
+        state.hoverId = node.id;
+      });
+      hit.addEventListener("mouseleave", () => {
+        state.hoverId = null;
+        hideTooltip();
+      });
+      hit.addEventListener("mousemove", (event) => {
+        showTooltipForNode(node, event.clientX, event.clientY);
+      });
+      hit.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectEntry(node.id, true);
+        }
+      });
+
+      group.appendChild(hit);
+      group.appendChild(core);
+      group.appendChild(ring);
+      group.appendChild(label);
+      group.appendChild(note);
+      nodeGroup.appendChild(group);
+
+      nodeElements.push({
+        id: node.id,
+        node,
+        group,
+        hit,
+        core,
+        ring,
+        label,
+        note,
+        baseRadius: node.radius
+      });
+    });
+
+    svg.appendChild(contourGroup);
+    svg.appendChild(relationGroup);
+    svg.appendChild(haloGroup);
+    svg.appendChild(nodeGroup);
+
+    state.scene = {
+      geometry,
+      contourElements,
+      relationElements,
+      haloElements,
+      nodeElements
+    };
+
+    startAnimation();
+  }
+
+  function showTooltipForNode(node, clientX, clientY) {
+    if (!clientX || !clientY) {
+      const rect = dom.boardView.getBoundingClientRect();
+      const x = rect.left + (node.x / 1200) * rect.width;
+      const y = rect.top + (node.y / 980) * rect.height;
+      updateTooltipPosition(x, y, node.entry.title, node.entry.summary);
+      return;
+    }
+
+    updateTooltipPosition(clientX, clientY, node.entry.title, node.entry.summary);
+  }
+
+  function updateInspector() {
+    const entry = currentEntry();
+    const mode = currentMode();
+    const node = state.scene?.geometry.nodes.find((item) => item.id === entry.id);
+
+    setText(dom.inspectorCode, entry.code);
+    setText(dom.inspectorEntryTitle, entry.title);
+    setText(dom.inspectorSummary, entry.detail);
+    setText(dom.inspectorNote, entry.note);
+    setText(dom.inspectorStatus, `${mode.label}`);
+    dom.inspectorStatus.classList.add("active");
+
+    const metaItems = [
+      ["type", entry.type],
+      ["year", entry.year],
+      ["x", formatMetric(entryValue(entry, mode.map.xKey))],
+      ["y", formatMetric(entryValue(entry, mode.map.yKey))],
+      ["focus", formatMetric(entryValue(entry, mode.map.emphasisKey))],
+      ["links", String(entry.relations.length)]
+    ];
+    setHTML(dom.inspectorMeta, createMetricList(metaItems));
+
+    dom.inspectorRelations.innerHTML = [
+      ...entry.tags.map((tag) => `<span class="tag">${tag}</span>`),
+      ...uniqueRelations(entry).map((related) => `<button class="relation-pill" type="button" data-related-id="${related.id}">${related.code}</button>`)
+    ].join("");
+
+    dom.inspectorRelations.querySelectorAll("[data-related-id]").forEach((button) => {
+      button.addEventListener("click", () => selectEntry(button.dataset.relatedId, true));
+    });
+
+    const coords = [
+      [mode.map.xKey, formatMetric(entryValue(entry, mode.map.xKey))],
+      [mode.map.yKey, formatMetric(entryValue(entry, mode.map.yKey))],
+      ["field", mode.field],
+      ["state", mode.state.toLowerCase()],
+      ["node x", node ? String(Math.round(node.x)) : "—"],
+      ["node y", node ? String(Math.round(node.y)) : "—"]
+    ];
+
+    setHTML(dom.coordsList, createMetricList(coords));
+  }
+
+  function updateArchiveSelection() {
+    dom.archiveGrid.querySelectorAll(".archive-card").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.entryId === state.selectedId));
+    });
+  }
+
+  function updateNodeSelection() {
+    if (!state.scene) return;
+
+    state.scene.nodeElements.forEach((item) => {
+      item.group.classList.toggle("active", item.id === state.selectedId);
+    });
+
+    state.scene.relationElements.forEach((item) => {
+      const active = item.relation.from.id === state.selectedId || item.relation.to.id === state.selectedId;
+      item.el.classList.toggle("active", active);
+    });
+  }
+
+  function selectEntry(entryId, scrollIntoView = false) {
+    if (!entryMap.has(entryId)) return;
+    state.selectedId = entryId;
+    updateInspector();
+    updateArchiveSelection();
+    updateNodeSelection();
+
+    if (scrollIntoView) {
+      const activeCard = dom.archiveGrid.querySelector(`[data-entry-id="${entryId}"]`);
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+      }
+    }
+  }
+
+  function updateModeText() {
+    const mode = currentMode();
+
+    dom.body.setAttribute("data-mode", mode.id);
+    setText(dom.fieldLabel, mode.field);
+    setText(dom.cycleModeLabel, mode.label);
+    setText(dom.heroKicker, mode.kicker);
+    setText(dom.heroTitle, mode.title);
+    setText(dom.heroDescription, mode.description);
+    setText(dom.modeStatement, mode.statement);
+    setText(dom.boardState, `STATE: ${mode.state}`);
+    setText(dom.boardYear, `YEAR: ${mode.year}`);
+    setText(dom.axisLabelX, mode.axisX);
+    setText(dom.axisLabelY, mode.axisY);
+    setText(dom.archiveNote, "L’archivio non replica la board: la rende verificabile. Qui ogni elemento conserva titolo, tipo, anno e funzione nel sistema.");
+    setText(dom.systemNote, mode.note);
+    setHTML(dom.metricsList, createMetricList(computeModeMetrics(mode)));
+    setHTML(dom.footerRow, mode.footer.map((item) => `<span>${item}</span>`).join(""));
+    setHTML(
+      dom.workspaceMeta,
+      [
+        createMetaChip(mode.label),
+        createMetaChip(mode.axisX),
+        createMetaChip(mode.axisY),
+        createMetaChip(`${data.entries.length} entries`)
+      ].join("")
+    );
+
+    dom.modeTabs.querySelectorAll(".mode-tab").forEach((button, index) => {
+      button.setAttribute("aria-selected", String(index === state.modeIndex));
+    });
+  }
+
+  function renderAll() {
+    updateModeText();
+    buildArchive();
+    renderField();
+    updateInspector();
+    updateArchiveSelection();
+  }
+
+  function setMode(index) {
+    state.modeIndex = index;
+    state.seedOffset = 0;
+    renderAll();
   }
 
   function nextMode() {
-    currentModeIndex = (currentModeIndex + 1) % content.modes.length;
-    applyMode(content.modes[currentModeIndex]);
+    const nextIndex = (state.modeIndex + 1) % data.modes.length;
+    setMode(nextIndex);
   }
 
   function toggleGrid() {
-    const isOn = els.body.getAttribute("data-grid") !== "off";
-    els.body.setAttribute("data-grid", isOn ? "off" : "on");
-    els.gridButton.setAttribute("aria-pressed", String(!isOn));
+    state.showGrid = !state.showGrid;
+    dom.body.setAttribute("data-grid", state.showGrid ? "on" : "off");
+    dom.gridButton.setAttribute("aria-pressed", String(state.showGrid));
   }
 
-  function toggleNotes() {
-    const isOn = els.body.getAttribute("data-notes") !== "off";
-    els.body.setAttribute("data-notes", isOn ? "off" : "on");
-    els.notesButton.setAttribute("aria-pressed", String(!isOn));
+  function toggleLabels() {
+    state.showLabels = !state.showLabels;
+    dom.body.setAttribute("data-labels", state.showLabels ? "on" : "off");
+    dom.labelsButton.setAttribute("aria-pressed", String(state.showLabels));
   }
 
-  function seedRand(seed) {
-    let s = seed % 2147483647;
-    if (s <= 0) s += 2147483646;
-    return () => (s = (s * 16807) % 2147483647) / 2147483647;
+  function toggleMotion() {
+    state.showMotion = !state.showMotion;
+    dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
+    dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+    startAnimation();
   }
 
-  function buildField(visual) {
-    cancelAnimationFrame(rafId);
-    timeStart = performance.now();
+  function reshuffle() {
+    state.seedOffset += 1;
+    renderField();
+    updateInspector();
+    updateArchiveSelection();
+  }
 
-    const width = 1200;
-    const height = 1480;
-    const cx = width * 0.5;
-    const cy = height * 0.5;
-
-    const rand = seedRand(visual.seed + regenOffset * 11);
-
-    els.fieldSvg.innerHTML = "";
-
-    const defs = document.createElementNS(svgNS, "defs");
-
-    const radial = document.createElementNS(svgNS, "radialGradient");
-    radial.setAttribute("id", "coreGradient");
-    radial.setAttribute("cx", "50%");
-    radial.setAttribute("cy", "40%");
-    radial.setAttribute("r", "55%");
-
-    const stop1 = document.createElementNS(svgNS, "stop");
-    stop1.setAttribute("offset", "0%");
-    stop1.setAttribute("stop-color", "rgba(255,255,255,0.75)");
-
-    const stop2 = document.createElementNS(svgNS, "stop");
-    stop2.setAttribute("offset", "55%");
-    stop2.setAttribute("stop-color", "rgba(255,255,255,0.12)");
-
-    const stop3 = document.createElementNS(svgNS, "stop");
-    stop3.setAttribute("offset", "100%");
-    stop3.setAttribute("stop-color", "rgba(255,255,255,0)");
-
-    radial.appendChild(stop1);
-    radial.appendChild(stop2);
-    radial.appendChild(stop3);
-    defs.appendChild(radial);
-    els.fieldSvg.appendChild(defs);
-
-    const gCore = document.createElementNS(svgNS, "g");
-    const gFlow = document.createElementNS(svgNS, "g");
-    const gMesh = document.createElementNS(svgNS, "g");
-    const gNodes = document.createElementNS(svgNS, "g");
-    const gShards = document.createElementNS(svgNS, "g");
-
-    els.fieldSvg.appendChild(gCore);
-    els.fieldSvg.appendChild(gFlow);
-    els.fieldSvg.appendChild(gMesh);
-    els.fieldSvg.appendChild(gNodes);
-    els.fieldSvg.appendChild(gShards);
-
-    const core = document.createElementNS(svgNS, "ellipse");
-    core.setAttribute("class", "core-blur");
-    core.setAttribute("cx", cx);
-    core.setAttribute("cy", cy);
-    core.setAttribute("rx", 170 * visual.coreScaleX);
-    core.setAttribute("ry", 360 * visual.coreScaleY);
-    gCore.appendChild(core);
-
-    const points = [];
-    const lineEls = [];
-    const nodeEls = [];
-
-    const density = visual.density;
-    const rows = Math.floor(density * 1.5);
-
-    for (let y = 0; y < rows; y++) {
-      const row = [];
-      const ny = y / (rows - 1);
-
-      for (let x = 0; x < density; x++) {
-        const nx = x / (density - 1);
-
-        const bodyProfile =
-          Math.exp(-Math.pow((ny - 0.2) / 0.12, 2)) * 0.95 +
-          Math.exp(-Math.pow((ny - 0.5) / 0.18, 2)) * 0.65 +
-          Math.exp(-Math.pow((ny - 0.82) / 0.13, 2)) * 0.9;
-
-        const widthFactor = 36 + bodyProfile * 200;
-        const sinWarp = Math.sin(ny * 7.8 + nx * 3.2) * 16;
-        const noiseX = (rand() - 0.5) * 28;
-        const noiseY = (rand() - 0.5) * 20;
-
-        let px = cx + (nx - 0.5) * widthFactor * 2 + sinWarp + noiseX;
-        let py = 120 + ny * 1180 + Math.sin(nx * 4.6 + ny * 5.4) * 12 + noiseY;
-
-        const distToCenter =
-          Math.abs(px - cx) / 280 + Math.abs(py - cy) / 520;
-
-        const weight = Math.max(0, 1.15 - distToCenter);
-
-        row.push({
-          x: px,
-          y: py,
-          baseX: px,
-          baseY: py,
-          nx,
-          ny,
-          weight,
-          signal:
-            Math.exp(-Math.pow((ny - 0.56) / 0.13, 2)) *
-            Math.exp(-Math.pow((nx - 0.52) / 0.22, 2)),
-          drift:
-            rand() * Math.PI * 2
-        });
-      }
-
-      points.push(row);
+  function animate(now) {
+    if (!state.scene || state.reducedMotion || !state.showMotion) {
+      dom.fieldSvg.style.transform = "";
+      cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+      return;
     }
 
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < density; x++) {
-        const p = points[y][x];
+    const t = now * 0.001;
+    const activeId = state.selectedId;
 
-        if (x < density - 1) {
-          const q = points[y][x + 1];
-          const line = document.createElementNS(svgNS, "path");
-          line.setAttribute("class", p.signal > 0.2 || q.signal > 0.2 ? "flow-line signal" : "flow-line");
-          line.style.opacity = (visual.lineAlpha + (p.weight + q.weight) * 0.06).toFixed(3);
+    dom.fieldSvg.style.transform = `translate(${(Math.sin(t * 0.22) * 1.2).toFixed(2)}px, ${(Math.cos(t * 0.2) * 0.8).toFixed(2)}px)`;
 
-          const mx = (p.x + q.x) / 2;
-          const my = (p.y + q.y) / 2;
-          const curve = Math.sin((p.ny + p.nx) * 10) * 8;
-
-          line.setAttribute(
-            "d",
-            `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} Q ${mx.toFixed(2)} ${(my + curve).toFixed(2)} ${q.x.toFixed(2)} ${q.y.toFixed(2)}`
-          );
-          gFlow.appendChild(line);
-          lineEls.push({ el: line, p, q, type: "h" });
-        }
-
-        if (y < rows - 1 && x % 2 === 0) {
-          const q = points[y + 1][x];
-          const line = document.createElementNS(svgNS, "line");
-          line.setAttribute("class", "mesh-line");
-          line.style.opacity = visual.meshOpacity.toFixed(3);
-          line.setAttribute("x1", p.x.toFixed(2));
-          line.setAttribute("y1", p.y.toFixed(2));
-          line.setAttribute("x2", q.x.toFixed(2));
-          line.setAttribute("y2", q.y.toFixed(2));
-          gMesh.appendChild(line);
-          lineEls.push({ el: line, p, q, type: "v" });
-        }
-
-        if (p.weight > 0.02 && rand() > 0.16) {
-          const node = document.createElementNS(svgNS, "circle");
-          let cls = "node";
-          if (p.signal > 0.28) cls = "node signal";
-          else if (p.weight < 0.35) cls = "node minor";
-
-          node.setAttribute("class", cls);
-          node.setAttribute("cx", p.x.toFixed(2));
-          node.setAttribute("cy", p.y.toFixed(2));
-          node.setAttribute(
-            "r",
-            (0.5 + p.weight * 1.9 * visual.nodeScale + p.signal * 1.6).toFixed(2)
-          );
-          node.style.opacity = Math.min(0.18 + p.weight * 0.78 + p.signal * visual.signalAlpha, 0.95).toFixed(3);
-          gNodes.appendChild(node);
-          nodeEls.push({ el: node, p, baseR: parseFloat(node.getAttribute("r")) });
-        }
-
-        if (p.signal > 0.18 && rand() > 0.72) {
-          const halo = document.createElementNS(svgNS, "circle");
-          halo.setAttribute("class", "halo");
-          halo.setAttribute("cx", p.x.toFixed(2));
-          halo.setAttribute("cy", p.y.toFixed(2));
-          halo.setAttribute("r", (12 + p.signal * 34).toFixed(2));
-          halo.style.opacity = (0.04 + p.signal * 0.08).toFixed(3);
-          gCore.appendChild(halo);
-        }
-      }
-    }
-
-    for (let i = 0; i < visual.layers; i++) {
-      const shard = document.createElementNS(svgNS, "path");
-      shard.setAttribute("class", "shard");
-
-      const sx = cx + (rand() - 0.5) * 360;
-      const sy = cy + (rand() - 0.5) * 760;
-      const a = rand() * Math.PI * 2;
-      const r1 = 24 + rand() * 80;
-      const r2 = 8 + rand() * 30;
-
-      const x1 = sx + Math.cos(a) * r1;
-      const y1 = sy + Math.sin(a) * r1;
-      const x2 = sx + Math.cos(a + 1.6) * r2;
-      const y2 = sy + Math.sin(a + 1.6) * r2;
-      const x3 = sx + Math.cos(a + 3.1) * (r1 * 0.7);
-      const y3 = sy + Math.sin(a + 3.1) * (r1 * 0.7);
-
-      shard.setAttribute(
-        "d",
-        `M ${x1.toFixed(2)} ${y1.toFixed(2)} L ${x2.toFixed(2)} ${y2.toFixed(2)} L ${x3.toFixed(2)} ${y3.toFixed(2)} Z`
-      );
-
-      shard.style.opacity = (0.05 + rand() * 0.08).toFixed(3);
-      gShards.appendChild(shard);
-    }
-
-    scene = {
-      lineEls,
-      nodeEls,
-      core,
-      visual
-    };
-
-    animate();
-  }
-
-  function animate(now = performance.now()) {
-    if (!scene) return;
-
-    const t = (now - timeStart) * 0.001;
-
-    scene.nodeEls.forEach((item) => {
-      const dx = Math.sin(t * 0.45 + item.p.drift + item.p.ny * 8) * (1.4 + item.p.signal * 2.8);
-      const dy = Math.cos(t * 0.36 + item.p.drift + item.p.nx * 7) * (1.2 + item.p.signal * 2.2);
-
-      const x = item.p.baseX + dx;
-      const y = item.p.baseY + dy;
-      item.p.x = x;
-      item.p.y = y;
-
-      item.el.setAttribute("cx", x.toFixed(2));
-      item.el.setAttribute("cy", y.toFixed(2));
-
-      const breath = 1 + Math.sin(t * 1.1 + item.p.drift) * 0.08;
-      item.el.setAttribute("r", (item.baseR * breath).toFixed(2));
+    state.scene.haloElements.forEach((item) => {
+      const isActive = item.entryId === activeId;
+      const pulse = 1 + Math.sin(t * (isActive ? 1.8 : 1.1) + item.phase) * (isActive ? 0.12 : 0.04);
+      item.el.setAttribute("r", (item.baseR * pulse).toFixed(2));
     });
 
-    scene.lineEls.forEach((item) => {
-      if (item.type === "h") {
-        const mx = (item.p.x + item.q.x) / 2;
-        const my = (item.p.y + item.q.y) / 2;
-        const curve = Math.sin(t * 0.7 + item.p.ny * 9 + item.p.nx * 4) * (4 + item.p.signal * 10);
-
-        item.el.setAttribute(
-          "d",
-          `M ${item.p.x.toFixed(2)} ${item.p.y.toFixed(2)} Q ${mx.toFixed(2)} ${(my + curve).toFixed(2)} ${item.q.x.toFixed(2)} ${item.q.y.toFixed(2)}`
-        );
-      } else {
-        item.el.setAttribute("x1", item.p.x.toFixed(2));
-        item.el.setAttribute("y1", item.p.y.toFixed(2));
-        item.el.setAttribute("x2", item.q.x.toFixed(2));
-        item.el.setAttribute("y2", item.q.y.toFixed(2));
-      }
+    state.scene.nodeElements.forEach((item) => {
+      const isActive = item.id === activeId;
+      const radius = item.baseRadius * (1 + Math.sin(t * 1.6 + item.node.phase) * (isActive ? 0.06 : 0.02));
+      item.core.setAttribute("r", radius.toFixed(2));
+      item.ring.setAttribute("r", (radius + 6 + (isActive ? 1.4 : 0)).toFixed(2));
     });
 
-    const driftX = Math.sin(t * 0.13) * 2.4;
-    const driftY = Math.cos(t * 0.11) * 1.8;
-    const rotate = Math.sin(t * 0.09) * 0.14;
+    state.scene.contourElements.forEach((item, index) => {
+      item.el.style.opacity = (0.48 + Math.sin(t * 0.6 + item.phase + index) * 0.1).toFixed(3);
+    });
 
-    els.fieldSvg.style.transform = `translate(${driftX}px, ${driftY}px) rotate(${rotate}deg)`;
-
-    rafId = requestAnimationFrame(animate);
+    state.rafId = requestAnimationFrame(animate);
   }
 
-  function regenerate() {
-    regenOffset += 1;
-    applyMode(content.modes[currentModeIndex]);
+  function startAnimation() {
+    if (state.rafId) {
+      cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+    }
+
+    if (state.reducedMotion || !state.showMotion) {
+      dom.fieldSvg.style.transform = "";
+      return;
+    }
+
+    state.rafId = requestAnimationFrame(animate);
   }
 
-  function handlePointerMove(e) {
-    if (!els.cursorHalo) return;
-    els.cursorHalo.style.left = `${e.clientX}px`;
-    els.cursorHalo.style.top = `${e.clientY}px`;
+  function handlePointerMove(event) {
+    if (!dom.cursorHalo || state.reducedMotion) return;
+    dom.cursorHalo.style.left = `${event.clientX}px`;
+    dom.cursorHalo.style.top = `${event.clientY}px`;
   }
 
-  function init() {
-    applyMode(content.modes[currentModeIndex]);
-
-    els.modeButton.addEventListener("click", nextMode);
-    els.gridButton.addEventListener("click", toggleGrid);
-    els.notesButton.addEventListener("click", toggleNotes);
-    els.regenButton.addEventListener("click", regenerate);
+  function bindEvents() {
+    dom.cycleModeButton.addEventListener("click", nextMode);
+    dom.gridButton.addEventListener("click", toggleGrid);
+    dom.labelsButton.addEventListener("click", toggleLabels);
+    dom.motionButton.addEventListener("click", toggleMotion);
+    dom.reshuffleButton.addEventListener("click", reshuffle);
 
     document.addEventListener("pointermove", handlePointerMove);
-
-    document.addEventListener("keydown", (e) => {
-      const key = e.key.toLowerCase();
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
       if (key === "m") nextMode();
       if (key === "g") toggleGrid();
-      if (key === "n") toggleNotes();
-      if (key === "r") regenerate();
+      if (key === "l") toggleLabels();
+      if (key === "d") toggleMotion();
+      if (key === "r") reshuffle();
     });
 
     window.addEventListener("resize", () => {
-      applyMode(content.modes[currentModeIndex]);
+      renderField();
+      updateInspector();
     });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (state.rafId) cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+      } else {
+        startAnimation();
+      }
+    });
+
+    if (typeof prefersReducedMotion.addEventListener === "function") {
+      prefersReducedMotion.addEventListener("change", (event) => {
+        state.reducedMotion = event.matches;
+        if (event.matches) state.showMotion = false;
+        dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
+        dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+        startAnimation();
+      });
+    } else if (typeof prefersReducedMotion.addListener === "function") {
+      prefersReducedMotion.addListener((event) => {
+        state.reducedMotion = event.matches;
+        if (event.matches) state.showMotion = false;
+        dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
+        dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+        startAnimation();
+      });
+    }
+  }
+
+  function init() {
+    buildModeTabs();
+    dom.body.setAttribute("data-grid", state.showGrid ? "on" : "off");
+    dom.body.setAttribute("data-labels", state.showLabels ? "on" : "off");
+    dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
+    dom.gridButton.setAttribute("aria-pressed", String(state.showGrid));
+    dom.labelsButton.setAttribute("aria-pressed", String(state.showLabels));
+    dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+    renderAll();
+    bindEvents();
   }
 
   document.addEventListener("DOMContentLoaded", init);
