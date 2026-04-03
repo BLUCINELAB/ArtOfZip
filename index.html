@@ -3,117 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Specimen Field — archivio espositivo</title>
-  <meta name="description" content="Un campo curatoriale per tracce, studi e frammenti. Sistema espositivo modulare a bassa intensità." />
+  <title>Anton Zip — Specimen Field</title>
+  <meta
+    name="description"
+    content="Campo curatoriale interattivo per frammenti audiovisivi, note di ricerca e residui espositivi."
+  />
   <meta name="color-scheme" content="dark" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body data-mode="quiet" data-grid="on" data-notes="on" data-reduced-motion="false">
-  <div class="background-layer-grid"></div>
-  <div class="background-layer-noise"></div>
-  <div class="background-layer-vignette"></div>
-  <div class="cursor-halo" aria-hidden="true"></div>
+<body data-mode="quiet" data-grid="on" data-labels="on" data-motion="on">
+  <div class="background-layer background-grid" aria-hidden="true"></div>
+  <div class="background-layer background-noise" aria-hidden="true"></div>
+  <div class="background-layer background-vignette" aria-hidden="true"></div>
+  <div class="cursor-halo" id="cursorHalo" aria-hidden="true"></div>
 
-  <main class="shell">
+  <main class="shell" id="top">
     <header class="masthead">
       <div class="masthead-left">
-        <span id="systemLabel">SPECIMEN FIELD</span>
-        <span class="divider" aria-hidden="true"></span>
-        <span id="fieldLabel">FIELD_05</span>
+        <span class="masthead-label">SPECIMEN FIELD</span>
+        <span class="masthead-divider" aria-hidden="true"></span>
+        <span id="fieldLabel">FIELD_08</span>
       </div>
+
       <div class="masthead-right">
-        <a class="utility-link" href="/" aria-label="Home">antonzip</a>
-        <button class="utility-button" id="modeButton" type="button" aria-label="Cambia modalità">
+        <a class="utility-link" href="/" aria-label="Torna alla home">antonzip</a>
+        <button class="utility-button" id="cycleModeButton" type="button" aria-label="Passa alla modalità successiva">
           <span class="utility-button-dot" aria-hidden="true"></span>
-          <span id="modeButtonLabel">QUIET MODE</span>
+          <span id="cycleModeLabel">QUIET MODE</span>
         </button>
       </div>
     </header>
 
-    <section class="hero-block">
+    <section class="hero" aria-labelledby="heroTitle">
       <div class="hero-main">
-        <p class="hero-kicker" id="heroKicker">ARCHIVE / FIELD / SPECIMEN</p>
-        <h1 class="hero-title" id="heroTitle">A quiet<br />exhibition<br />system.</h1>
-        <p class="hero-description" id="heroDescription">Una mappa curatoriale per frammenti, tracce e studi. Non un portfolio: un campo di lettura.</p>
+        <p class="eyebrow" id="heroKicker">ARCHIVE / FIELD / READING DEVICE</p>
+        <h1 class="hero-title" id="heroTitle">A field that lets the archive become legible.</h1>
+        <p class="hero-description" id="heroDescription">
+          Non un repertorio di effetti, ma un ambiente di lettura. Ogni nodo è un frammento reale,
+          ogni connessione è una relazione curatoriale, ogni modalità cambia il criterio con cui il materiale si lascia vedere.
+        </p>
       </div>
-      <aside class="hero-aside">
-        <article class="info-card" aria-labelledby="indexLabel">
-          <p class="card-label" id="indexLabel">INDICE MODALITÀ</p>
-          <div id="indexList" class="mode-list"></div>
+
+      <div class="hero-aside">
+        <article class="panel compact-panel">
+          <p class="panel-label">DIREZIONE</p>
+          <p class="panel-copy" id="modeStatement">
+            La modalità attiva non cambia il tema grafico: cambia il modo in cui i materiali vengono ordinati, misurati e messi in tensione.
+          </p>
         </article>
-      </aside>
-    </section>
 
-    <section class="board-panel" id="boardPanel" aria-label="Mappa interattiva del campo">
-      <div class="board-frame top-left" aria-hidden="true"></div>
-      <div class="board-frame top-right" aria-hidden="true"></div>
-      <div class="board-frame bottom-left" aria-hidden="true"></div>
-      <div class="board-frame bottom-right" aria-hidden="true"></div>
-
-      <div class="board-topline">
-        <span id="toplineLeft">STATE: OBSERVATION</span>
-        <span id="toplineRight">YEAR: 2026</span>
-      </div>
-
-      <div class="board-view">
-        <div class="board-axis horizontal" aria-hidden="true"></div>
-        <div class="board-axis vertical" aria-hidden="true"></div>
-        <div class="board-axis-label axis-y" id="axisLabelY">AXIS / Y</div>
-        <div class="board-axis-label axis-x" id="axisLabelX">FIELD / RESIDUE</div>
-
-        <svg class="field-svg" id="fieldSvg" viewBox="0 0 1200 1480" preserveAspectRatio="xMidYMid meet" aria-label="Mappa interattiva dei nodi"></svg>
-        <div class="board-glow" aria-hidden="true"></div>
-        <div id="tooltipLayer" class="tooltip-layer" aria-live="polite"></div>
-      </div>
-
-      <div class="board-controls">
-        <button class="control-button" id="gridButton" type="button" aria-pressed="true" aria-label="Mostra griglia di sfondo">
-          <span class="control-dot" aria-hidden="true"></span>
-          <span>GRID</span>
-        </button>
-        <button class="control-button" id="annotationsButton" type="button" aria-pressed="true" aria-label="Mostra annotazioni">
-          <span class="control-dot" aria-hidden="true"></span>
-          <span>ANNOTAZIONI</span>
-        </button>
-        <button class="control-button" id="regenButton" type="button" aria-label="Rigenera disposizione">
-          <span class="control-dot" aria-hidden="true"></span>
-          <span>RIGENERA</span>
-        </button>
+        <article class="panel compact-panel">
+          <p class="panel-label">MODALITÀ</p>
+          <div class="mode-tabs" id="modeTabs" role="tablist" aria-label="Modalità di lettura"></div>
+        </article>
       </div>
     </section>
 
-    <section class="archive-strip" aria-labelledby="entriesLabel">
-      <p class="section-kicker" id="entriesLabel">ARCHIVIO</p>
-      <p class="section-note" id="entriesNote">Frammenti, residui visivi e interfacce speculative.</p>
-      <div class="entry-list" id="entryList"></div>
+    <section class="workspace" aria-labelledby="workspaceTitle">
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">CURRENT FIELD</p>
+          <h2 class="workspace-title" id="workspaceTitle">Mappa relazionale dell’archivio</h2>
+        </div>
+
+        <div class="workspace-meta" id="workspaceMeta" aria-live="polite"></div>
+      </div>
+
+      <div class="workspace-grid">
+        <section class="board-panel" aria-labelledby="boardTitle">
+          <div class="board-shell">
+            <div class="board-frame board-frame-top-left" aria-hidden="true"></div>
+            <div class="board-frame board-frame-top-right" aria-hidden="true"></div>
+            <div class="board-frame board-frame-bottom-left" aria-hidden="true"></div>
+            <div class="board-frame board-frame-bottom-right" aria-hidden="true"></div>
+
+            <div class="board-topline">
+              <span id="boardState">STATE: OBSERVATION</span>
+              <span id="boardYear">YEAR: 2026</span>
+            </div>
+
+            <div class="board-view" id="boardView">
+              <h3 class="sr-only" id="boardTitle">Campo interattivo dei frammenti</h3>
+              <p class="sr-only" id="boardDescription">
+                Usa tab o frecce per raggiungere i nodi. Premi invio o spazio per aprire un frammento nell’ispettore laterale.
+              </p>
+
+              <div class="board-axis board-axis-horizontal" aria-hidden="true"></div>
+              <div class="board-axis board-axis-vertical" aria-hidden="true"></div>
+              <div class="board-axis-label board-axis-label-y" id="axisLabelY">Y / STRUCTURE</div>
+              <div class="board-axis-label board-axis-label-x" id="axisLabelX">X / SILENCE</div>
+
+              <svg
+                class="field-svg"
+                id="fieldSvg"
+                viewBox="0 0 1200 980"
+                preserveAspectRatio="xMidYMid meet"
+                role="img"
+                aria-labelledby="boardTitle boardDescription"
+              ></svg>
+
+              <div class="field-tooltip" id="fieldTooltip" hidden></div>
+            </div>
+
+            <div class="board-controls" aria-label="Controlli del campo">
+              <button class="control-button" id="gridButton" type="button" aria-pressed="true">
+                <span class="control-dot" aria-hidden="true"></span>
+                <span>GRID</span>
+              </button>
+              <button class="control-button" id="labelsButton" type="button" aria-pressed="true">
+                <span class="control-dot" aria-hidden="true"></span>
+                <span>LABELS</span>
+              </button>
+              <button class="control-button" id="motionButton" type="button" aria-pressed="true">
+                <span class="control-dot" aria-hidden="true"></span>
+                <span>MOTION</span>
+              </button>
+              <button class="control-button" id="reshuffleButton" type="button">
+                <span class="control-dot" aria-hidden="true"></span>
+                <span>RESHUFFLE</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="inspector panel" aria-labelledby="inspectorTitle">
+          <div class="inspector-topline">
+            <p class="panel-label" id="inspectorTitle">INSPECTOR</p>
+            <span class="status-pill" id="inspectorStatus">SELECTED</span>
+          </div>
+
+          <div class="inspector-body" id="inspectorBody">
+            <p class="inspector-code" id="inspectorCode">A_01</p>
+            <h3 class="inspector-title" id="inspectorEntryTitle">Threshold Notes</h3>
+            <p class="inspector-summary" id="inspectorSummary">
+              Una serie di appunti che trattano il margine come luogo di montaggio e di attesa.
+            </p>
+
+            <div class="inspector-grid" id="inspectorMeta"></div>
+
+            <div class="inspector-section">
+              <p class="panel-label">RELAZIONI</p>
+              <div class="tag-row" id="inspectorRelations"></div>
+            </div>
+
+            <div class="inspector-section">
+              <p class="panel-label">NOTE</p>
+              <p class="panel-copy" id="inspectorNote">
+                Seleziona un frammento dal campo o dall’archivio per vedere come cambia il suo posizionamento nelle diverse modalità.
+              </p>
+            </div>
+          </div>
+        </aside>
+      </div>
     </section>
 
-    <section class="lower-grid">
-      <article class="lower-block">
-        <p class="block-label" id="notesLabel">NOTE DI LETTURA</p>
-        <p class="block-copy" id="notesCopy">La pagina si comporta come una lastra espositiva. Non spiega l’opera, ma inquadra un modo di leggerla.</p>
+    <section class="archive" aria-labelledby="archiveTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">ARCHIVE ENTRIES</p>
+          <h2 class="section-title" id="archiveTitle">Frammenti consultabili</h2>
+        </div>
+        <p class="section-note" id="archiveNote">
+          L’archivio non replica la board: la rende verificabile. Qui ogni elemento conserva titolo, tipo, anno e funzione nel sistema.
+        </p>
+      </div>
+
+      <div class="archive-grid" id="archiveGrid"></div>
+    </section>
+
+    <section class="system-strip">
+      <article class="panel compact-panel">
+        <p class="panel-label">MODE NOTE</p>
+        <p class="panel-copy" id="systemNote"></p>
       </article>
-      <article class="lower-block mono-block" id="metricsBlock" aria-labelledby="metricsLabel">
-        <p class="block-label" id="metricsLabel">METRICHE SISTEMA</p>
-        <div id="metricsList" class="metric-grid"></div>
+
+      <article class="panel compact-panel mono-panel">
+        <p class="panel-label">SYSTEM METRICS</p>
+        <div class="metric-list" id="metricsList"></div>
       </article>
-      <article class="lower-block mono-block" id="coordsBlock" aria-labelledby="coordsLabel">
-        <p class="block-label" id="coordsLabel">COORDINATE CORRENTI</p>
-        <div id="coordsList" class="metric-grid"></div>
+
+      <article class="panel compact-panel mono-panel">
+        <p class="panel-label">CURRENT COORDINATES</p>
+        <div class="metric-list" id="coordsList"></div>
       </article>
     </section>
 
     <footer class="site-footer">
       <div class="footer-line" aria-hidden="true"></div>
       <div class="footer-row" id="footerRow">
-        <span>VERSION 0.5</span>
+        <span>VERSION 0.8</span>
         <span>HTML / CSS / JS</span>
-        <span>PUBLIC TEST FIELD</span>
+        <span>FIELD READY</span>
       </div>
     </footer>
   </main>
