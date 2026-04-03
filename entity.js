@@ -5,340 +5,393 @@
     return;
   }
 
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  const $ = (s, root = document) => root.querySelector(s);
 
   const els = {
     body: document.body,
-    systemLabel: $(".system-label"),
-    systemMeta: $$(".system-meta"),
-    eyebrow: $(".eyebrow"),
-    heroTitle: $(".hero-title"),
-    heroText: $(".hero-text"),
-    sideBlocks: $$(".side-block"),
-    board: $("#specimenBoard"),
-    boardWrap: $("#specimen-svg-wrap"),
-    boardLabels: $$(".board-label"),
-    notes: $$(".note"),
-    markers: $$(".marker"),
-    gridOverlay: $("#gridOverlay"),
-    gridToggle: $("#gridToggle"),
-    notesLabel: $(".apparatus-left .apparatus-label"),
-    notesText: $(".apparatus-text"),
-    microGrid: $(".micro-grid"),
-    coordsLabel: $(".apparatus-right .apparatus-label"),
-    coordsMono: $$(".apparatus-right .apparatus-mono"),
-    footerMeta: $$(".footer-meta span"),
-    topbar: $(".topbar")
+    cursorHalo: $("#cursorHalo"),
+
+    systemLabel: $("#systemLabel"),
+    fieldLabel: $("#fieldLabel"),
+    modeButton: $("#modeButton"),
+    modeButtonLabel: $("#modeButtonLabel"),
+
+    heroKicker: $("#heroKicker"),
+    heroTitle: $("#heroTitle"),
+    heroDescription: $("#heroDescription"),
+
+    indexCardLabel: $("#indexCardLabel"),
+    indexCardList: $("#indexCardList"),
+    specCardLabel: $("#specCardLabel"),
+    specCardList: $("#specCardList"),
+
+    toplineLeft: $("#toplineLeft"),
+    toplineRight: $("#toplineRight"),
+
+    axisLabelY: $("#axisLabelY"),
+    axisLabelX: $("#axisLabelX"),
+
+    fieldSvg: $("#fieldSvg"),
+    annotationLayer: $("#annotationLayer"),
+
+    gridButton: $("#gridButton"),
+    notesButton: $("#notesButton"),
+    regenButton: $("#regenButton"),
+
+    entriesLabel: $("#entriesLabel"),
+    entriesNote: $("#entriesNote"),
+    entryList: $("#entryList"),
+
+    notesLabel: $("#notesLabel"),
+    notesCopy: $("#notesCopy"),
+    metricsLabel: $("#metricsLabel"),
+    metricsGrid: $("#metricsGrid"),
+    coordsLabel: $("#coordsLabel"),
+    coordsList: $("#coordsList"),
+
+    footerRow: $("#footerRow")
   };
 
-  let modeIndex = 0;
-  let resizeTimer = null;
-  let animationFrame = null;
+  let currentModeIndex = 0;
+  let rafId = null;
+  let timeStart = performance.now();
   let scene = null;
-  let gridVisible = true;
-
-  function ensureModeButton() {
-    if ($("#modeToggle")) return $("#modeToggle");
-
-    const button = document.createElement("button");
-    button.id = "modeToggle";
-    button.type = "button";
-    button.className = "grid-toggle mode-toggle";
-    button.setAttribute("aria-label", "Change curatorial mode");
-    button.innerHTML = `
-      <span class="toggle-dot" aria-hidden="true"></span>
-      <span class="toggle-label">MODE</span>
-    `;
-
-    if (els.board) {
-      els.board.appendChild(button);
-      button.style.left = "auto";
-      button.style.right = "18px";
-      button.style.bottom = "18px";
-    }
-
-    return button;
-  }
+  let regenOffset = 0;
 
   function setText(el, value) {
     if (el) el.textContent = value;
   }
 
-  function setHTML(el, value) {
-    if (el) el.innerHTML = value;
+  function buildPairs(container, pairs, className = "mode-item") {
+    if (!container) return;
+    container.innerHTML = pairs
+      .map(
+        ([a, b]) =>
+          `<div class="${className}"><span class="mode-name">${a}</span><strong>${b}</strong></div>`
+      )
+      .join("");
+  }
+
+  function buildIndexList(container, items) {
+    if (!container) return;
+    container.innerHTML = items
+      .map(
+        (item) =>
+          `<div class="mode-item"><span class="mode-name">${item}</span><strong>•</strong></div>`
+      )
+      .join("");
+  }
+
+  function buildEntries(entries) {
+    els.entryList.innerHTML = entries
+      .map(
+        (entry) => `
+          <article class="entry-card">
+            <div class="entry-topline">
+              <span>${entry.code}</span>
+              <span>${entry.type}</span>
+            </div>
+            <h3 class="entry-title">${entry.title}</h3>
+            <p class="entry-description">${entry.description}</p>
+            <div class="entry-line"></div>
+            <div class="entry-meta">
+              <span>${entry.metaLeft}</span>
+              <span>${entry.year}</span>
+              <span>${entry.metaRight}</span>
+            </div>
+          </article>
+        `
+      )
+      .join("");
+  }
+
+  function buildAnnotations(annotations) {
+    els.annotationLayer.innerHTML = annotations
+      .map(
+        (item) => `
+          <article class="annotation-card" style="left:${item.x}%; top:${item.y}%;">
+            <span class="annotation-index">${item.index}</span>
+            <span class="annotation-tag">${item.tag}</span>
+            <p class="annotation-copy">${item.copy}</p>
+          </article>
+        `
+      )
+      .join("");
   }
 
   function applyMode(mode) {
-    els.body.classList.remove("theme-quiet", "theme-sumi", "theme-ember");
-    els.body.classList.add(mode.themeClass);
+    els.body.setAttribute("data-mode", mode.id);
 
-    setText(els.systemLabel, "SPECIMEN INTERFACE");
-    if (els.systemMeta[0]) setText(els.systemMeta[0], mode.field);
-    if (els.systemMeta[1]) setText(els.systemMeta[1], `STATE: ${mode.state}`);
-    if (els.systemMeta[2]) setText(els.systemMeta[2], `YEAR: ${mode.year}`);
+    setText(els.systemLabel, "SPECIMEN FIELD");
+    setText(els.fieldLabel, mode.field);
+    setText(els.modeButtonLabel, mode.label);
 
-    setText(els.eyebrow, mode.eyebrow);
-    setHTML(els.heroTitle, mode.title.join("<br />"));
-    setText(els.heroText, mode.text);
+    setText(els.heroKicker, mode.kicker);
+    els.heroTitle.innerHTML = mode.title.join("<br />");
+    setText(els.heroDescription, mode.description);
 
-    if (els.sideBlocks[0]) {
-      const title = $(".side-title", els.sideBlocks[0]);
-      const list = $(".side-list", els.sideBlocks[0]);
-      setText(title, mode.sideIndexTitle);
-      if (list) {
-        list.innerHTML = mode.sideIndex.map(item => `<li>${item}</li>`).join("");
-      }
-    }
+    setText(els.indexCardLabel, mode.indexLabel);
+    buildIndexList(els.indexCardList, mode.indexItems);
 
-    if (els.sideBlocks[1]) {
-      const title = $(".side-title", els.sideBlocks[1]);
-      setText(title, mode.sideSpecTitle);
+    setText(els.specCardLabel, mode.specLabel);
+    buildPairs(els.specCardList, mode.specItems);
 
-      const ps = $$("p", els.sideBlocks[1]);
-      ps.forEach(p => p.remove());
+    setText(els.toplineLeft, `STATE: ${mode.state}`);
+    setText(els.toplineRight, `YEAR: ${mode.year}`);
 
-      mode.sideSpec.forEach(line => {
-        const p = document.createElement("p");
-        p.textContent = line;
-        els.sideBlocks[1].appendChild(p);
-      });
-    }
+    setText(els.axisLabelY, mode.axisY);
+    setText(els.axisLabelX, mode.axisX);
+
+    setText(els.entriesLabel, mode.entriesLabel);
+    setText(els.entriesNote, mode.entriesNote);
+    buildEntries(mode.entries);
 
     setText(els.notesLabel, mode.notesLabel);
-    setText(els.notesText, mode.notesText);
-    setText(els.coordsLabel, mode.coordinatesLabel);
+    setText(els.notesCopy, mode.notesCopy);
 
-    els.coordsMono.forEach((el, i) => {
-      setText(el, mode.coordinates[i] || "");
-    });
+    setText(els.metricsLabel, mode.metricsLabel);
+    buildPairs(els.metricsGrid, mode.metrics);
 
-    if (els.microGrid) {
-      els.microGrid.innerHTML = mode.microGrid
-        .map(pair => `<span>${pair[0]}</span><span>${pair[1]}</span>`)
-        .join("");
-    }
+    setText(els.coordsLabel, mode.coordsLabel);
+    buildPairs(els.coordsList, mode.coords);
 
-    els.boardLabels.forEach((el, i) => {
-      setText(el, mode.boardLabels[i] || "");
-    });
+    els.footerRow.innerHTML = mode.footer.map((item) => `<span>${item}</span>`).join("");
 
-    els.footerMeta.forEach((el, i) => {
-      setText(el, mode.footer[i] || "");
-    });
-
-    els.notes.forEach((note, i) => {
-      const data = mode.noteItems[i];
-      if (!data) return;
-      const indexEl = $(".note-index", note);
-      const textEl = $(".note-text", note);
-      setText(indexEl, data.index);
-      setText(textEl, data.text);
-      note.classList.remove("revealed");
-      requestAnimationFrame(() => {
-        setTimeout(() => note.classList.add("revealed"), 120 + i * 120);
-      });
-    });
-
-    els.markers.forEach((marker, i) => {
-      const point = mode.markers[i];
-      if (!point) return;
-      marker.style.left = `${point.x}%`;
-      marker.style.top = `${point.y}%`;
-    });
-
-    const modeButton = ensureModeButton();
-    $(".toggle-label", modeButton).textContent = mode.label;
-
-    buildScene(mode.mesh);
+    buildAnnotations(mode.annotations);
+    buildField(mode.visual);
   }
 
-  function seededNoise(x, y, seed = 1) {
-    const v = Math.sin(x * 12.9898 + y * 78.233 + seed * 37.719) * 43758.5453;
-    return v - Math.floor(v);
+  function nextMode() {
+    currentModeIndex = (currentModeIndex + 1) % content.modes.length;
+    applyMode(content.modes[currentModeIndex]);
   }
 
-  function buildScene(meshConfig) {
-    cancelAnimationFrame(animationFrame);
+  function toggleGrid() {
+    const isOn = els.body.getAttribute("data-grid") !== "off";
+    els.body.setAttribute("data-grid", isOn ? "off" : "on");
+    els.gridButton.setAttribute("aria-pressed", String(!isOn));
+  }
 
-    if (!els.boardWrap) return;
+  function toggleNotes() {
+    const isOn = els.body.getAttribute("data-notes") !== "off";
+    els.body.setAttribute("data-notes", isOn ? "off" : "on");
+    els.notesButton.setAttribute("aria-pressed", String(!isOn));
+  }
 
-    const rect = els.boardWrap.getBoundingClientRect();
-    const width = Math.max(300, rect.width);
-    const height = Math.max(420, rect.height);
+  function seedRand(seed) {
+    let s = seed % 2147483647;
+    if (s <= 0) s += 2147483646;
+    return () => (s = (s * 16807) % 2147483647) / 2147483647;
+  }
 
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-    svg.setAttribute("class", "specimen-svg");
-    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  function buildField(visual) {
+    cancelAnimationFrame(rafId);
+    timeStart = performance.now();
 
-    const haloLayer = document.createElementNS(svgNS, "g");
-    const lineLayer = document.createElementNS(svgNS, "g");
-    const secondaryLayer = document.createElementNS(svgNS, "g");
-    const nodeLayer = document.createElementNS(svgNS, "g");
+    const width = 1200;
+    const height = 1480;
+    const cx = width * 0.5;
+    const cy = height * 0.5;
 
-    svg.appendChild(haloLayer);
-    svg.appendChild(secondaryLayer);
-    svg.appendChild(lineLayer);
-    svg.appendChild(nodeLayer);
+    const rand = seedRand(visual.seed + regenOffset * 11);
 
-    const cols = meshConfig.pointsX;
-    const rows = meshConfig.pointsY;
-    const paddingX = width * 0.16;
-    const paddingY = height * 0.06;
-    const usableW = width - paddingX * 2;
-    const usableH = height - paddingY * 2;
+    els.fieldSvg.innerHTML = "";
+
+    const defs = document.createElementNS(svgNS, "defs");
+
+    const radial = document.createElementNS(svgNS, "radialGradient");
+    radial.setAttribute("id", "coreGradient");
+    radial.setAttribute("cx", "50%");
+    radial.setAttribute("cy", "40%");
+    radial.setAttribute("r", "55%");
+
+    const stop1 = document.createElementNS(svgNS, "stop");
+    stop1.setAttribute("offset", "0%");
+    stop1.setAttribute("stop-color", "rgba(255,255,255,0.75)");
+
+    const stop2 = document.createElementNS(svgNS, "stop");
+    stop2.setAttribute("offset", "55%");
+    stop2.setAttribute("stop-color", "rgba(255,255,255,0.12)");
+
+    const stop3 = document.createElementNS(svgNS, "stop");
+    stop3.setAttribute("offset", "100%");
+    stop3.setAttribute("stop-color", "rgba(255,255,255,0)");
+
+    radial.appendChild(stop1);
+    radial.appendChild(stop2);
+    radial.appendChild(stop3);
+    defs.appendChild(radial);
+    els.fieldSvg.appendChild(defs);
+
+    const gCore = document.createElementNS(svgNS, "g");
+    const gFlow = document.createElementNS(svgNS, "g");
+    const gMesh = document.createElementNS(svgNS, "g");
+    const gNodes = document.createElementNS(svgNS, "g");
+    const gShards = document.createElementNS(svgNS, "g");
+
+    els.fieldSvg.appendChild(gCore);
+    els.fieldSvg.appendChild(gFlow);
+    els.fieldSvg.appendChild(gMesh);
+    els.fieldSvg.appendChild(gNodes);
+    els.fieldSvg.appendChild(gShards);
+
+    const core = document.createElementNS(svgNS, "ellipse");
+    core.setAttribute("class", "core-blur");
+    core.setAttribute("cx", cx);
+    core.setAttribute("cy", cy);
+    core.setAttribute("rx", 170 * visual.coreScaleX);
+    core.setAttribute("ry", 360 * visual.coreScaleY);
+    gCore.appendChild(core);
 
     const points = [];
-    const pointEls = [];
-    const haloEls = [];
-    const horizontalEls = [];
-    const verticalEls = [];
-    const diagonalEls = [];
+    const lineEls = [];
+    const nodeEls = [];
 
-    const centerX = width * 0.5;
-
-    function clusterInfluence(nx, ny) {
-      let influence = 0;
-      for (const cluster of meshConfig.clusters) {
-        const dx = nx - cluster.x;
-        const dy = ny - cluster.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const normalized = Math.max(0, 1 - dist / cluster.radius);
-        influence += normalized * cluster.strength;
-      }
-      return influence;
-    }
+    const density = visual.density;
+    const rows = Math.floor(density * 1.5);
 
     for (let y = 0; y < rows; y++) {
       const row = [];
-      for (let x = 0; x < cols; x++) {
-        const nx = x / (cols - 1);
-        const ny = y / (rows - 1);
+      const ny = y / (rows - 1);
 
-        const waveA = Math.sin(ny * Math.PI * 2.8 + 0.8) * 26;
-        const waveB = Math.sin(ny * Math.PI * 7.2 + nx * 3.4) * 8;
-        const spinePull = Math.exp(-Math.pow((nx - 0.5) / 0.22, 2)) * 54;
-        const asymmetry = Math.sin(ny * 8.0 + nx * 5.0) * 12;
-        const noise = (seededNoise(nx * 8, ny * 8, 3) - 0.5) * meshConfig.jitter * 2;
-        const cluster = clusterInfluence(nx, ny);
+      for (let x = 0; x < density; x++) {
+        const nx = x / (density - 1);
 
-        let px = paddingX + nx * usableW;
-        let py = paddingY + ny * usableH;
+        const bodyProfile =
+          Math.exp(-Math.pow((ny - 0.2) / 0.12, 2)) * 0.95 +
+          Math.exp(-Math.pow((ny - 0.5) / 0.18, 2)) * 0.65 +
+          Math.exp(-Math.pow((ny - 0.82) / 0.13, 2)) * 0.9;
 
-        const curve =
-          Math.sin(ny * Math.PI * 2.2 + 0.35) * waveA +
-          waveB +
-          asymmetry;
+        const widthFactor = 36 + bodyProfile * 200;
+        const sinWarp = Math.sin(ny * 7.8 + nx * 3.2) * 16;
+        const noiseX = (rand() - 0.5) * 28;
+        const noiseY = (rand() - 0.5) * 20;
 
-        const inward = (0.5 - Math.abs(nx - 0.5)) * spinePull;
+        let px = cx + (nx - 0.5) * widthFactor * 2 + sinWarp + noiseX;
+        let py = 120 + ny * 1180 + Math.sin(nx * 4.6 + ny * 5.4) * 12 + noiseY;
 
-        px += curve * (nx < 0.5 ? -0.55 : 0.55);
-        px += (0.5 - nx) * inward;
-        px += noise;
+        const distToCenter =
+          Math.abs(px - cx) / 280 + Math.abs(py - cy) / 520;
 
-        py += Math.sin(nx * Math.PI * 3.0 + ny * 4.0) * 5;
-        py += cluster * 12;
+        const weight = Math.max(0, 1.15 - distToCenter);
 
-        const point = {
-          baseX: px,
-          baseY: py,
+        row.push({
           x: px,
           y: py,
+          baseX: px,
+          baseY: py,
           nx,
           ny,
-          cluster,
-          noise: seededNoise(nx * 12, ny * 12, 9)
-        };
-
-        row.push(point);
-
-        if (cluster > 0.08) {
-          const halo = document.createElementNS(svgNS, "circle");
-          halo.setAttribute("class", "halo");
-          halo.setAttribute("cx", px.toFixed(2));
-          halo.setAttribute("cy", py.toFixed(2));
-          halo.setAttribute("r", (cluster * 12 + 2).toFixed(2));
-          halo.style.opacity = Math.min(meshConfig.accentAlpha + cluster * 0.06, 0.16).toFixed(3);
-          haloLayer.appendChild(halo);
-          haloEls.push({ el: halo, point });
-        }
-
-        const circle = document.createElementNS(svgNS, "circle");
-        circle.setAttribute("class", cluster > 0.8 ? "node soft" : "node");
-        circle.setAttribute("cx", px.toFixed(2));
-        circle.setAttribute("cy", py.toFixed(2));
-
-        const radius = Math.max(
-          0.42,
-          (0.45 + cluster * 1.35 + point.noise * 0.25) * meshConfig.nodeScale
-        );
-
-        circle.setAttribute("r", radius.toFixed(2));
-        circle.style.opacity = Math.min(0.18 + cluster * 0.75, 0.92).toFixed(3);
-
-        nodeLayer.appendChild(circle);
-        pointEls.push({ el: circle, point, radius });
-
+          weight,
+          signal:
+            Math.exp(-Math.pow((ny - 0.56) / 0.13, 2)) *
+            Math.exp(-Math.pow((nx - 0.52) / 0.22, 2)),
+          drift:
+            rand() * Math.PI * 2
+        });
       }
+
       points.push(row);
     }
 
-    function makeLine(cls, p1, p2, layer, opacity) {
-      const line = document.createElementNS(svgNS, "line");
-      line.setAttribute("class", cls);
-      line.setAttribute("x1", p1.x.toFixed(2));
-      line.setAttribute("y1", p1.y.toFixed(2));
-      line.setAttribute("x2", p2.x.toFixed(2));
-      line.setAttribute("y2", p2.y.toFixed(2));
-      line.style.opacity = opacity.toFixed(3);
-      layer.appendChild(line);
-      return line;
-    }
-
     for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
+      for (let x = 0; x < density; x++) {
         const p = points[y][x];
 
-        if (x < cols - 1) {
-          const right = points[y][x + 1];
-          const op = Math.min(meshConfig.lineAlpha + (p.cluster + right.cluster) * 0.08, 0.42);
-          const line = makeLine("mesh-line", p, right, lineLayer, op);
-          horizontalEls.push({ el: line, a: p, b: right });
+        if (x < density - 1) {
+          const q = points[y][x + 1];
+          const line = document.createElementNS(svgNS, "path");
+          line.setAttribute("class", p.signal > 0.2 || q.signal > 0.2 ? "flow-line signal" : "flow-line");
+          line.style.opacity = (visual.lineAlpha + (p.weight + q.weight) * 0.06).toFixed(3);
+
+          const mx = (p.x + q.x) / 2;
+          const my = (p.y + q.y) / 2;
+          const curve = Math.sin((p.ny + p.nx) * 10) * 8;
+
+          line.setAttribute(
+            "d",
+            `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} Q ${mx.toFixed(2)} ${(my + curve).toFixed(2)} ${q.x.toFixed(2)} ${q.y.toFixed(2)}`
+          );
+          gFlow.appendChild(line);
+          lineEls.push({ el: line, p, q, type: "h" });
         }
 
-        if (y < rows - 1) {
-          const down = points[y + 1][x];
-          const op = Math.min(meshConfig.lineAlpha + (p.cluster + down.cluster) * 0.06, 0.34);
-          const line = makeLine("mesh-line secondary", p, down, secondaryLayer, op);
-          verticalEls.push({ el: line, a: p, b: down });
+        if (y < rows - 1 && x % 2 === 0) {
+          const q = points[y + 1][x];
+          const line = document.createElementNS(svgNS, "line");
+          line.setAttribute("class", "mesh-line");
+          line.style.opacity = visual.meshOpacity.toFixed(3);
+          line.setAttribute("x1", p.x.toFixed(2));
+          line.setAttribute("y1", p.y.toFixed(2));
+          line.setAttribute("x2", q.x.toFixed(2));
+          line.setAttribute("y2", q.y.toFixed(2));
+          gMesh.appendChild(line);
+          lineEls.push({ el: line, p, q, type: "v" });
         }
 
-        if (x < cols - 1 && y < rows - 1 && (x + y) % 2 === 0) {
-          const diag = points[y + 1][x + 1];
-          const op = Math.min(meshConfig.secondaryAlpha + (p.cluster + diag.cluster) * 0.05, 0.2);
-          const line = makeLine("mesh-line secondary", p, diag, secondaryLayer, op);
-          diagonalEls.push({ el: line, a: p, b: diag });
+        if (p.weight > 0.02 && rand() > 0.16) {
+          const node = document.createElementNS(svgNS, "circle");
+          let cls = "node";
+          if (p.signal > 0.28) cls = "node signal";
+          else if (p.weight < 0.35) cls = "node minor";
+
+          node.setAttribute("class", cls);
+          node.setAttribute("cx", p.x.toFixed(2));
+          node.setAttribute("cy", p.y.toFixed(2));
+          node.setAttribute(
+            "r",
+            (0.5 + p.weight * 1.9 * visual.nodeScale + p.signal * 1.6).toFixed(2)
+          );
+          node.style.opacity = Math.min(0.18 + p.weight * 0.78 + p.signal * visual.signalAlpha, 0.95).toFixed(3);
+          gNodes.appendChild(node);
+          nodeEls.push({ el: node, p, baseR: parseFloat(node.getAttribute("r")) });
+        }
+
+        if (p.signal > 0.18 && rand() > 0.72) {
+          const halo = document.createElementNS(svgNS, "circle");
+          halo.setAttribute("class", "halo");
+          halo.setAttribute("cx", p.x.toFixed(2));
+          halo.setAttribute("cy", p.y.toFixed(2));
+          halo.setAttribute("r", (12 + p.signal * 34).toFixed(2));
+          halo.style.opacity = (0.04 + p.signal * 0.08).toFixed(3);
+          gCore.appendChild(halo);
         }
       }
     }
 
-    els.boardWrap.innerHTML = "";
-    els.boardWrap.appendChild(svg);
+    for (let i = 0; i < visual.layers; i++) {
+      const shard = document.createElementNS(svgNS, "path");
+      shard.setAttribute("class", "shard");
+
+      const sx = cx + (rand() - 0.5) * 360;
+      const sy = cy + (rand() - 0.5) * 760;
+      const a = rand() * Math.PI * 2;
+      const r1 = 24 + rand() * 80;
+      const r2 = 8 + rand() * 30;
+
+      const x1 = sx + Math.cos(a) * r1;
+      const y1 = sy + Math.sin(a) * r1;
+      const x2 = sx + Math.cos(a + 1.6) * r2;
+      const y2 = sy + Math.sin(a + 1.6) * r2;
+      const x3 = sx + Math.cos(a + 3.1) * (r1 * 0.7);
+      const y3 = sy + Math.sin(a + 3.1) * (r1 * 0.7);
+
+      shard.setAttribute(
+        "d",
+        `M ${x1.toFixed(2)} ${y1.toFixed(2)} L ${x2.toFixed(2)} ${y2.toFixed(2)} L ${x3.toFixed(2)} ${y3.toFixed(2)} Z`
+      );
+
+      shard.style.opacity = (0.05 + rand() * 0.08).toFixed(3);
+      gShards.appendChild(shard);
+    }
 
     scene = {
-      svg,
-      points,
-      pointEls,
-      haloEls,
-      horizontalEls,
-      verticalEls,
-      diagonalEls,
-      width,
-      height,
-      meshConfig,
-      startedAt: performance.now()
+      lineEls,
+      nodeEls,
+      core,
+      visual
     };
 
     animate();
@@ -347,118 +400,84 @@
   function animate(now = performance.now()) {
     if (!scene) return;
 
-    const t = (now - scene.startedAt) * 0.001;
+    const t = (now - timeStart) * 0.001;
 
-    for (const row of scene.points) {
-      for (const p of row) {
-        const driftX =
-          Math.sin(t * 0.55 + p.ny * 6.0 + p.noise * 3.0) *
-          scene.meshConfig.drift *
-          (0.35 + p.cluster * 0.25);
+    scene.nodeEls.forEach((item) => {
+      const dx = Math.sin(t * 0.45 + item.p.drift + item.p.ny * 8) * (1.4 + item.p.signal * 2.8);
+      const dy = Math.cos(t * 0.36 + item.p.drift + item.p.nx * 7) * (1.2 + item.p.signal * 2.2);
 
-        const driftY =
-          Math.cos(t * 0.45 + p.nx * 5.0 + p.noise * 2.0) *
-          scene.meshConfig.drift *
-          0.4 *
-          (0.25 + p.cluster * 0.25);
+      const x = item.p.baseX + dx;
+      const y = item.p.baseY + dy;
+      item.p.x = x;
+      item.p.y = y;
 
-        const pulse =
-          Math.sin(t * 1.3 + p.ny * 11.0 + p.cluster * 2.0) *
-          scene.meshConfig.pulse *
-          p.cluster *
-          16;
+      item.el.setAttribute("cx", x.toFixed(2));
+      item.el.setAttribute("cy", y.toFixed(2));
 
-        p.x = p.baseX + driftX + pulse * (p.nx < 0.5 ? -0.4 : 0.4);
-        p.y = p.baseY + driftY;
+      const breath = 1 + Math.sin(t * 1.1 + item.p.drift) * 0.08;
+      item.el.setAttribute("r", (item.baseR * breath).toFixed(2));
+    });
+
+    scene.lineEls.forEach((item) => {
+      if (item.type === "h") {
+        const mx = (item.p.x + item.q.x) / 2;
+        const my = (item.p.y + item.q.y) / 2;
+        const curve = Math.sin(t * 0.7 + item.p.ny * 9 + item.p.nx * 4) * (4 + item.p.signal * 10);
+
+        item.el.setAttribute(
+          "d",
+          `M ${item.p.x.toFixed(2)} ${item.p.y.toFixed(2)} Q ${mx.toFixed(2)} ${(my + curve).toFixed(2)} ${item.q.x.toFixed(2)} ${item.q.y.toFixed(2)}`
+        );
+      } else {
+        item.el.setAttribute("x1", item.p.x.toFixed(2));
+        item.el.setAttribute("y1", item.p.y.toFixed(2));
+        item.el.setAttribute("x2", item.q.x.toFixed(2));
+        item.el.setAttribute("y2", item.q.y.toFixed(2));
       }
-    }
-
-    scene.pointEls.forEach(item => {
-      item.el.setAttribute("cx", item.point.x.toFixed(2));
-      item.el.setAttribute("cy", item.point.y.toFixed(2));
-
-      const breathing =
-        1 + Math.sin(t * 1.6 + item.point.noise * 10 + item.point.cluster) * 0.08;
-      item.el.setAttribute("r", (item.radius * breathing).toFixed(2));
     });
 
-    scene.haloEls.forEach(item => {
-      item.el.setAttribute("cx", item.point.x.toFixed(2));
-      item.el.setAttribute("cy", item.point.y.toFixed(2));
+    const driftX = Math.sin(t * 0.13) * 2.4;
+    const driftY = Math.cos(t * 0.11) * 1.8;
+    const rotate = Math.sin(t * 0.09) * 0.14;
+
+    els.fieldSvg.style.transform = `translate(${driftX}px, ${driftY}px) rotate(${rotate}deg)`;
+
+    rafId = requestAnimationFrame(animate);
+  }
+
+  function regenerate() {
+    regenOffset += 1;
+    applyMode(content.modes[currentModeIndex]);
+  }
+
+  function handlePointerMove(e) {
+    if (!els.cursorHalo) return;
+    els.cursorHalo.style.left = `${e.clientX}px`;
+    els.cursorHalo.style.top = `${e.clientY}px`;
+  }
+
+  function init() {
+    applyMode(content.modes[currentModeIndex]);
+
+    els.modeButton.addEventListener("click", nextMode);
+    els.gridButton.addEventListener("click", toggleGrid);
+    els.notesButton.addEventListener("click", toggleNotes);
+    els.regenButton.addEventListener("click", regenerate);
+
+    document.addEventListener("pointermove", handlePointerMove);
+
+    document.addEventListener("keydown", (e) => {
+      const key = e.key.toLowerCase();
+      if (key === "m") nextMode();
+      if (key === "g") toggleGrid();
+      if (key === "n") toggleNotes();
+      if (key === "r") regenerate();
     });
 
-    [...scene.horizontalEls, ...scene.verticalEls, ...scene.diagonalEls].forEach(item => {
-      item.el.setAttribute("x1", item.a.x.toFixed(2));
-      item.el.setAttribute("y1", item.a.y.toFixed(2));
-      item.el.setAttribute("x2", item.b.x.toFixed(2));
-      item.el.setAttribute("y2", item.b.y.toFixed(2));
+    window.addEventListener("resize", () => {
+      applyMode(content.modes[currentModeIndex]);
     });
-
-    if (scene.svg) {
-      const overallDriftX = Math.sin(t * 0.18) * 2.2;
-      const overallDriftY = Math.cos(t * 0.12) * 1.4;
-      const rotate = Math.sin(t * 0.1) * 0.22;
-      scene.svg.style.transform = `translate(${overallDriftX}px, ${overallDriftY}px) rotate(${rotate}deg)`;
-    }
-
-    animationFrame = requestAnimationFrame(animate);
   }
 
-  function nextMode() {
-    modeIndex = (modeIndex + 1) % content.modes.length;
-    applyMode(content.modes[modeIndex]);
-  }
-
-  function toggleGrid() {
-    gridVisible = !gridVisible;
-    if (els.gridOverlay) {
-      els.gridOverlay.classList.toggle("hidden", !gridVisible);
-    }
-    if (els.gridToggle) {
-      els.gridToggle.setAttribute("aria-pressed", String(gridVisible));
-    }
-  }
-
-  function onResize() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      applyMode(content.modes[modeIndex]);
-    }, 120);
-  }
-
-  function initInteractions() {
-    if (els.gridToggle) {
-      els.gridToggle.addEventListener("click", toggleGrid);
-    }
-
-    const modeButton = ensureModeButton();
-    modeButton.addEventListener("click", nextMode);
-
-    window.addEventListener("resize", onResize);
-
-    document.addEventListener("keydown", event => {
-      if (event.key.toLowerCase() === "g") toggleGrid();
-      if (event.key.toLowerCase() === "m") nextMode();
-    });
-
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            els.notes.forEach((note, i) => {
-              setTimeout(() => note.classList.add("revealed"), 80 + i * 120);
-            });
-          }
-        });
-      },
-      { threshold: 0.35 }
-    );
-
-    if (els.board) observer.observe(els.board);
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    initInteractions();
-    applyMode(content.modes[modeIndex]);
-  });
+  document.addEventListener("DOMContentLoaded", init);
 })();
