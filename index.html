@@ -19,7 +19,14 @@
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body data-mode="vision" data-grid="on" data-labels="on" data-motion="on" data-constellation="on" data-intro="pending">
+<body
+  data-mode="vision"
+  data-grid="on"
+  data-labels="on"
+  data-motion="on"
+  data-constellation="on"
+  data-intro="pending"
+>
   <div class="background background-grid" aria-hidden="true"></div>
   <div class="background background-noise" aria-hidden="true"></div>
   <div class="background background-vignette" aria-hidden="true"></div>
@@ -34,7 +41,9 @@
         Non un portfolio lineare, ma un ambiente sensibile. Qui la pratica prende forma come costellazione di cinema,
         sistemi, ricerca, archivi, immagini e costruzione concreta.
       </p>
-      <button class="prelude-button" id="enterFieldButton" type="button">ENTER FIELD</button>
+      <div class="prelude-actions">
+        <button class="prelude-button" id="enterFieldButton" type="button">ENTER FIELD</button>
+      </div>
     </div>
   </div>
 
@@ -65,6 +74,11 @@
           Questo sito non elenca soltanto lavori. Li mette in tensione. Ogni nodo è una componente reale della pratica;
           ogni lente cambia il modo in cui quella pratica si lascia leggere.
         </p>
+
+        <div class="hero-ambient">
+          <div class="ambient-line" aria-hidden="true"></div>
+          <div class="ambient-meta" id="ambientMeta"></div>
+        </div>
       </div>
 
       <aside class="hero-side">
@@ -125,7 +139,7 @@
               <svg
                 class="field-svg"
                 id="fieldSvg"
-                viewBox="0 0 1320 940"
+                viewBox="0 0 1360 960"
                 preserveAspectRatio="xMidYMid meet"
                 role="img"
                 aria-labelledby="fieldTitle fieldDescription"
@@ -224,6 +238,21 @@
       </article>
     </section>
 
+    <section class="sequence" aria-labelledby="sequenceTitle" data-reveal>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">SELECTED SEQUENCE</p>
+          <h2 class="section-title" id="sequenceTitle">The chosen fragment unfolds like a short scene.</h2>
+        </div>
+
+        <p class="section-note" id="sequenceNote">
+          Ogni focus non restituisce solo un dato. Propone un modo di entrare: soglia, tensione, ritorno.
+        </p>
+      </div>
+
+      <div class="beat-grid" id="beatGrid"></div>
+    </section>
+
     <section class="archive" id="archive" aria-labelledby="archiveTitle" data-reveal>
       <div class="section-head">
         <div>
@@ -253,7 +282,7 @@
     <footer class="site-footer">
       <div class="footer-line" aria-hidden="true"></div>
       <div class="footer-row" id="footerRow">
-        <span>VERSION 2.0</span>
+        <span>VERSION 3.0</span>
         <span>STATIC / GITHUB PAGES</span>
         <span>METHOD + DREAM + TRACE</span>
       </div>
