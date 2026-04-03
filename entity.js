@@ -83,24 +83,34 @@
     selectedId: data.fragments[0]?.id ?? null,
     hoveredId: null,
     seedOffset: 0,
+
     showGrid: true,
     showLabels: true,
     showMotion: !prefersReducedMotion.matches,
     showConstellation: true,
     reducedMotion: prefersReducedMotion.matches,
+
+    compact: false,
+    narrow: false,
+    touchLikely: false,
+
     scene: null,
     rafId: null,
+    haloRafId: null,
+    fieldObserver: null,
     revealObserver: null,
+
     introDismissed: false,
-    // Cursor lerp state
-    haloX: 0,
-    haloY: 0,
-    targetX: 0,
-    targetY: 0,
-    haloRafId: null
+    fieldVisible: true,
+
+    haloX: window.innerWidth * 0.5,
+    haloY: window.innerHeight * 0.5,
+    targetX: window.innerWidth * 0.5,
+    targetY: window.innerHeight * 0.5
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const lerp = (a, b, t) => a + (b - a) * t;
   const mean = (values) => (values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0);
 
   function setText(element, value) {
@@ -128,12 +138,6 @@
     return typeof value === "number" ? value.toFixed(2) : String(value);
   }
 
-  function seededRandom(seed) {
-    let current = seed % 2147483647;
-    if (current <= 0) current += 2147483646;
-    return () => (current = (current * 16807) % 2147483647) / 2147483647;
-  }
-
   function chip(text) {
     return `<span class="meta-chip">${text}</span>`;
   }
@@ -142,6 +146,47 @@
     return items
       .map(([key, value]) => `<span>${key}</span><strong>${value}</strong>`)
       .join("");
+  }
+
+  function seededRandom(seed) {
+    let current = seed % 2147483647;
+    if (current <= 0) current += 2147483646;
+    return () => (current = (current * 16807) % 2147483647) / 2147483647;
+  }
+
+  function createSvgEl(tag, attrs = {}) {
+    const element = document.createElementNS(svgNS, tag);
+    Object.entries(attrs).forEach(([key, value]) => {
+      element.setAttribute(key, String(value));
+    });
+    return element;
+  }
+
+  function withInspectorFade(fn) {
+    const el = dom.inspectorContent;
+    if (!el || state.reducedMotion) {
+      fn();
+      return;
+    }
+
+    el.classList.add("fading");
+    setTimeout(() => {
+      fn();
+      el.classList.remove("fading");
+    }, 140);
+  }
+
+  function withTransition(fn) {
+    if (document.startViewTransition && !state.reducedMotion) {
+      document.startViewTransition(fn);
+    } else {
+      fn();
+    }
+  }
+
+  function updateViewportFlags() {
+    state.compact = window.innerWidth <= 920;
+    state.narrow = window.innerWidth <= 640;
   }
 
   function relationNetwork(id) {
@@ -158,148 +203,34 @@
     return set;
   }
 
-  /* ─── Smooth inspector fade ─── */
-  function withInspectorFade(fn) {
-    const el = dom.inspectorContent;
-    if (!el || state.reducedMotion) {
-      fn();
-      return;
-    }
-    el.classList.add("fading");
-    setTimeout(() => {
-      fn();
-      el.classList.remove("fading");
-    }, 160);
+  function directRelations(id) {
+    const set = new Set();
+    const fragment = entryMap.get(id);
+    if (!fragment?.relations) return set;
+    fragment.relations.forEach((relatedId) => set.add(relatedId));
+    return set;
   }
 
-  /* ─── View Transitions API wrapper ─── */
-  function withTransition(fn) {
-    if (document.startViewTransition && !state.reducedMotion) {
-      document.startViewTransition(fn);
-    } else {
-      fn();
-    }
-  }
-
-  /* ─── SVG ripple on node click ─── */
-  function createRipple(svg, cx, cy, radius) {
-    const ripple = createSvgEl("circle", {
-      class: "node-ripple",
-      cx: cx.toFixed(2),
-      cy: cy.toFixed(2),
-      r: radius.toFixed(2),
-      opacity: "0.7"
-    });
-    svg.appendChild(ripple);
-
-    const start = performance.now();
-    const duration = 680;
-
-    function tick(now) {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
-      ripple.setAttribute("r", String((radius + eased * 58).toFixed(2)));
-      ripple.setAttribute("opacity", String(((1 - eased) * 0.7).toFixed(3)));
-      if (t < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        ripple.remove();
-      }
-    }
-    requestAnimationFrame(tick);
-  }
-
-  /* ─── URL hash routing ─── */
   function updateHash() {
     const mode = currentMode();
     const fragment = currentFragment();
-    const hash = `#${mode.id}/${fragment.id}`;
-    history.replaceState(null, "", hash);
+    history.replaceState(null, "", `#${mode.id}/${fragment.id}`);
   }
 
   function readHash() {
     const raw = location.hash.replace("#", "");
     if (!raw) return;
+
     const [modeId, fragmentId] = raw.split("/");
-
-    const modeIdx = data.modes.findIndex((m) => m.id === modeId);
+    const modeIdx = data.modes.findIndex((mode) => mode.id === modeId);
     if (modeIdx >= 0) state.modeIndex = modeIdx;
-
-    if (fragmentId && entryMap.has(fragmentId)) {
-      state.selectedId = fragmentId;
-    }
+    if (fragmentId && entryMap.has(fragmentId)) state.selectedId = fragmentId;
   }
-
-  /* ─── Touch swipe for mode switching ─── */
-  function initSwipe() {
-    let startX = 0;
-    let startY = 0;
-
-    document.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      },
-      { passive: true }
-    );
-
-    document.addEventListener(
-      "touchend",
-      (e) => {
-        const dx = e.changedTouches[0].clientX - startX;
-        const dy = e.changedTouches[0].clientY - startY;
-        if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 64) {
-          if (dx < 0) {
-            nextMode();
-          } else {
-            setMode((state.modeIndex - 1 + data.modes.length) % data.modes.length);
-          }
-        }
-      },
-      { passive: true }
-    );
-  }
-
-  /* ─── Field IntersectionObserver — pause RAF when off-screen ─── */
-  function initFieldObserver() {
-    if (!("IntersectionObserver" in window) || !dom.fieldBoard) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          startAnimation();
-        } else {
-          if (state.rafId) {
-            cancelAnimationFrame(state.rafId);
-            state.rafId = null;
-          }
-        }
-      },
-      { threshold: 0.04 }
-    );
-
-    observer.observe(dom.fieldBoard);
-  }
-
-  /* ─── Smooth cursor halo lerp ─── */
-  function lerpHalo() {
-    state.haloX += (state.targetX - state.haloX) * 0.1;
-    state.haloY += (state.targetY - state.haloY) * 0.1;
-
-    if (dom.cursorHalo) {
-      dom.cursorHalo.style.left = `${state.haloX.toFixed(2)}px`;
-      dom.cursorHalo.style.top = `${state.haloY.toFixed(2)}px`;
-    }
-
-    state.haloRafId = requestAnimationFrame(lerpHalo);
-  }
-
-  /* ─── Content builders ─── */
 
   function buildPrelude() {
     const prelude = data.site?.prelude;
     if (!prelude) return;
+
     setText(dom.preludeEyebrow, prelude.eyebrow);
     setText(dom.preludeTitle, prelude.title);
     setText(dom.preludeCopy, prelude.copy);
@@ -308,6 +239,7 @@
 
   function buildRituals() {
     const rituals = data.site?.rituals || [];
+
     setHTML(
       dom.ritualList,
       rituals
@@ -326,6 +258,7 @@
   function buildCoda() {
     const coda = data.site?.coda;
     if (!coda) return;
+
     setText(dom.codaTitle, coda.title);
     setText(dom.codaText, coda.copy);
     setHTML(
@@ -384,8 +317,8 @@
 
               <div class="archive-card-meta">
                 <span>${fragment.year}</span>
-                <span>${fragment.tags[0]}</span>
-                <span>${fragment.tags[1] || fragment.tags[0]}</span>
+                <span>${fragment.tags?.[0] || fragment.kind}</span>
+                <span>${fragment.tags?.[1] || fragment.tags?.[0] || fragment.kind}</span>
               </div>
             </button>
           `;
@@ -403,21 +336,27 @@
 
     setText(dom.mastheadField, data.site?.fieldLabel || "METHOD / DREAM / TRACE");
     setText(dom.cycleModeLabel, mode.label);
+
     setText(dom.heroKicker, mode.kicker);
     setText(dom.heroTitle, mode.title);
     setText(dom.heroDescription, mode.description);
     setText(dom.modeStatement, mode.statement);
     setText(dom.ambientMeta, mode.ambient);
+
     setText(dom.fieldState, `STATE: ${mode.state}`);
     setText(dom.fieldYear, `YEAR: ${mode.year}`);
     setText(dom.axisX, mode.axisX);
     setText(dom.axisY, mode.axisY);
     setText(dom.fieldCaption, mode.note);
+
     setText(dom.statementText, mode.thesis);
     setText(dom.sequenceNote, mode.sequenceNote);
     setText(dom.archiveNote, mode.archiveNote);
 
-    setHTML(dom.footerRow, (data.site?.footer || []).map((item) => `<span>${item}</span>`).join(""));
+    setHTML(
+      dom.footerRow,
+      (data.site?.footer || []).map((item) => `<span>${item}</span>`).join("")
+    );
 
     const xValues = data.fragments.map((fragment) => metricValue(fragment, mode.map.xKey));
     const yValues = data.fragments.map((fragment) => metricValue(fragment, mode.map.yKey));
@@ -440,7 +379,7 @@
         chip(mode.label),
         chip(mode.axisX),
         chip(mode.axisY),
-        chip("interactive portrait")
+        chip(state.narrow ? "compact field" : "interactive portrait")
       ].join("")
     );
 
@@ -480,7 +419,6 @@
         scatterY: mode.layout?.scatterY ?? 0.24,
         biasX: mode.layout?.biasX ?? 0,
         biasY: mode.layout?.biasY ?? 0,
-        quantize: Boolean(mode.layout?.quantize),
         curvature: mode.layout?.curvature ?? 0.16
       },
       motion: {
@@ -498,6 +436,100 @@
     };
   }
 
+  function computeBaseNode(fragment, index, rand, width, height, marginX, marginY, profile, mode) {
+    const xBase = metricValue(fragment, mode.map.xKey);
+    const yBase = metricValue(fragment, mode.map.yKey);
+    const cluster = metricValue(fragment, mode.map.clusterKey);
+    const emphasis = metricValue(fragment, mode.map.emphasisKey);
+    const presence = metricValue(fragment, "presence");
+    const memory = metricValue(fragment, "memory");
+    const residue = metricValue(fragment, "residue");
+
+    let x = marginX + xBase * (width - marginX * 2);
+    let y = height - marginY - yBase * (height - marginY * 2);
+
+    const wobbleX =
+      (rand() - 0.5) * 90 +
+      Math.sin(index * 1.37 + state.seedOffset * 0.78) * (8 + cluster * 28);
+
+    const wobbleY =
+      (rand() - 0.5) * 68 +
+      Math.cos(index * 1.53 + state.seedOffset * 0.71) * (8 + emphasis * 18);
+
+    x += wobbleX * profile.layout.scatterX + profile.layout.biasX * (presence - 0.5) * 136;
+    y += wobbleY * profile.layout.scatterY + profile.layout.biasY * (memory - 0.5) * 112;
+
+    if (mode.id === "vision") y -= presence * 18;
+    if (mode.id === "system") {
+      x = Math.round(x / 22) * 22;
+      y = Math.round(y / 22) * 22;
+    }
+    if (mode.id === "trace") {
+      x -= memory * 18;
+      y += residue * 16;
+    }
+
+    return {
+      id: fragment.id,
+      fragment,
+      anchorX: x,
+      anchorY: y,
+      x,
+      y,
+      radius: 11 + emphasis * 14,
+      emphasis,
+      cluster,
+      phase: rand() * TAU,
+      speed: 0.45 + rand() * 0.55,
+      floatX: 4 + cluster * 11,
+      floatY: 3 + emphasis * 9
+    };
+  }
+
+  function relaxNodes(nodes, width, height) {
+    const padding = state.narrow ? 96 : 84;
+    const iterations = state.narrow ? 220 : 180;
+    const pull = state.narrow ? 0.018 : 0.014;
+    const minGapBase = state.narrow ? 124 : state.compact ? 108 : 94;
+
+    for (let iter = 0; iter < iterations; iter += 1) {
+      for (let i = 0; i < nodes.length; i += 1) {
+        for (let j = i + 1; j < nodes.length; j += 1) {
+          const a = nodes[i];
+          const b = nodes[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.hypot(dx, dy) || 0.001;
+          const minDist = minGapBase + (a.radius + b.radius) * 0.84;
+
+          if (dist < minDist) {
+            const force = (minDist - dist) * 0.5;
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            a.x -= nx * force;
+            a.y -= ny * force;
+            b.x += nx * force;
+            b.y += ny * force;
+          }
+        }
+      }
+
+      nodes.forEach((node) => {
+        node.x += (node.anchorX - node.x) * pull;
+        node.y += (node.anchorY - node.y) * pull;
+
+        if (node.id === state.selectedId && state.narrow) {
+          node.x += (width * 0.56 - node.x) * 0.02;
+          node.y += (height * 0.42 - node.y) * 0.02;
+        }
+
+        node.x = clamp(node.x, padding, width - padding);
+        node.y = clamp(node.y, padding, height - padding);
+      });
+    }
+  }
+
   function computeScene() {
     const mode = currentMode();
     const profile = sceneProfile();
@@ -505,70 +537,21 @@
 
     const width = 1360;
     const height = 960;
-    const marginX = 112;
-    const marginY = 94;
+    const marginX = state.narrow ? 130 : state.compact ? 120 : 112;
+    const marginY = state.narrow ? 110 : state.compact ? 100 : 92;
 
-    const nodes = data.fragments.map((fragment, index) => {
-      const xBase = metricValue(fragment, mode.map.xKey);
-      const yBase = metricValue(fragment, mode.map.yKey);
-      const cluster = metricValue(fragment, mode.map.clusterKey);
-      const emphasis = metricValue(fragment, mode.map.emphasisKey);
-      const presence = metricValue(fragment, "presence");
-      const memory = metricValue(fragment, "memory");
-      const residue = metricValue(fragment, "residue");
+    const nodes = data.fragments.map((fragment, index) =>
+      computeBaseNode(fragment, index, rand, width, height, marginX, marginY, profile, mode)
+    );
 
-      let x = marginX + xBase * (width - marginX * 2);
-      let y = height - marginY - yBase * (height - marginY * 2);
-
-      const wobbleX =
-        (rand() - 0.5) * 84 +
-        Math.sin(index * 1.37 + state.seedOffset * 0.8) * (8 + cluster * 28);
-
-      const wobbleY =
-        (rand() - 0.5) * 66 +
-        Math.cos(index * 1.51 + state.seedOffset * 0.7) * (8 + emphasis * 18);
-
-      x += wobbleX * profile.layout.scatterX + profile.layout.biasX * (presence - 0.5) * 140;
-      y += wobbleY * profile.layout.scatterY + profile.layout.biasY * (memory - 0.5) * 120;
-
-      if (mode.id === "vision") {
-        y -= presence * 18;
-      }
-
-      if (mode.id === "system") {
-        x = Math.round(x / 28) * 28;
-        y = Math.round(y / 28) * 28;
-      }
-
-      if (mode.id === "trace") {
-        x -= memory * 20;
-        y += residue * 16;
-      }
-
-      x = clamp(x, 88, width - 88);
-      y = clamp(y, 82, height - 82);
-
-      return {
-        id: fragment.id,
-        fragment,
-        x,
-        y,
-        radius: 11 + emphasis * 14,
-        emphasis,
-        cluster,
-        phase: rand() * TAU,
-        speed: 0.45 + rand() * 0.55,
-        floatX: 4 + cluster * 11,
-        floatY: 3 + emphasis * 9
-      };
-    });
+    relaxNodes(nodes, width, height);
 
     const nodeMap = new Map(nodes.map((node) => [node.id, node]));
     const relations = [];
     const seen = new Set();
 
     data.fragments.forEach((fragment) => {
-      fragment.relations.forEach((relatedId) => {
+      (fragment.relations || []).forEach((relatedId) => {
         const a = nodeMap.get(fragment.id);
         const b = nodeMap.get(relatedId);
         if (!a || !b) return;
@@ -604,17 +587,6 @@
     return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} Q ${mx.toFixed(2)} ${my.toFixed(2)} ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
   }
 
-  function createSvgEl(tag, attrs = {}) {
-    const element = document.createElementNS(svgNS, tag);
-    Object.entries(attrs).forEach(([key, value]) => {
-      element.setAttribute(key, String(value));
-    });
-    return element;
-  }
-
-  // Keep original alias for backward compat within this file
-  const createSvg = createSvgEl;
-
   function bandPath(zone, width, height) {
     const x = zone.x * width;
     const y = zone.y * height;
@@ -631,7 +603,39 @@
     `;
   }
 
+  function createRipple(svg, cx, cy, radius) {
+    const ripple = createSvgEl("circle", {
+      class: "node-ripple",
+      cx: cx.toFixed(2),
+      cy: cy.toFixed(2),
+      r: radius.toFixed(2),
+      opacity: "0.7"
+    });
+
+    svg.appendChild(ripple);
+
+    const start = performance.now();
+    const duration = 680;
+
+    function tick(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      ripple.setAttribute("r", String((radius + eased * 54).toFixed(2)));
+      ripple.setAttribute("opacity", String(((1 - eased) * 0.7).toFixed(3)));
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        ripple.remove();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
   function updateTooltip(clientX, clientY, fragment) {
+    if (!dom.fieldTooltip || !dom.fieldBoard) return;
+
     const tooltip = dom.fieldTooltip;
     tooltip.hidden = false;
     tooltip.innerHTML = `<strong>${fragment.title}</strong><br>${fragment.summary}`;
@@ -639,22 +643,213 @@
     const rect = dom.fieldBoard.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
 
-    const left = clamp(clientX - rect.left + 18, 16, rect.width - tooltipRect.width - 16);
-    const top = clamp(clientY - rect.top - tooltipRect.height - 16, 16, rect.height - tooltipRect.height - 16);
+    const left = clamp(clientX - rect.left + 16, 14, rect.width - tooltipRect.width - 14);
+    const top = clamp(clientY - rect.top - tooltipRect.height - 16, 14, rect.height - tooltipRect.height - 14);
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
   }
 
   function hideTooltip() {
-    dom.fieldTooltip.hidden = true;
+    if (dom.fieldTooltip) dom.fieldTooltip.hidden = true;
   }
 
-  function applyNodeVisuals(item, x, y, radius, { active, hovered, sceneWidth }) {
-    const modeMotion = state.scene?.scene?.profile?.motion;
-    const echoOpacity = modeMotion?.echoOpacity ?? 0.08;
-    const anchor = x > sceneWidth * 0.72 ? "end" : "start";
-    const dx = anchor === "end" ? -20 : 20;
+  function shouldShowLabel(nodeId) {
+    if (!state.showLabels) return false;
+    if (!state.compact) return true;
+
+    const selectedNetwork = relationNetwork(state.selectedId);
+    const direct = directRelations(state.selectedId);
+
+    if (nodeId === state.selectedId) return true;
+    if (nodeId === state.hoveredId) return true;
+
+    if (state.narrow) {
+      return direct.has(nodeId);
+    }
+
+    return selectedNetwork.has(nodeId);
+  }
+
+  function estimateLabelSize(fragment, forceCompact = false) {
+    const title = fragment.title || "";
+    const code = fragment.code || "";
+
+    const titleWidth = clamp(title.length * (forceCompact ? 5.8 : 6.8), 48, forceCompact ? 122 : 174);
+    const codeWidth = clamp(code.length * 7.2 + 12, 40, 88);
+    const width = Math.max(titleWidth, codeWidth);
+
+    return {
+      width,
+      height: forceCompact ? 26 : 34,
+      gap: forceCompact ? 16 : 20
+    };
+  }
+
+  function circleIntersectsRect(cx, cy, r, rect) {
+    const closestX = clamp(cx, rect.x1, rect.x2);
+    const closestY = clamp(cy, rect.y1, rect.y2);
+    const dx = cx - closestX;
+    const dy = cy - closestY;
+    return dx * dx + dy * dy < r * r;
+  }
+
+  function rectOverlapArea(a, b) {
+    const overlapX = Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1));
+    const overlapY = Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+    return overlapX * overlapY;
+  }
+
+  function chooseLabelPlacement(item, allNodes, placedRects, width, height) {
+    const showCompact = state.compact && item.id !== state.selectedId && item.id !== state.hoveredId;
+    const size = estimateLabelSize(item.node.fragment, showCompact);
+    const r = item.currentR + size.gap;
+
+    const candidates = [
+      {
+        name: "right",
+        anchor: "start",
+        codeX: item.currentX + r,
+        codeY: item.currentY - 8,
+        titleX: item.currentX + r,
+        titleY: item.currentY + 14,
+        leadX2: item.currentX + r - 8,
+        leadY2: item.currentY
+      },
+      {
+        name: "left",
+        anchor: "end",
+        codeX: item.currentX - r,
+        codeY: item.currentY - 8,
+        titleX: item.currentX - r,
+        titleY: item.currentY + 14,
+        leadX2: item.currentX - r + 8,
+        leadY2: item.currentY
+      },
+      {
+        name: "top",
+        anchor: "middle",
+        codeX: item.currentX,
+        codeY: item.currentY - r - 6,
+        titleX: item.currentX,
+        titleY: item.currentY - r + 12,
+        leadX2: item.currentX,
+        leadY2: item.currentY - r + 20
+      },
+      {
+        name: "bottom",
+        anchor: "middle",
+        codeX: item.currentX,
+        codeY: item.currentY + r + 4,
+        titleX: item.currentX,
+        titleY: item.currentY + r + 24,
+        leadX2: item.currentX,
+        leadY2: item.currentY + r - 8
+      }
+    ];
+
+    let best = null;
+
+    candidates.forEach((candidate) => {
+      const x1 =
+        candidate.anchor === "start"
+          ? candidate.codeX
+          : candidate.anchor === "end"
+            ? candidate.codeX - size.width
+            : candidate.codeX - size.width * 0.5;
+
+      const rect = {
+        x1,
+        y1: candidate.codeY - 12,
+        x2: x1 + size.width,
+        y2: candidate.titleY + 10
+      };
+
+      let score = 0;
+
+      if (rect.x1 < 24) score += (24 - rect.x1) * 8;
+      if (rect.x2 > width - 24) score += (rect.x2 - (width - 24)) * 8;
+      if (rect.y1 < 20) score += (20 - rect.y1) * 10;
+      if (rect.y2 > height - 20) score += (rect.y2 - (height - 20)) * 10;
+
+      allNodes.forEach((other) => {
+        if (other.id === item.id) return;
+        const hit = circleIntersectsRect(
+          other.currentX,
+          other.currentY,
+          other.currentR + (state.compact ? 16 : 18),
+          rect
+        );
+        if (hit) score += 2400;
+      });
+
+      placedRects.forEach((otherRect) => {
+        score += rectOverlapArea(rect, otherRect) * 2.8;
+      });
+
+      const edgeBias =
+        candidate.name === "right" && item.currentX > width * 0.72
+          ? 120
+          : candidate.name === "left" && item.currentX < width * 0.28
+            ? 120
+            : 0;
+
+      score += edgeBias;
+
+      if (best === null || score < best.score) {
+        best = {
+          score,
+          rect,
+          size,
+          ...candidate
+        };
+      }
+    });
+
+    return best;
+  }
+
+  function solveLabelLayout() {
+    if (!state.scene) return;
+
+    const items = [...state.scene.nodeElements].sort((a, b) => {
+      const aPriority =
+        (a.id === state.selectedId ? 1000 : 0) +
+        (a.id === state.hoveredId ? 800 : 0) +
+        a.node.emphasis * 100;
+      const bPriority =
+        (b.id === state.selectedId ? 1000 : 0) +
+        (b.id === state.hoveredId ? 800 : 0) +
+        b.node.emphasis * 100;
+      return bPriority - aPriority;
+    });
+
+    const placed = [];
+
+    items.forEach((item) => {
+      if (!shouldShowLabel(item.id)) {
+        item.labelLayout = null;
+        return;
+      }
+
+      item.labelLayout = chooseLabelPlacement(
+        item,
+        state.scene.nodeElements,
+        placed,
+        state.scene.scene.width,
+        state.scene.scene.height
+      );
+
+      if (item.labelLayout) {
+        placed.push(item.labelLayout.rect);
+      }
+    });
+  }
+
+  function applyNodeVisuals(item, x, y, radius, options) {
+    const { active, hovered, linked, dimmed, sceneWidth } = options;
+    const motion = state.scene?.scene?.profile?.motion;
+    const echoOpacity = motion?.echoOpacity ?? 0.08;
 
     item.currentX = x;
     item.currentY = y;
@@ -662,12 +857,12 @@
 
     item.aura.setAttribute("cx", x.toFixed(2));
     item.aura.setAttribute("cy", y.toFixed(2));
-    item.aura.setAttribute("r", (radius * (active ? 2.16 : hovered ? 1.94 : 1.72)).toFixed(2));
-    item.aura.style.opacity = (active ? 0.26 : hovered ? 0.2 : 0.12).toFixed(3);
+    item.aura.setAttribute("r", (radius * (active ? 2.18 : hovered ? 1.94 : 1.7)).toFixed(2));
+    item.aura.style.opacity = (active ? 0.26 : hovered ? 0.2 : 0.11).toFixed(3);
 
     item.echo.setAttribute("cx", x.toFixed(2));
     item.echo.setAttribute("cy", y.toFixed(2));
-    item.echo.setAttribute("r", (radius * (active ? 3.16 : 2.56)).toFixed(2));
+    item.echo.setAttribute("r", (radius * (active ? 3.06 : 2.5)).toFixed(2));
     item.echo.style.opacity = (active ? echoOpacity * 1.2 : echoOpacity).toFixed(3);
 
     item.hit.setAttribute("cx", x.toFixed(2));
@@ -677,21 +872,80 @@
     item.core.setAttribute("cx", x.toFixed(2));
     item.core.setAttribute("cy", y.toFixed(2));
     item.core.setAttribute("r", radius.toFixed(2));
-    item.core.style.opacity = (0.76 + item.node.emphasis * 0.2).toFixed(3);
+    item.core.style.opacity = (0.74 + item.node.emphasis * 0.22).toFixed(3);
 
     item.ring.setAttribute("cx", x.toFixed(2));
     item.ring.setAttribute("cy", y.toFixed(2));
     item.ring.setAttribute("r", (radius + 7 + (active ? 1.6 : 0)).toFixed(2));
 
-    item.code.setAttribute("x", (x + dx).toFixed(2));
-    item.code.setAttribute("y", (y - 8).toFixed(2));
-    item.code.setAttribute("text-anchor", anchor);
-    item.code.textContent = item.node.fragment.code;
+    const layout = item.labelLayout;
+    const isVisible = Boolean(layout) && state.showLabels;
 
-    item.title.setAttribute("x", (x + dx).toFixed(2));
-    item.title.setAttribute("y", (y + 14).toFixed(2));
-    item.title.setAttribute("text-anchor", anchor);
+    if (layout) {
+      item.lead.setAttribute("x1", x.toFixed(2));
+      item.lead.setAttribute("y1", y.toFixed(2));
+      item.lead.setAttribute("x2", layout.leadX2.toFixed(2));
+      item.lead.setAttribute("y2", layout.leadY2.toFixed(2));
+
+      item.code.setAttribute("x", layout.codeX.toFixed(2));
+      item.code.setAttribute("y", layout.codeY.toFixed(2));
+      item.code.setAttribute("text-anchor", layout.anchor);
+
+      item.title.setAttribute("x", layout.titleX.toFixed(2));
+      item.title.setAttribute("y", layout.titleY.toFixed(2));
+      item.title.setAttribute("text-anchor", layout.anchor);
+    }
+
+    item.code.textContent = item.node.fragment.code;
     item.title.textContent = item.node.fragment.title;
+
+    const codeOpacity = !isVisible
+      ? 0
+      : active
+        ? 0.95
+        : hovered
+          ? 0.9
+          : linked
+            ? 0.64
+            : dimmed
+              ? 0.05
+              : 0.5;
+
+    const titleOpacity = !isVisible
+      ? 0
+      : state.compact && !active && !hovered
+        ? linked
+          ? 0.34
+          : 0.18
+        : active
+          ? 0.84
+          : hovered
+            ? 0.74
+            : linked
+              ? 0.42
+              : dimmed
+                ? 0.05
+                : 0.28;
+
+    item.code.style.opacity = codeOpacity.toFixed(3);
+    item.title.style.opacity = titleOpacity.toFixed(3);
+    item.lead.style.opacity = isVisible ? (active ? 0.44 : hovered ? 0.34 : linked ? 0.2 : 0.12).toFixed(3) : "0";
+
+    item.group.classList.toggle("active", active);
+    item.group.classList.toggle("linked", linked && !active);
+    item.group.classList.toggle("hovered", hovered);
+    item.group.classList.toggle("dimmed", dimmed);
+
+    if (!state.showLabels) {
+      item.code.style.opacity = "0";
+      item.title.style.opacity = "0";
+      item.lead.style.opacity = "0";
+    }
+
+    if (sceneWidth && x > sceneWidth * 0.72 && layout?.name === "right") {
+      item.code.setAttribute("text-anchor", "end");
+      item.title.setAttribute("text-anchor", "end");
+    }
   }
 
   function updateRelationPaths() {
@@ -715,15 +969,66 @@
     });
   }
 
+  function refreshNodeVisualState() {
+    if (!state.scene) return;
+
+    const network = relationNetwork(state.selectedId);
+    const hoveredId = state.hoveredId;
+
+    solveLabelLayout();
+
+    state.scene.nodeElements.forEach((item) => {
+      const active = item.id === state.selectedId;
+      const linked = network.has(item.id);
+      const hovered = item.id === hoveredId;
+      const dimmed = state.showConstellation ? !linked && !hovered && !active : false;
+
+      applyNodeVisuals(
+        item,
+        item.currentX ?? item.node.x,
+        item.currentY ?? item.node.y,
+        item.currentR ?? item.node.radius,
+        {
+          active,
+          hovered,
+          linked,
+          dimmed,
+          sceneWidth: state.scene.scene.width
+        }
+      );
+    });
+
+    state.scene.relationElements.forEach((item, index) => {
+      const active =
+        item.relation.fromId === state.selectedId || item.relation.toId === state.selectedId;
+
+      const hovered =
+        hoveredId &&
+        (item.relation.fromId === hoveredId || item.relation.toId === hoveredId);
+
+      const linked = network.has(item.relation.fromId) && network.has(item.relation.toId);
+      const dimmed = state.showConstellation ? !linked : false;
+
+      item.el.classList.toggle("active", active);
+      item.el.classList.toggle("hovered", Boolean(hovered));
+      item.el.classList.toggle("dimmed", dimmed);
+      item.el.style.strokeDashoffset = String(index * 14);
+    });
+
+    dom.archiveGrid.querySelectorAll(".archive-card").forEach((card) => {
+      card.setAttribute("aria-pressed", String(card.dataset.fragmentId === state.selectedId));
+    });
+  }
+
   function renderField() {
     const scene = computeScene();
     const svg = dom.fieldSvg;
     svg.innerHTML = "";
     svg.setAttribute("viewBox", `0 0 ${scene.width} ${scene.height}`);
 
-    const defs = createSvg("defs");
+    const defs = createSvgEl("defs");
 
-    const glowFilter = createSvg("filter", {
+    const glowFilter = createSvgEl("filter", {
       id: "softGlow",
       x: "-60%",
       y: "-60%",
@@ -731,22 +1036,21 @@
       height: "220%"
     });
 
-    glowFilter.appendChild(createSvg("feGaussianBlur", { stdDeviation: "18" }));
+    glowFilter.appendChild(createSvgEl("feGaussianBlur", { stdDeviation: "18" }));
     defs.appendChild(glowFilter);
-
     svg.appendChild(defs);
 
-    const bandGroup = createSvg("g");
-    const relationGroup = createSvg("g");
-    const nodeGroup = createSvg("g");
+    const bandGroup = createSvgEl("g");
+    const relationGroup = createSvgEl("g");
+    const nodeGroup = createSvgEl("g");
 
     const bandElements = scene.zones.map((zone, index) => {
-      const path = createSvg("path", {
+      const path = createSvgEl("path", {
         class: "field-band",
         d: bandPath(zone, scene.width, scene.height)
       });
 
-      const label = createSvg("text", {
+      const label = createSvgEl("text", {
         class: "band-label",
         x: 132,
         y: 104 + index * 28
@@ -759,41 +1063,53 @@
       return { path, label, phase: index * 0.9 };
     });
 
+    const relationElements = scene.relations.map((relation) => {
+      const path = createSvgEl("path", {
+        class: "relation-line"
+      });
+      relationGroup.appendChild(path);
+      return { el: path, relation };
+    });
+
     const nodeElements = scene.nodes.map((node) => {
-      const group = createSvg("g", {
+      const group = createSvgEl("g", {
         class: "node-group",
         "data-fragment-id": node.id
       });
 
-      const aura = createSvg("circle", {
+      const aura = createSvgEl("circle", {
         class: "node-aura",
         filter: "url(#softGlow)"
       });
 
-      const echo = createSvg("circle", {
+      const echo = createSvgEl("circle", {
         class: "node-echo"
       });
 
-      const hit = createSvg("circle", {
+      const hit = createSvgEl("circle", {
         class: "node-hit",
         tabindex: "0",
         role: "button",
         "aria-label": `${node.fragment.title}, ${node.fragment.kind}`
       });
 
-      const core = createSvg("circle", {
+      const core = createSvgEl("circle", {
         class: "node-core"
       });
 
-      const ring = createSvg("circle", {
+      const ring = createSvgEl("circle", {
         class: "node-ring"
       });
 
-      const code = createSvg("text", {
+      const lead = createSvgEl("line", {
+        class: "node-lead"
+      });
+
+      const code = createSvgEl("text", {
         class: "node-label"
       });
 
-      const title = createSvg("text", {
+      const title = createSvgEl("text", {
         class: "node-note"
       });
 
@@ -806,21 +1122,25 @@
         hit,
         core,
         ring,
+        lead,
         code,
         title,
         currentX: node.x,
         currentY: node.y,
-        currentR: node.radius
+        currentR: node.radius,
+        labelLayout: null
       };
 
-      applyNodeVisuals(item, node.x, node.y, node.radius, {
-        active: node.id === state.selectedId,
-        hovered: false,
-        sceneWidth: scene.width
-      });
+      group.appendChild(aura);
+      group.appendChild(echo);
+      group.appendChild(lead);
+      group.appendChild(hit);
+      group.appendChild(core);
+      group.appendChild(ring);
+      group.appendChild(code);
+      group.appendChild(title);
 
       const focusNode = () => {
-        // Ripple effect on click
         createRipple(svg, item.currentX, item.currentY, item.currentR);
         selectFragment(node.id, false);
       };
@@ -830,7 +1150,7 @@
       hit.addEventListener("focus", () => {
         state.hoveredId = node.id;
         dom.body.setAttribute("data-node-hovered", "true");
-        syncSelection();
+        refreshNodeVisualState();
 
         const rect = dom.fieldBoard.getBoundingClientRect();
         const x = rect.left + (item.currentX / scene.width) * rect.width;
@@ -841,14 +1161,14 @@
       hit.addEventListener("blur", () => {
         state.hoveredId = null;
         dom.body.setAttribute("data-node-hovered", "false");
-        syncSelection();
+        refreshNodeVisualState();
         hideTooltip();
       });
 
       hit.addEventListener("mouseenter", (event) => {
         state.hoveredId = node.id;
         dom.body.setAttribute("data-node-hovered", "true");
-        syncSelection();
+        refreshNodeVisualState();
         updateTooltip(event.clientX, event.clientY, node.fragment);
       });
 
@@ -859,7 +1179,7 @@
       hit.addEventListener("mouseleave", () => {
         state.hoveredId = null;
         dom.body.setAttribute("data-node-hovered", "false");
-        syncSelection();
+        refreshNodeVisualState();
         hideTooltip();
       });
 
@@ -870,26 +1190,9 @@
         }
       });
 
-      group.appendChild(aura);
-      group.appendChild(echo);
-      group.appendChild(hit);
-      group.appendChild(core);
-      group.appendChild(ring);
-      group.appendChild(code);
-      group.appendChild(title);
-
       nodeGroup.appendChild(group);
 
       return item;
-    });
-
-    const relationElements = scene.relations.map((relation) => {
-      const path = createSvg("path", {
-        class: "relation-line"
-      });
-
-      relationGroup.appendChild(path);
-      return { el: path, relation };
     });
 
     svg.appendChild(bandGroup);
@@ -904,52 +1207,11 @@
     };
 
     updateRelationPaths();
-    syncSelection();
+    refreshNodeVisualState();
     startAnimation();
   }
 
-  function syncSelection() {
-    if (!state.scene) return;
-
-    const network = relationNetwork(state.selectedId);
-    const hoveredId = state.hoveredId;
-
-    state.scene.nodeElements.forEach((item) => {
-      const active = item.id === state.selectedId;
-      const linked = network.has(item.id);
-      const hovered = item.id === hoveredId;
-      const dimmed = state.showConstellation ? !linked : false;
-
-      item.group.classList.toggle("active", active);
-      item.group.classList.toggle("linked", linked && !active);
-      item.group.classList.toggle("hovered", hovered);
-      item.group.classList.toggle("dimmed", dimmed);
-    });
-
-    state.scene.relationElements.forEach((item) => {
-      const active =
-        item.relation.fromId === state.selectedId || item.relation.toId === state.selectedId;
-
-      const hovered =
-        hoveredId &&
-        (item.relation.fromId === hoveredId || item.relation.toId === hoveredId);
-
-      const linked =
-        network.has(item.relation.fromId) && network.has(item.relation.toId);
-
-      const dimmed = state.showConstellation ? !linked : false;
-
-      item.el.classList.toggle("active", active);
-      item.el.classList.toggle("hovered", Boolean(hovered));
-      item.el.classList.toggle("dimmed", dimmed);
-    });
-
-    dom.archiveGrid.querySelectorAll(".archive-card").forEach((card) => {
-      card.setAttribute("aria-pressed", String(card.dataset.fragmentId === state.selectedId));
-    });
-  }
-
-  function _doRenderInspector() {
+  function renderInspectorBody() {
     const mode = currentMode();
     const fragment = currentFragment();
     const node = state.scene?.nodeElements.find((item) => item.id === fragment.id);
@@ -976,8 +1238,8 @@
     setHTML(
       dom.inspectorConnections,
       [
-        ...fragment.tags.map((tag) => `<span class="tag">${tag}</span>`),
-        ...fragment.relations
+        ...(fragment.tags || []).map((tag) => `<span class="tag">${tag}</span>`),
+        ...(fragment.relations || [])
           .map((id) => entryMap.get(id))
           .filter(Boolean)
           .map(
@@ -1006,9 +1268,9 @@
 
   function renderInspector(fade = false) {
     if (fade) {
-      withInspectorFade(_doRenderInspector);
+      withInspectorFade(renderInspectorBody);
     } else {
-      _doRenderInspector();
+      renderInspectorBody();
     }
   }
 
@@ -1020,11 +1282,11 @@
     renderBeats();
   }
 
-  function selectFragment(id, scrollCard) {
+  function selectFragment(id, scrollCard = false) {
     if (!entryMap.has(id)) return;
 
     state.selectedId = id;
-    syncSelection();
+    refreshNodeVisualState();
     renderInspector(true);
     renderBeats();
     updateHash();
@@ -1067,6 +1329,7 @@
     state.showLabels = !state.showLabels;
     dom.body.setAttribute("data-labels", state.showLabels ? "on" : "off");
     dom.labelsButton.setAttribute("aria-pressed", String(state.showLabels));
+    refreshNodeVisualState();
   }
 
   function toggleMotion() {
@@ -1080,7 +1343,7 @@
     state.showConstellation = !state.showConstellation;
     dom.body.setAttribute("data-constellation", state.showConstellation ? "on" : "off");
     dom.constellationButton.setAttribute("aria-pressed", String(state.showConstellation));
-    syncSelection();
+    refreshNodeVisualState();
   }
 
   function recompose() {
@@ -1096,23 +1359,22 @@
     dom.fieldSvg.style.transform = "";
 
     state.scene.nodeElements.forEach((item) => {
-      applyNodeVisuals(item, item.node.x, item.node.y, item.node.radius, {
-        active: item.id === state.selectedId,
-        hovered: item.id === state.hoveredId,
-        sceneWidth: state.scene.scene.width
-      });
+      item.currentX = item.node.x;
+      item.currentY = item.node.y;
+      item.currentR = item.node.radius;
     });
 
     state.scene.bandElements.forEach((item) => {
       item.path.style.opacity = String(state.scene.scene.profile.motion.bandBase);
-      item.label.style.opacity = "1";
+      item.label.style.opacity = state.compact ? "0.16" : "1";
     });
 
     updateRelationPaths();
+    refreshNodeVisualState();
   }
 
   function animate(now) {
-    if (!state.scene || state.reducedMotion || !state.showMotion) {
+    if (!state.scene || state.reducedMotion || !state.showMotion || !state.fieldVisible) {
       if (state.rafId) cancelAnimationFrame(state.rafId);
       state.rafId = null;
       resetSceneVisuals();
@@ -1121,7 +1383,6 @@
 
     const t = now * 0.001;
     const motion = state.scene.scene.profile.motion;
-    const sceneWidth = state.scene.scene.width;
 
     dom.fieldSvg.style.transform = `translate(${(Math.sin(t * 0.23) * motion.svgDriftX).toFixed(2)}px, ${(Math.cos(t * 0.19) * motion.svgDriftY).toFixed(2)}px)`;
 
@@ -1132,14 +1393,20 @@
       ).toFixed(3);
 
       item.label.style.opacity = (
-        0.18 + Math.sin(t * 0.27 + item.phase) * 0.04
+        (state.compact ? 0.12 : 0.18) + Math.sin(t * 0.27 + item.phase) * 0.04
       ).toFixed(3);
     });
 
+    const network = relationNetwork(state.selectedId);
+    const hoveredId = state.hoveredId;
+
     state.scene.nodeElements.forEach((item, index) => {
       const active = item.id === state.selectedId;
-      const hovered = item.id === state.hoveredId;
-      const multiplier = active ? 1.26 : hovered ? 1.12 : 1;
+      const hovered = item.id === hoveredId;
+      const linked = network.has(item.id);
+      const dimmed = state.showConstellation ? !linked && !hovered && !active : false;
+
+      const multiplier = active ? 1.24 : hovered ? 1.1 : 1;
 
       const x =
         item.node.x +
@@ -1152,13 +1419,30 @@
 
       const pulse =
         1 +
-        Math.sin(t * (active ? 1.55 : 1.02) + item.node.phase) *
-          (active ? motion.pulse : motion.pulse * 0.36) +
-        (hovered ? 0.028 : 0);
+        Math.sin(t * (active ? 1.52 : 1.02) + item.node.phase) *
+          (active ? motion.pulse : motion.pulse * 0.34) +
+        (hovered ? 0.026 : 0);
 
       const radius = item.node.radius * pulse;
 
-      applyNodeVisuals(item, x, y, radius, { active, hovered, sceneWidth });
+      item.currentX = x;
+      item.currentY = y;
+      item.currentR = radius;
+
+      item._renderState = { active, hovered, linked, dimmed };
+    });
+
+    solveLabelLayout();
+
+    state.scene.nodeElements.forEach((item) => {
+      const renderState = item._renderState || {};
+      applyNodeVisuals(item, item.currentX, item.currentY, item.currentR, {
+        active: Boolean(renderState.active),
+        hovered: Boolean(renderState.hovered),
+        linked: Boolean(renderState.linked),
+        dimmed: Boolean(renderState.dimmed),
+        sceneWidth: state.scene.scene.width
+      });
     });
 
     updateRelationPaths();
@@ -1178,7 +1462,7 @@
       state.rafId = null;
     }
 
-    if (state.reducedMotion || !state.showMotion) {
+    if (state.reducedMotion || !state.showMotion || !state.fieldVisible) {
       resetSceneVisuals();
       return;
     }
@@ -1187,16 +1471,32 @@
   }
 
   function handlePointer(event) {
-    if (state.reducedMotion) return;
+    if (state.reducedMotion || state.touchLikely) return;
     state.targetX = event.clientX;
     state.targetY = event.clientY;
+  }
+
+  function animateHalo() {
+    if (!dom.cursorHalo || state.reducedMotion || state.touchLikely) {
+      if (dom.cursorHalo) dom.cursorHalo.style.opacity = "0";
+      state.haloRafId = null;
+      return;
+    }
+
+    state.haloX = lerp(state.haloX, state.targetX, 0.1);
+    state.haloY = lerp(state.haloY, state.targetY, 0.1);
+
+    dom.cursorHalo.style.left = `${state.haloX.toFixed(2)}px`;
+    dom.cursorHalo.style.top = `${state.haloY.toFixed(2)}px`;
+
+    state.haloRafId = requestAnimationFrame(animateHalo);
   }
 
   function dismissPrelude() {
     if (state.introDismissed) return;
     state.introDismissed = true;
     dom.body.setAttribute("data-intro", "done");
-    dom.prelude.setAttribute("aria-hidden", "true");
+    dom.prelude?.setAttribute("aria-hidden", "true");
   }
 
   function initRevealObserver() {
@@ -1224,19 +1524,67 @@
     elements.forEach((element) => state.revealObserver.observe(element));
   }
 
+  function initFieldObserver() {
+    if (!("IntersectionObserver" in window) || !dom.fieldBoard) return;
+
+    state.fieldObserver = new IntersectionObserver(
+      ([entry]) => {
+        state.fieldVisible = Boolean(entry?.isIntersecting);
+        startAnimation();
+      },
+      { threshold: 0.04 }
+    );
+
+    state.fieldObserver.observe(dom.fieldBoard);
+  }
+
+  function initSwipe() {
+    let startX = 0;
+    let startY = 0;
+
+    document.addEventListener(
+      "touchstart",
+      (event) => {
+        state.touchLikely = true;
+        if (dom.cursorHalo) dom.cursorHalo.style.opacity = "0";
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchend",
+      (event) => {
+        const dx = event.changedTouches[0].clientX - startX;
+        const dy = event.changedTouches[0].clientY - startY;
+
+        if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 64) {
+          if (dx < 0) {
+            nextMode();
+          } else {
+            setMode(state.modeIndex - 1);
+          }
+        }
+      },
+      { passive: true }
+    );
+  }
+
   function bindEvents() {
-    dom.enterFieldButton.addEventListener("click", dismissPrelude);
-    dom.cycleModeButton.addEventListener("click", nextMode);
-    dom.gridButton.addEventListener("click", toggleGrid);
-    dom.labelsButton.addEventListener("click", toggleLabels);
-    dom.motionButton.addEventListener("click", toggleMotion);
-    dom.constellationButton.addEventListener("click", toggleConstellation);
-    dom.recomposeButton.addEventListener("click", recompose);
+    dom.enterFieldButton?.addEventListener("click", dismissPrelude);
+    dom.cycleModeButton?.addEventListener("click", nextMode);
+    dom.gridButton?.addEventListener("click", toggleGrid);
+    dom.labelsButton?.addEventListener("click", toggleLabels);
+    dom.motionButton?.addEventListener("click", toggleMotion);
+    dom.constellationButton?.addEventListener("click", toggleConstellation);
+    dom.recomposeButton?.addEventListener("click", recompose);
 
     document.addEventListener("pointermove", handlePointer);
 
     document.addEventListener("keydown", (event) => {
       const key = event.key.toLowerCase();
+
       if (key === "escape") dismissPrelude();
       if (key === "m") nextMode();
       if (key === "g") toggleGrid();
@@ -1244,16 +1592,18 @@
       if (key === "d") toggleMotion();
       if (key === "c") toggleConstellation();
       if (key === "r") recompose();
+
+      if (key === "arrowright") setMode(state.modeIndex + 1);
+      if (key === "arrowleft") setMode(state.modeIndex - 1);
     });
 
-    // Debounced resize with RAF
     let resizeRafId = null;
     window.addEventListener("resize", () => {
       if (resizeRafId) cancelAnimationFrame(resizeRafId);
+
       resizeRafId = requestAnimationFrame(() => {
-        renderField();
-        renderInspector(false);
-        renderBeats();
+        updateViewportFlags();
+        renderAll();
         resizeRafId = null;
       });
     });
@@ -1270,9 +1620,15 @@
     const motionListener = (event) => {
       state.reducedMotion = event.matches;
       if (event.matches) state.showMotion = false;
+
       dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
-      dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
+      dom.motionButton?.setAttribute("aria-pressed", String(state.showMotion));
+
       startAnimation();
+
+      if (!state.reducedMotion && !state.haloRafId && !state.touchLikely) {
+        state.haloRafId = requestAnimationFrame(animateHalo);
+      }
     };
 
     if (typeof prefersReducedMotion.addEventListener === "function") {
@@ -1285,8 +1641,8 @@
   }
 
   function init() {
-    // Read URL hash first so state is correct before first render
     readHash();
+    updateViewportFlags();
 
     dom.body.setAttribute("data-grid", state.showGrid ? "on" : "off");
     dom.body.setAttribute("data-labels", state.showLabels ? "on" : "off");
@@ -1294,10 +1650,10 @@
     dom.body.setAttribute("data-constellation", state.showConstellation ? "on" : "off");
     dom.body.setAttribute("data-node-hovered", "false");
 
-    dom.gridButton.setAttribute("aria-pressed", String(state.showGrid));
-    dom.labelsButton.setAttribute("aria-pressed", String(state.showLabels));
-    dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
-    dom.constellationButton.setAttribute("aria-pressed", String(state.showConstellation));
+    dom.gridButton?.setAttribute("aria-pressed", String(state.showGrid));
+    dom.labelsButton?.setAttribute("aria-pressed", String(state.showLabels));
+    dom.motionButton?.setAttribute("aria-pressed", String(state.showMotion));
+    dom.constellationButton?.setAttribute("aria-pressed", String(state.showConstellation));
 
     buildPrelude();
     buildRituals();
@@ -1308,14 +1664,33 @@
     bindEvents();
     initFieldObserver();
 
-    // Start cursor lerp (non-blocking, gracefully degrades)
-    if (!state.reducedMotion && dom.cursorHalo) {
-      lerpHalo();
+    if (!state.reducedMotion && dom.cursorHalo && !state.touchLikely) {
+      state.haloRafId = requestAnimationFrame(animateHalo);
     }
 
-    const introDelay = state.reducedMotion ? 240 : 1800;
-    window.setTimeout(dismissPrelude, introDelay);
+    if (!location.hash) {
+      updateHash();
+    }
+
+    window.addEventListener("hashchange", () => {
+      const previousMode = state.modeIndex;
+      const previousId = state.selectedId;
+
+      readHash();
+
+      if (previousMode !== state.modeIndex) {
+        renderAll();
+      } else if (previousId !== state.selectedId) {
+        refreshNodeVisualState();
+        renderInspector(true);
+        renderBeats();
+      }
+    });
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
 })();
