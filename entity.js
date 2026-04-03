@@ -52,6 +52,7 @@
     recomposeButton: $("#recomposeButton"),
 
     inspectorStatus: $("#inspectorStatus"),
+    inspectorContent: $("#inspectorContent"),
     inspectorCode: $("#inspectorCode"),
     inspectorHeading: $("#inspectorHeading"),
     inspectorSummary: $("#inspectorSummary"),
@@ -90,7 +91,13 @@
     scene: null,
     rafId: null,
     revealObserver: null,
-    introDismissed: false
+    introDismissed: false,
+    // Cursor lerp state
+    haloX: 0,
+    haloY: 0,
+    targetX: 0,
+    targetY: 0,
+    haloRafId: null
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -151,10 +158,148 @@
     return set;
   }
 
+  /* ─── Smooth inspector fade ─── */
+  function withInspectorFade(fn) {
+    const el = dom.inspectorContent;
+    if (!el || state.reducedMotion) {
+      fn();
+      return;
+    }
+    el.classList.add("fading");
+    setTimeout(() => {
+      fn();
+      el.classList.remove("fading");
+    }, 160);
+  }
+
+  /* ─── View Transitions API wrapper ─── */
+  function withTransition(fn) {
+    if (document.startViewTransition && !state.reducedMotion) {
+      document.startViewTransition(fn);
+    } else {
+      fn();
+    }
+  }
+
+  /* ─── SVG ripple on node click ─── */
+  function createRipple(svg, cx, cy, radius) {
+    const ripple = createSvgEl("circle", {
+      class: "node-ripple",
+      cx: cx.toFixed(2),
+      cy: cy.toFixed(2),
+      r: radius.toFixed(2),
+      opacity: "0.7"
+    });
+    svg.appendChild(ripple);
+
+    const start = performance.now();
+    const duration = 680;
+
+    function tick(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      ripple.setAttribute("r", String((radius + eased * 58).toFixed(2)));
+      ripple.setAttribute("opacity", String(((1 - eased) * 0.7).toFixed(3)));
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        ripple.remove();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ─── URL hash routing ─── */
+  function updateHash() {
+    const mode = currentMode();
+    const fragment = currentFragment();
+    const hash = `#${mode.id}/${fragment.id}`;
+    history.replaceState(null, "", hash);
+  }
+
+  function readHash() {
+    const raw = location.hash.replace("#", "");
+    if (!raw) return;
+    const [modeId, fragmentId] = raw.split("/");
+
+    const modeIdx = data.modes.findIndex((m) => m.id === modeId);
+    if (modeIdx >= 0) state.modeIndex = modeIdx;
+
+    if (fragmentId && entryMap.has(fragmentId)) {
+      state.selectedId = fragmentId;
+    }
+  }
+
+  /* ─── Touch swipe for mode switching ─── */
+  function initSwipe() {
+    let startX = 0;
+    let startY = 0;
+
+    document.addEventListener(
+      "touchstart",
+      (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchend",
+      (e) => {
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 64) {
+          if (dx < 0) {
+            nextMode();
+          } else {
+            setMode((state.modeIndex - 1 + data.modes.length) % data.modes.length);
+          }
+        }
+      },
+      { passive: true }
+    );
+  }
+
+  /* ─── Field IntersectionObserver — pause RAF when off-screen ─── */
+  function initFieldObserver() {
+    if (!("IntersectionObserver" in window) || !dom.fieldBoard) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          startAnimation();
+        } else {
+          if (state.rafId) {
+            cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+          }
+        }
+      },
+      { threshold: 0.04 }
+    );
+
+    observer.observe(dom.fieldBoard);
+  }
+
+  /* ─── Smooth cursor halo lerp ─── */
+  function lerpHalo() {
+    state.haloX += (state.targetX - state.haloX) * 0.1;
+    state.haloY += (state.targetY - state.haloY) * 0.1;
+
+    if (dom.cursorHalo) {
+      dom.cursorHalo.style.left = `${state.haloX.toFixed(2)}px`;
+      dom.cursorHalo.style.top = `${state.haloY.toFixed(2)}px`;
+    }
+
+    state.haloRafId = requestAnimationFrame(lerpHalo);
+  }
+
+  /* ─── Content builders ─── */
+
   function buildPrelude() {
     const prelude = data.site?.prelude;
     if (!prelude) return;
-
     setText(dom.preludeEyebrow, prelude.eyebrow);
     setText(dom.preludeTitle, prelude.title);
     setText(dom.preludeCopy, prelude.copy);
@@ -181,10 +326,12 @@
   function buildCoda() {
     const coda = data.site?.coda;
     if (!coda) return;
-
     setText(dom.codaTitle, coda.title);
     setText(dom.codaText, coda.copy);
-    setHTML(dom.codaRow, (coda.pills || []).map((item) => `<span class="coda-pill">${item}</span>`).join(""));
+    setHTML(
+      dom.codaRow,
+      (coda.pills || []).map((item) => `<span class="coda-pill">${item}</span>`).join("")
+    );
   }
 
   function buildModeTabs() {
@@ -261,13 +408,11 @@
     setText(dom.heroDescription, mode.description);
     setText(dom.modeStatement, mode.statement);
     setText(dom.ambientMeta, mode.ambient);
-
     setText(dom.fieldState, `STATE: ${mode.state}`);
     setText(dom.fieldYear, `YEAR: ${mode.year}`);
     setText(dom.axisX, mode.axisX);
     setText(dom.axisY, mode.axisY);
     setText(dom.fieldCaption, mode.note);
-
     setText(dom.statementText, mode.thesis);
     setText(dom.sequenceNote, mode.sequenceNote);
     setText(dom.archiveNote, mode.archiveNote);
@@ -459,13 +604,16 @@
     return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} Q ${mx.toFixed(2)} ${my.toFixed(2)} ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
   }
 
-  function createSvg(tag, attrs = {}) {
+  function createSvgEl(tag, attrs = {}) {
     const element = document.createElementNS(svgNS, tag);
     Object.entries(attrs).forEach(([key, value]) => {
       element.setAttribute(key, String(value));
     });
     return element;
   }
+
+  // Keep original alias for backward compat within this file
+  const createSvg = createSvgEl;
 
   function bandPath(zone, width, height) {
     const x = zone.x * width;
@@ -671,12 +819,17 @@
         sceneWidth: scene.width
       });
 
-      const focusNode = () => selectFragment(node.id, false);
+      const focusNode = () => {
+        // Ripple effect on click
+        createRipple(svg, item.currentX, item.currentY, item.currentR);
+        selectFragment(node.id, false);
+      };
 
       hit.addEventListener("click", focusNode);
 
       hit.addEventListener("focus", () => {
         state.hoveredId = node.id;
+        dom.body.setAttribute("data-node-hovered", "true");
         syncSelection();
 
         const rect = dom.fieldBoard.getBoundingClientRect();
@@ -687,12 +840,14 @@
 
       hit.addEventListener("blur", () => {
         state.hoveredId = null;
+        dom.body.setAttribute("data-node-hovered", "false");
         syncSelection();
         hideTooltip();
       });
 
       hit.addEventListener("mouseenter", (event) => {
         state.hoveredId = node.id;
+        dom.body.setAttribute("data-node-hovered", "true");
         syncSelection();
         updateTooltip(event.clientX, event.clientY, node.fragment);
       });
@@ -703,6 +858,7 @@
 
       hit.addEventListener("mouseleave", () => {
         state.hoveredId = null;
+        dom.body.setAttribute("data-node-hovered", "false");
         syncSelection();
         hideTooltip();
       });
@@ -793,7 +949,7 @@
     });
   }
 
-  function renderInspector() {
+  function _doRenderInspector() {
     const mode = currentMode();
     const fragment = currentFragment();
     const node = state.scene?.nodeElements.find((item) => item.id === fragment.id);
@@ -848,11 +1004,19 @@
     );
   }
 
+  function renderInspector(fade = false) {
+    if (fade) {
+      withInspectorFade(_doRenderInspector);
+    } else {
+      _doRenderInspector();
+    }
+  }
+
   function renderAll() {
     renderModeText();
     buildArchive();
     renderField();
-    renderInspector();
+    renderInspector(false);
     renderBeats();
   }
 
@@ -861,8 +1025,9 @@
 
     state.selectedId = id;
     syncSelection();
-    renderInspector();
+    renderInspector(true);
     renderBeats();
+    updateHash();
 
     if (scrollCard) {
       const card = dom.archiveGrid.querySelector(`[data-fragment-id="${id}"]`);
@@ -881,7 +1046,11 @@
     state.seedOffset = 0;
     state.hoveredId = null;
     hideTooltip();
-    renderAll();
+
+    withTransition(() => {
+      renderAll();
+      updateHash();
+    });
   }
 
   function nextMode() {
@@ -917,7 +1086,7 @@
   function recompose() {
     state.seedOffset += 1;
     renderField();
-    renderInspector();
+    renderInspector(false);
     renderBeats();
   }
 
@@ -1018,9 +1187,9 @@
   }
 
   function handlePointer(event) {
-    if (!dom.cursorHalo || state.reducedMotion) return;
-    dom.cursorHalo.style.left = `${event.clientX}px`;
-    dom.cursorHalo.style.top = `${event.clientY}px`;
+    if (state.reducedMotion) return;
+    state.targetX = event.clientX;
+    state.targetY = event.clientY;
   }
 
   function dismissPrelude() {
@@ -1068,7 +1237,6 @@
 
     document.addEventListener("keydown", (event) => {
       const key = event.key.toLowerCase();
-
       if (key === "escape") dismissPrelude();
       if (key === "m") nextMode();
       if (key === "g") toggleGrid();
@@ -1078,10 +1246,16 @@
       if (key === "r") recompose();
     });
 
+    // Debounced resize with RAF
+    let resizeRafId = null;
     window.addEventListener("resize", () => {
-      renderField();
-      renderInspector();
-      renderBeats();
+      if (resizeRafId) cancelAnimationFrame(resizeRafId);
+      resizeRafId = requestAnimationFrame(() => {
+        renderField();
+        renderInspector(false);
+        renderBeats();
+        resizeRafId = null;
+      });
     });
 
     document.addEventListener("visibilitychange", () => {
@@ -1095,11 +1269,7 @@
 
     const motionListener = (event) => {
       state.reducedMotion = event.matches;
-
-      if (event.matches) {
-        state.showMotion = false;
-      }
-
+      if (event.matches) state.showMotion = false;
       dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
       dom.motionButton.setAttribute("aria-pressed", String(state.showMotion));
       startAnimation();
@@ -1110,13 +1280,19 @@
     } else if (typeof prefersReducedMotion.addListener === "function") {
       prefersReducedMotion.addListener(motionListener);
     }
+
+    initSwipe();
   }
 
   function init() {
+    // Read URL hash first so state is correct before first render
+    readHash();
+
     dom.body.setAttribute("data-grid", state.showGrid ? "on" : "off");
     dom.body.setAttribute("data-labels", state.showLabels ? "on" : "off");
     dom.body.setAttribute("data-motion", state.showMotion ? "on" : "off");
     dom.body.setAttribute("data-constellation", state.showConstellation ? "on" : "off");
+    dom.body.setAttribute("data-node-hovered", "false");
 
     dom.gridButton.setAttribute("aria-pressed", String(state.showGrid));
     dom.labelsButton.setAttribute("aria-pressed", String(state.showLabels));
@@ -1130,6 +1306,12 @@
     renderAll();
     initRevealObserver();
     bindEvents();
+    initFieldObserver();
+
+    // Start cursor lerp (non-blocking, gracefully degrades)
+    if (!state.reducedMotion && dom.cursorHalo) {
+      lerpHalo();
+    }
 
     const introDelay = state.reducedMotion ? 240 : 1800;
     window.setTimeout(dismissPrelude, introDelay);
