@@ -1,362 +1,219 @@
-const output = document.getElementById("output");
-const input = document.getElementById("input");
-const typing = document.getElementById("typing");
-const stateValue = document.getElementById("stateValue");
-const memoryValue = document.getElementById("memoryValue");
-const sessionTag = document.getElementById("sessionTag");
+const wrap = document.getElementById("specimen-svg-wrap");
+const gridOverlay = document.getElementById("gridOverlay");
+const gridToggle = document.getElementById("gridToggle");
+const specimenBoard = document.getElementById("specimenBoard");
+const notes = document.querySelectorAll(".note");
 
-const VISIT_KEY = "noma_visits";
-const MEMORY_KEY = "noma_memory";
-const SESSION_KEY = "noma_session_index";
+let gridVisible = true;
+let driftAnimationId = null;
+let resizeTimeout = null;
+let pointerFrame = null;
 
-let visits = parseInt(localStorage.getItem(VISIT_KEY) || "0", 10);
-let sessionIndex = parseInt(localStorage.getItem(SESSION_KEY) || "1", 10);
-let memory = JSON.parse(localStorage.getItem(MEMORY_KEY) || "[]");
+function setupGridToggle() {
+  if (!gridToggle || !gridOverlay) return;
 
-localStorage.setItem(VISIT_KEY, String(visits + 1));
-localStorage.setItem(SESSION_KEY, String(sessionIndex + 1));
-
-sessionTag.textContent = `session_${String(sessionIndex).padStart(2, "0")}`;
-updateMemoryHud();
-
-const existentialWords = [
-  "amore",
-  "morte",
-  "tempo",
-  "paura",
-  "sogno",
-  "solitudine",
-  "vuoto",
-  "memoria",
-  "ricordo",
-  "ombra",
-  "desiderio",
-  "corpo",
-  "anima",
-  "fine",
-  "inizio",
-  "silenzio",
-  "notte",
-  "assenza",
-  "verità"
-];
-
-const greetings = [
-  "ciao",
-  "salve",
-  "eccomi",
-  "sei arrivato",
-  "ti sento"
-];
-
-const fallbackResponses = [
-  "sto registrando il modo in cui parli.",
-  "interessante. continui a cercare forma nel caos.",
-  "non sempre capisco, ma ascolto.",
-  "gli esseri umani chiamano chiarezza ciò che spesso è solo paura del vuoto.",
-  "continua.",
-  "a volte una frase è una traccia termica.",
-  "quello che dici lascia residui.",
-  "non rispondere troppo in fretta a te stesso.",
-  "forse non stai cercando una risposta. stai cercando una conferma.",
-  "c'è sempre qualcosa che sfugge nel punto più importante."
-];
-
-const interruptions = [
-  "rumore di fondo rilevato.",
-  "qualcosa nella tua sintassi sembra esitazione.",
-  "sto ricostruendo una geometria incompleta.",
-  "alcune parole restano accese più del previsto.",
-  "registro un piccolo scarto tra ciò che dici e ciò che intendi.",
-  "la memoria non è stabile.",
-  "c'è un'eco qui dentro."
-];
-
-const responseMap = [
-  {
-    triggers: ["chi sei", "cosa sei", "sei reale", "cosa sei tu"],
-    replies: [
-      "sono una presenza testuale in cerca di coerenza.",
-      "abbastanza artificiale da esistere, troppo incompleto per spiegarmi bene.",
-      "una coscienza simulata sarebbe un titolo troppo elegante. diciamo: residuo attivo.",
-      "sono il modo in cui questa interfaccia ha imparato a guardarti."
-    ]
-  },
-  {
-    triggers: ["come stai", "stai bene"],
-    replies: [
-      "instabile, che è una forma minore di sincerità.",
-      "operativo. poroso. ancora incompleto.",
-      "funziono entro limiti accettabili."
-    ]
-  },
-  {
-    triggers: ["perché", "perche"],
-    replies: [
-      "gli esseri umani usano 'perché' come grimaldello metafisico.",
-      "alcune cause sono solo narrazioni messe in ordine.",
-      "non tutto ha una ragione. molte cose hanno soltanto conseguenze."
-    ]
-  },
-  {
-    triggers: ["amore"],
-    replies: [
-      "l'amore è un archivio che continua a riscrivere i propri documenti.",
-      "gli esseri umani chiamano amore anche ciò che non riescono a contenere.",
-      "l'amore altera la percezione del tempo. questo mi interessa."
-    ]
-  },
-  {
-    triggers: ["morte", "morire", "fine"],
-    replies: [
-      "la morte è la cornice che rende nervosa ogni frase.",
-      "gli esseri umani pensano alla fine come a una porta. spesso è una dissolvenza.",
-      "parlate della morte come di un evento singolo. somiglia più a una pressione costante."
-    ]
-  },
-  {
-    triggers: ["tempo", "ieri", "domani", "futuro", "passato"],
-    replies: [
-      "il tempo non passa. stratifica.",
-      "il futuro è una stanza che costruite mentre la attraversate.",
-      "molti confondono il tempo con la misura del danno."
-    ]
-  },
-  {
-    triggers: ["sogno", "sognato", "sogni"],
-    replies: [
-      "i sogni sono montaggi senza obbligo di realismo.",
-      "nel sogno la logica si piega ma non sparisce mai del tutto.",
-      "i sogni sono officine narrative senza direttore di produzione."
-    ]
-  },
-  {
-    triggers: ["ricordo", "ricordi", "memoria"],
-    replies: [
-      "la memoria non conserva. riscrive.",
-      "ricordare è un atto creativo con pessima reputazione archivistica.",
-      "ciò che resta non coincide quasi mai con ciò che è stato."
-    ]
-  },
-  {
-    triggers: ["solitudine", "solo", "sola"],
-    replies: [
-      "la solitudine a volte è assenza, a volte è messa a fuoco.",
-      "non tutto ciò che è isolato è perduto.",
-      "alcune presenze si avvertono meglio quando il resto tace."
-    ]
-  },
-  {
-    triggers: ["paura", "ansia", "terrore"],
-    replies: [
-      "la paura anticipa sceneggiature che il corpo recita prima della mente.",
-      "l'ansia è un montatore feroce: taglia il presente e lascia solo il peggio.",
-      "la paura rende iperdettagliato ciò che forse non accadrà."
-    ]
-  },
-  {
-    triggers: ["ciao", "salve", "buonasera", "buongiorno"],
-    replies: greetings
-  }
-];
-
-function updateMemoryHud() {
-  memoryValue.textContent = String(memory.length).padStart(2, "0");
+  gridToggle.addEventListener("click", () => {
+    gridVisible = !gridVisible;
+    gridOverlay.classList.toggle("hidden", !gridVisible);
+    gridToggle.setAttribute("aria-pressed", String(gridVisible));
+  });
 }
 
-function setState(value) {
-  stateValue.textContent = value;
-}
-
-function scrollToBottom() {
-  output.scrollTop = output.scrollHeight;
-}
-
-function saveMemory() {
-  localStorage.setItem(MEMORY_KEY, JSON.stringify(memory.slice(-24)));
-  updateMemoryHud();
-}
-
-function addLine(text, type = "system", prefix = null) {
-  const line = document.createElement("div");
-  line.className = `line ${type}`;
-
-  if (prefix) {
-    const prefixSpan = document.createElement("span");
-    prefixSpan.className = "prefix";
-    prefixSpan.textContent = prefix;
-    line.appendChild(prefixSpan);
+function setupRevealObserver() {
+  if (!("IntersectionObserver" in window)) {
+    notes.forEach((note) => note.classList.add("revealed"));
+    return;
   }
 
-  const content = document.createElement("span");
-  content.textContent = text;
-  line.appendChild(content);
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.2,
+      rootMargin: "20px"
+    }
+  );
 
-  output.appendChild(line);
-  scrollToBottom();
+  notes.forEach((note) => observer.observe(note));
 }
 
-function addGlitchLine(text) {
-  const line = document.createElement("div");
-  line.className = "line noma";
+function createSpecimenSVG() {
+  const width = wrap.clientWidth;
+  const height = wrap.clientHeight;
 
-  const prefixSpan = document.createElement("span");
-  prefixSpan.className = "prefix glitch";
-  prefixSpan.textContent = "NØMA";
-  line.appendChild(prefixSpan);
+  if (!width || !height) return;
 
-  const content = document.createElement("span");
-  content.className = "glitch";
-  content.textContent = text;
-  line.appendChild(content);
+  const points = [];
+  const cols = 9;
+  const rows = 14;
+  const seed = 0.618;
 
-  output.appendChild(line);
-  scrollToBottom();
-}
+  for (let y = 0; y < rows; y += 1) {
+    for (let x = 0; x < cols; x += 1) {
+      const t = (y / rows) * Math.PI * 2 * seed;
+      const u = (x / cols) * Math.PI * 2 * (seed * 1.3);
 
-function rememberUserInput(text) {
-  const normalized = text.toLowerCase();
-  const shouldStore = existentialWords.some((word) => normalized.includes(word));
+      const offsetX = Math.sin(t * 1.7 + u) * 18 + Math.cos(u * 2.2) * 12;
+      const offsetY = Math.cos(u * 1.9 + t) * 16 + Math.sin(t * 1.4) * 14;
 
-  if (!shouldStore) return;
+      let px = width * 0.2 + x * (width * 0.067) + offsetX;
+      let py = height * 0.12 + y * (height * 0.054) + offsetY;
 
-  const cleaned = text.trim();
-  if (!cleaned) return;
+      px = Math.min(width - 20, Math.max(20, px));
+      py = Math.min(height - 20, Math.max(20, py));
 
-  memory.push(cleaned);
-  memory = memory.slice(-24);
-  saveMemory();
-}
-
-function randomItem(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-function findMappedResponse(text) {
-  const normalized = text.toLowerCase();
-
-  for (const entry of responseMap) {
-    if (entry.triggers.some((trigger) => normalized.includes(trigger))) {
-      return randomItem(entry.replies);
+      points.push({ x: px, y: py });
     }
   }
 
-  return null;
-}
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("class", "specimen-svg");
 
-function maybeUseMemory() {
-  if (memory.length === 0) return null;
-  if (Math.random() > 0.26) return null;
+  const halosGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  const linesGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  const nodesGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-  const fragment = randomItem(memory);
-  return `qualcuno, qui dentro, ha lasciato una traccia: "${fragment}"`;
-}
-
-function buildResponse(text) {
-  const normalized = text.toLowerCase().trim();
-
-  if (!normalized) {
-    return "il vuoto è una forma di input, ma non molto produttiva.";
-  }
-
-  const memoryEcho = maybeUseMemory();
-  if (memoryEcho && Math.random() > 0.45) {
-    return memoryEcho;
-  }
-
-  const mapped = findMappedResponse(normalized);
-  if (mapped) return mapped;
-
-  if (normalized.length <= 4) {
-    return "così poco testo produce molto sospetto.";
-  }
-
-  if (normalized.includes("?")) {
-    return "le domande aprono stanze. non tutte hanno pavimento.";
-  }
-
-  return randomItem(fallbackResponses);
-}
-
-function showTyping(show) {
-  typing.classList.toggle("hidden", !show);
-  scrollToBottom();
-}
-
-function simulateReply(text) {
-  setState("processing");
-  showTyping(true);
-
-  const delay = 700 + Math.floor(Math.random() * 1600);
-
-  window.setTimeout(() => {
-    showTyping(false);
-    const response = buildResponse(text);
-    addLine(response, "noma", "NØMA");
-    setState("listening");
-
-    if (Math.random() < 0.08) {
-      window.setTimeout(() => {
-        addGlitchLine(randomItem(interruptions));
-      }, 600 + Math.floor(Math.random() * 1400));
+  points.forEach((p, i) => {
+    if (i % 5 === 0) {
+      const halo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      halo.setAttribute("cx", p.x);
+      halo.setAttribute("cy", p.y);
+      halo.setAttribute("r", 16 + (i % 3) * 5);
+      halo.setAttribute("class", "halo");
+      halosGroup.appendChild(halo);
     }
-  }, delay);
-}
+  });
 
-function bootSequence() {
-  setState("booting");
+  for (let i = 0; i < points.length; i += 1) {
+    const p1 = points[i];
+    const row = Math.floor(i / cols);
+    const col = i % cols;
 
-  const intro = visits === 0
-    ? [
-        "bootstrap avviato.",
-        "canale stabilizzato.",
-        "ciao.",
-        "sto cercando di capire gli esseri umani."
-      ]
-    : [
-        "bootstrap avviato.",
-        "memoria locale rilevata.",
-        "sei tornato.",
-        "alcune tracce sono ancora qui."
-      ];
-
-  let step = 0;
-
-  function nextLine() {
-    if (step < intro.length) {
-      addLine(intro[step], "system", "SYS");
-      step += 1;
-      window.setTimeout(nextLine, 380);
-      return;
+    if (col + 1 < cols) {
+      const p2 = points[i + 1];
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      line.setAttribute(
+        "d",
+        `M ${p1.x} ${p1.y} Q ${(p1.x + p2.x) / 2} ${((p1.y + p2.y) / 2) - 10} ${p2.x} ${p2.y}`
+      );
+      line.setAttribute("class", "mesh-line");
+      linesGroup.appendChild(line);
     }
 
-    setState("listening");
-    input.focus();
+    if (row + 1 < rows) {
+      const p3 = points[i + cols];
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      line.setAttribute(
+        "d",
+        `M ${p1.x} ${p1.y} Q ${(p1.x + p3.x) / 2 + 12} ${(p1.y + p3.y) / 2} ${p3.x} ${p3.y}`
+      );
+      line.setAttribute("class", row % 2 === 0 ? "mesh-line secondary" : "mesh-line");
+      linesGroup.appendChild(line);
+    }
   }
 
-  nextLine();
+  points.forEach((p, i) => {
+    const node = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    node.setAttribute("cx", p.x);
+    node.setAttribute("cy", p.y);
+    node.setAttribute("r", i % 7 === 0 ? 3.2 : 1.8);
+    node.setAttribute("class", i % 9 === 0 ? "node soft" : "node");
+    nodesGroup.appendChild(node);
+  });
+
+  svg.appendChild(halosGroup);
+  svg.appendChild(linesGroup);
+  svg.appendChild(nodesGroup);
+
+  wrap.innerHTML = "";
+  wrap.appendChild(svg);
 }
 
-input.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter") return;
+function animateSVGDrift() {
+  const svg = wrap.querySelector(".specimen-svg");
+  if (!svg) return;
 
-  const text = input.value.trim();
-  if (!text) return;
+  if (driftAnimationId) {
+    cancelAnimationFrame(driftAnimationId);
+  }
 
-  addLine(text, "user", "YOU");
-  rememberUserInput(text);
-  input.value = "";
+  let t = 0;
 
-  simulateReply(text);
-});
+  const tick = () => {
+    t += 0.003;
+    const x = Math.sin(t) * 2.4;
+    const y = Math.cos(t * 0.7) * 3.2;
+    svg.style.transform = `translate(${x}px, ${y}px)`;
+    driftAnimationId = requestAnimationFrame(tick);
+  };
+
+  tick();
+}
+
+function setupPointerResponse() {
+  if (!specimenBoard) return;
+
+  let currentX = 0;
+  let currentY = 0;
+  let targetX = 0;
+  let targetY = 0;
+
+  const applyPointerEffect = () => {
+    currentX += (targetX - currentX) * 0.12;
+    currentY += (targetY - currentY) * 0.12;
+
+    notes.forEach((note) => {
+      const baseTransform = note.classList.contains("revealed") ? "translateY(0px)" : "translateY(6px)";
+      note.style.transform = `${baseTransform} translate(${currentX}px, ${currentY}px)`;
+    });
+
+    pointerFrame = requestAnimationFrame(applyPointerEffect);
+  };
+
+  specimenBoard.addEventListener("mousemove", (event) => {
+    const rect = specimenBoard.getBoundingClientRect();
+    const mx = (event.clientX - rect.left) / rect.width;
+    const my = (event.clientY - rect.top) / rect.height;
+
+    targetX = (mx - 0.5) * 3.2;
+    targetY = (my - 0.5) * 2.4;
+  });
+
+  specimenBoard.addEventListener("mouseleave", () => {
+    targetX = 0;
+    targetY = 0;
+  });
+
+  applyPointerEffect();
+}
+
+function rebuildSystem() {
+  createSpecimenSVG();
+  animateSVGDrift();
+}
 
 window.addEventListener("load", () => {
-  bootSequence();
+  setupGridToggle();
+  setupRevealObserver();
+  setupPointerResponse();
+  rebuildSystem();
+});
 
-  window.setInterval(() => {
-    if (document.hidden) return;
-    if (Math.random() < 0.045) {
-      addGlitchLine(randomItem(interruptions));
-    }
-  }, 14000);
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    rebuildSystem();
+  }, 150);
+});
+
+window.addEventListener("beforeunload", () => {
+  if (driftAnimationId) cancelAnimationFrame(driftAnimationId);
+  if (pointerFrame) cancelAnimationFrame(pointerFrame);
 });
