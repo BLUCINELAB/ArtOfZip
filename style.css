@@ -81,7 +81,7 @@ body[data-mode="ember"] {
     linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: 88px 88px;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.08));
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.08));
   transition: opacity 280ms ease;
 }
 
