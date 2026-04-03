@@ -30,6 +30,7 @@
     heroKicker: $("#heroKicker"),
     heroTitle: $("#heroTitle"),
     heroDescription: $("#heroDescription"),
+    ambientMeta: $("#ambientMeta"),
     modeStatement: $("#modeStatement"),
     modeTabs: $("#modeTabs"),
     ritualList: $("#ritualList"),
@@ -62,6 +63,9 @@
     statementText: $("#statementText"),
     metricsList: $("#metricsList"),
     coordsList: $("#coordsList"),
+
+    sequenceNote: $("#sequenceNote"),
+    beatGrid: $("#beatGrid"),
 
     archiveNote: $("#archiveNote"),
     archiveGrid: $("#archiveGrid"),
@@ -256,6 +260,7 @@
     setText(dom.heroTitle, mode.title);
     setText(dom.heroDescription, mode.description);
     setText(dom.modeStatement, mode.statement);
+    setText(dom.ambientMeta, mode.ambient);
 
     setText(dom.fieldState, `STATE: ${mode.state}`);
     setText(dom.fieldYear, `YEAR: ${mode.year}`);
@@ -264,6 +269,7 @@
     setText(dom.fieldCaption, mode.note);
 
     setText(dom.statementText, mode.thesis);
+    setText(dom.sequenceNote, mode.sequenceNote);
     setText(dom.archiveNote, mode.archiveNote);
 
     setHTML(dom.footerRow, (data.site?.footer || []).map((item) => `<span>${item}</span>`).join(""));
@@ -300,6 +306,26 @@
     dom.body.setAttribute("data-mode", mode.id);
   }
 
+  function renderBeats() {
+    const fragment = currentFragment();
+    const beats = fragment.beats || [];
+
+    setHTML(
+      dom.beatGrid,
+      beats
+        .map(
+          (beat, index) => `
+            <article class="beat-card">
+              <span class="beat-index">beat ${index + 1}</span>
+              <h3 class="beat-title">${beat.title}</h3>
+              <p class="beat-copy">${beat.copy}</p>
+            </article>
+          `
+        )
+        .join("")
+    );
+  }
+
   function sceneProfile() {
     const mode = currentMode();
 
@@ -332,10 +358,10 @@
     const profile = sceneProfile();
     const rand = seededRandom((state.modeIndex + 1) * 2843 + (state.seedOffset + 1) * 7331);
 
-    const width = 1320;
-    const height = 940;
-    const marginX = 110;
-    const marginY = 92;
+    const width = 1360;
+    const height = 960;
+    const marginX = 112;
+    const marginY = 94;
 
     const nodes = data.fragments.map((fragment, index) => {
       const xBase = metricValue(fragment, mode.map.xKey);
@@ -476,10 +502,10 @@
     dom.fieldTooltip.hidden = true;
   }
 
-  function applyNodeVisuals(item, x, y, radius, { active, hovered }) {
+  function applyNodeVisuals(item, x, y, radius, { active, hovered, sceneWidth }) {
     const modeMotion = state.scene?.scene?.profile?.motion;
     const echoOpacity = modeMotion?.echoOpacity ?? 0.08;
-    const anchor = x > state.scene.scene.width * 0.72 ? "end" : "start";
+    const anchor = x > sceneWidth * 0.72 ? "end" : "start";
     const dx = anchor === "end" ? -20 : 20;
 
     item.currentX = x;
@@ -585,7 +611,7 @@
       return { path, label, phase: index * 0.9 };
     });
 
-    const nodeElements = scene.nodes.map((node, index) => {
+    const nodeElements = scene.nodes.map((node) => {
       const group = createSvg("g", {
         class: "node-group",
         "data-fragment-id": node.id
@@ -641,12 +667,14 @@
 
       applyNodeVisuals(item, node.x, node.y, node.radius, {
         active: node.id === state.selectedId,
-        hovered: false
+        hovered: false,
+        sceneWidth: scene.width
       });
 
       const focusNode = () => selectFragment(node.id, false);
 
       hit.addEventListener("click", focusNode);
+
       hit.addEventListener("focus", () => {
         state.hoveredId = node.id;
         syncSelection();
@@ -825,6 +853,7 @@
     buildArchive();
     renderField();
     renderInspector();
+    renderBeats();
   }
 
   function selectFragment(id, scrollCard) {
@@ -833,6 +862,7 @@
     state.selectedId = id;
     syncSelection();
     renderInspector();
+    renderBeats();
 
     if (scrollCard) {
       const card = dom.archiveGrid.querySelector(`[data-fragment-id="${id}"]`);
@@ -888,6 +918,7 @@
     state.seedOffset += 1;
     renderField();
     renderInspector();
+    renderBeats();
   }
 
   function resetSceneVisuals() {
@@ -898,7 +929,8 @@
     state.scene.nodeElements.forEach((item) => {
       applyNodeVisuals(item, item.node.x, item.node.y, item.node.radius, {
         active: item.id === state.selectedId,
-        hovered: item.id === state.hoveredId
+        hovered: item.id === state.hoveredId,
+        sceneWidth: state.scene.scene.width
       });
     });
 
@@ -920,6 +952,7 @@
 
     const t = now * 0.001;
     const motion = state.scene.scene.profile.motion;
+    const sceneWidth = state.scene.scene.width;
 
     dom.fieldSvg.style.transform = `translate(${(Math.sin(t * 0.23) * motion.svgDriftX).toFixed(2)}px, ${(Math.cos(t * 0.19) * motion.svgDriftY).toFixed(2)}px)`;
 
@@ -956,14 +989,14 @@
 
       const radius = item.node.radius * pulse;
 
-      applyNodeVisuals(item, x, y, radius, { active, hovered });
+      applyNodeVisuals(item, x, y, radius, { active, hovered, sceneWidth });
     });
 
     updateRelationPaths();
 
     state.scene.relationElements.forEach((item, index) => {
       item.el.style.strokeDashoffset = (
-        (t * (12 + item.relation.strength * 22)) + index * 16
+        t * (12 + item.relation.strength * 22) + index * 16
       ).toFixed(2);
     });
 
@@ -1048,6 +1081,7 @@
     window.addEventListener("resize", () => {
       renderField();
       renderInspector();
+      renderBeats();
     });
 
     document.addEventListener("visibilitychange", () => {
@@ -1097,7 +1131,7 @@
     initRevealObserver();
     bindEvents();
 
-    const introDelay = state.reducedMotion ? 220 : 1650;
+    const introDelay = state.reducedMotion ? 240 : 1800;
     window.setTimeout(dismissPrelude, introDelay);
   }
 
