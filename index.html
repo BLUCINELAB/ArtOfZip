@@ -3,300 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Anton Zip — Method / Dream / Trace</title>
-  <meta name="description" content="Ritratto interattivo di una pratica tra cinema indipendente, sistemi editoriali, arti visive, archivi sensibili e dispositivi digitali." />
+  <title>Anton Zip — Residuo</title>
+  <meta
+    name="description"
+    content="Un ambiente digitale atmosferico che registra la presenza e la restituisce come traccia ritardata."
+  />
+  <meta name="theme-color" content="#080808" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#06080d" />
 
-  <meta property="og:title" content="Anton Zip — Method / Dream / Trace" />
-  <meta property="og:description" content="An interactive portrait of a practice spanning independent cinema, editorial systems, visual arts, sensitive archives and digital devices." />
+  <meta property="og:title" content="Anton Zip — Residuo" />
+  <meta
+    property="og:description"
+    content="Un sito-opera: memoria, latenza, sedimentazione, presenza."
+  />
   <meta property="og:type" content="website" />
-  <meta property="og:locale" content="it_IT" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Anton Zip — Method / Dream / Trace" />
-  <meta name="twitter:description" content="An interactive portrait of a practice spanning independent cinema, editorial systems and visual arts." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body
-  data-mode="vision"
-  data-grid="on"
-  data-labels="on"
-  data-motion="on"
-  data-constellation="on"
-  data-intro="pending"
->
-  <div class="reading-progress" aria-hidden="true"></div>
+<body>
+  <canvas id="residuoCanvas" aria-hidden="true"></canvas>
 
-  <div class="background background-grid" aria-hidden="true"></div>
-  <div class="background background-noise" aria-hidden="true"></div>
-  <div class="background background-scan" aria-hidden="true"></div>
-  <div class="background background-vignette" aria-hidden="true"></div>
-  <div class="background background-aurora" aria-hidden="true"></div>
-  <div class="cursor-halo" id="cursorHalo" aria-hidden="true"></div>
+  <div class="noise-layer" aria-hidden="true"></div>
+  <div class="vignette-layer" aria-hidden="true"></div>
+  <div class="glow-layer" aria-hidden="true"></div>
 
-  <div class="prelude" id="sitePrelude" aria-hidden="false">
-    <div class="prelude-inner">
-      <p class="prelude-eyebrow" id="preludeEyebrow">METHOD / DREAM / TRACE</p>
-      <h1 class="prelude-title" id="preludeTitle">A field for reading a living practice.</h1>
-      <p class="prelude-copy" id="preludeCopy">
-        Non un portfolio lineare, ma un ambiente sensibile. Qui la pratica prende forma come costellazione di cinema,
-        sistemi, ricerca, archivi, immagini e costruzione concreta.
-      </p>
-      <div class="prelude-actions">
-        <button class="prelude-button" id="enterFieldButton" type="button">ENTER FIELD</button>
-      </div>
+  <header class="site-header">
+    <div class="site-mark">
+      <span class="site-name">ANTON ZIP</span>
+      <span class="site-divider" aria-hidden="true"></span>
+      <span class="site-state" id="siteState">RESIDUO / ACTIVE</span>
     </div>
-  </div>
 
-  <main class="shell">
-    <header class="masthead">
-      <div class="masthead-left">
-        <span class="masthead-name">ANTON ZIP</span>
-        <span class="masthead-divider" aria-hidden="true"></span>
-        <span id="mastheadField">METHOD / DREAM / TRACE</span>
-      </div>
+    <nav class="site-nav" aria-label="Navigazione principale">
+      <a href="#about">about</a>
+      <a href="#note">note</a>
+      <a href="mailto:antonzip@gmail.com">contact</a>
+    </nav>
+  </header>
 
-      <div class="masthead-right">
-        <a class="utility-link" href="#archive">map</a>
-        <button class="utility-button" id="cycleModeButton" type="button" aria-label="Cambia lente di lettura">
-          <span class="utility-dot" aria-hidden="true"></span>
-          <span id="cycleModeLabel">VISION MODE</span>
-        </button>
-      </div>
-    </header>
+  <main class="stage">
+    <section class="hero" aria-labelledby="heroTitle">
+      <p class="hero-kicker">MEMORY / LATENCY / TRACE / FIELD</p>
 
-    <section class="hero" aria-labelledby="heroTitle" data-reveal>
-      <div class="hero-main">
-        <p class="eyebrow" id="heroKicker">CINEMA / IMAGE / SYSTEM / SENSITIVE DIRECTION</p>
-        <h1 class="hero-title" id="heroTitle">
-          I turn artistic chaos into lucid structures without killing its mystery.
-        </h1>
-        <p class="hero-description" id="heroDescription">
-          Questo sito non elenca soltanto lavori. Li mette in tensione. Ogni nodo è una componente reale della pratica;
-          ogni lente cambia il modo in cui quella pratica si lascia leggere.
-        </p>
+      <h1 class="hero-title" id="heroTitle">
+        A site that does not answer immediately.
+      </h1>
 
-        <div class="hero-ambient">
-          <div class="ambient-line" aria-hidden="true"></div>
-          <div class="ambient-meta" id="ambientMeta"></div>
-        </div>
-      </div>
+      <p class="hero-text">
+        Questo ambiente registra la presenza e la restituisce dopo. Non mostra una
+        reazione diretta. Lascia emergere una memoria.
+      </p>
 
-      <aside class="hero-side">
-        <article class="panel compact-panel">
-          <p class="panel-label">POSITION</p>
-          <p class="panel-copy" id="modeStatement">
-            Lavoro nel punto in cui immaginazione, rigore e costruzione sensibile si incontrano.
-          </p>
-        </article>
-
-        <article class="panel compact-panel">
-          <p class="panel-label">LENSES</p>
-          <div class="mode-tabs" id="modeTabs" role="tablist" aria-label="Lenti di lettura"></div>
-        </article>
-
-        <article class="panel compact-panel mono-panel">
-          <p class="panel-label">RITUALS</p>
-          <div class="ritual-list" id="ritualList"></div>
-        </article>
-      </aside>
-    </section>
-
-    <section class="stage" aria-labelledby="stageTitle" data-reveal>
-      <div class="stage-topline">
-        <div>
-          <p class="eyebrow">LIVE CARTOGRAPHY</p>
-          <h2 class="section-title" id="stageTitle">A site that stages the work instead of listing it.</h2>
-        </div>
-
-        <div class="meta-row" id="metaRow" aria-live="polite"></div>
-      </div>
-
-      <div class="stage-grid">
-        <section class="field panel" aria-labelledby="fieldTitle">
-          <div class="field-shell">
-            <div class="field-frame field-frame-top-left" aria-hidden="true"></div>
-            <div class="field-frame field-frame-top-right" aria-hidden="true"></div>
-            <div class="field-frame field-frame-bottom-left" aria-hidden="true"></div>
-            <div class="field-frame field-frame-bottom-right" aria-hidden="true"></div>
-
-            <div class="field-topline">
-              <span id="fieldState">STATE: ACTIVE READING</span>
-              <span id="fieldYear">YEAR: 2026</span>
-            </div>
-
-            <div class="field-board" id="fieldBoard">
-              <h3 class="sr-only" id="fieldTitle">Mappa interattiva della pratica</h3>
-              <p class="sr-only" id="fieldDescription">
-                Ogni nodo rappresenta una componente del lavoro di Anton Zip. Seleziona un nodo per leggerne funzione,
-                materia, relazioni e posizione nelle diverse lenti.
-              </p>
-
-              <div class="field-axis field-axis-horizontal" aria-hidden="true"></div>
-              <div class="field-axis field-axis-vertical" aria-hidden="true"></div>
-              <div class="field-axis-label field-axis-label-y" id="axisY">Y / NARRATIVE PRESSURE</div>
-              <div class="field-axis-label field-axis-label-x" id="axisX">X / IMAGINATION</div>
-
-              <svg
-                class="field-svg"
-                id="fieldSvg"
-                viewBox="0 0 1360 960"
-                preserveAspectRatio="xMidYMid meet"
-                role="img"
-                aria-labelledby="fieldTitle fieldDescription"
-              ></svg>
-
-              <div class="field-tooltip" id="fieldTooltip" hidden></div>
-            </div>
-
-            <p class="field-caption" id="fieldCaption">
-              La lente attiva non cambia solo i testi: modifica gravità, distanza, densità e comportamento del campo.
-            </p>
-
-            <div class="field-controls" aria-label="Controlli della mappa">
-              <button class="control-button" id="gridButton" type="button" aria-pressed="true">
-                <span class="control-dot" aria-hidden="true"></span>
-                <span>GRID</span>
-              </button>
-
-              <button class="control-button" id="labelsButton" type="button" aria-pressed="true">
-                <span class="control-dot" aria-hidden="true"></span>
-                <span>LABELS</span>
-              </button>
-
-              <button class="control-button" id="motionButton" type="button" aria-pressed="true">
-                <span class="control-dot" aria-hidden="true"></span>
-                <span>MOTION</span>
-              </button>
-
-              <button class="control-button" id="constellationButton" type="button" aria-pressed="true">
-                <span class="control-dot" aria-hidden="true"></span>
-                <span>CONSTELLATION</span>
-              </button>
-
-              <button class="control-button" id="recomposeButton" type="button">
-                <span class="control-dot" aria-hidden="true"></span>
-                <span>RECOMPOSE</span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <aside class="inspector panel" aria-labelledby="inspectorTitle">
-          <div class="inspector-top">
-            <p class="panel-label" id="inspectorTitle">CURRENT FOCUS</p>
-            <span class="status-pill" id="inspectorStatus">VISION MODE</span>
-          </div>
-
-          <div class="inspector-content" id="inspectorContent">
-            <p class="inspector-code" id="inspectorCode">P_01</p>
-            <h3 class="inspector-title" id="inspectorHeading">Independent Cinema</h3>
-            <p class="inspector-summary" id="inspectorSummary">
-              Nucleo autoriale del lavoro, dove immagine, tempo, messa in scena e costruzione sensibile si incontrano.
-            </p>
-
-            <div class="inspector-grid" id="inspectorGrid"></div>
-
-            <section class="inspector-block">
-              <p class="panel-label">READING</p>
-              <p class="panel-copy" id="inspectorReading">
-                Questo nodo mostra la parte del lavoro in cui il linguaggio cinematografico diventa struttura e rischio.
-              </p>
-            </section>
-
-            <section class="inspector-block">
-              <p class="panel-label">CONNECTIONS</p>
-              <div class="tag-row" id="inspectorConnections"></div>
-            </section>
-
-            <section class="inspector-block">
-              <p class="panel-label">KEY LINE</p>
-              <p class="manifest-line" id="manifestLine">
-                Non separo produzione e immaginazione: costruisco dispositivi che permettono all'una di sostenere l'altra.
-              </p>
-            </section>
-          </div>
-        </aside>
+      <div class="hero-meta">
+        <span>fullscreen field</span>
+        <span>delayed traces</span>
+        <span>quiet interaction</span>
       </div>
     </section>
 
-    <section class="manifesto" data-reveal>
-      <article class="panel statement-panel">
-        <p class="panel-label">WORKING THESIS</p>
-        <p class="statement-text" id="statementText">
-          Il mio lavoro unisce metodo e visione: faccio convivere logistica, estetica, produzione e pensiero visivo dentro la stessa forma.
+    <section class="lower-band">
+      <article class="panel" id="about">
+        <p class="panel-label">ABOUT</p>
+        <p class="panel-copy">
+          Residuo è una homepage-opera. Il gesto non produce un effetto
+          immediato: si deposita, ritarda, riaffiora, svanisce. Il sito non
+          chiede di essere usato in fretta. Chiede tempo.
         </p>
       </article>
 
-      <article class="panel compact-panel mono-panel">
-        <p class="panel-label">SYSTEM METRICS</p>
-        <div class="metric-list" id="metricsList"></div>
-      </article>
-
-      <article class="panel compact-panel mono-panel">
-        <p class="panel-label">CURRENT COORDINATES</p>
-        <div class="metric-list" id="coordsList"></div>
+      <article class="panel" id="note">
+        <p class="panel-label">NOTE</p>
+        <p class="panel-copy" id="systemNote">
+          Nessuna istruzione esplicita. Nessuna ricompensa istantanea. Solo
+          presenza, accumulo, dissolvenza.
+        </p>
       </article>
     </section>
-
-    <section class="sequence" aria-labelledby="sequenceTitle" data-reveal>
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">SELECTED SEQUENCE</p>
-          <h2 class="section-title" id="sequenceTitle">The chosen fragment unfolds like a short scene.</h2>
-        </div>
-
-        <p class="section-note" id="sequenceNote">
-          Ogni focus non restituisce solo un dato. Propone un modo di entrare: soglia, tensione, ritorno.
-        </p>
-      </div>
-
-      <div class="beat-grid" id="beatGrid"></div>
-    </section>
-
-    <section class="archive" id="archive" aria-labelledby="archiveTitle" data-reveal>
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">PRACTICE INDEX</p>
-          <h2 class="section-title" id="archiveTitle">Fragments of a wider authorship.</h2>
-        </div>
-
-        <p class="section-note" id="archiveNote">
-          Qui la mappa diventa esplicita: ogni area del lavoro è leggibile come frammento autonomo e come parte di un sistema più grande.
-        </p>
-      </div>
-
-      <div class="archive-grid" id="archiveGrid"></div>
-    </section>
-
-    <section class="coda" aria-labelledby="codaTitle" data-reveal>
-      <article class="panel coda-panel">
-        <p class="panel-label">CLOSING NOTE</p>
-        <h2 class="section-title" id="codaTitle">I do not separate vision from execution.</h2>
-        <p class="section-note coda-copy" id="codaText">
-          Mi interessa costruire forme che restino vive sia nel pensiero sia nella realizzazione. Questo sito prova a mostrare proprio quella continuità.
-        </p>
-        <div class="coda-row" id="codaRow"></div>
-      </article>
-    </section>
-
-    <footer class="site-footer">
-      <div class="footer-line" aria-hidden="true"></div>
-      <div class="footer-row" id="footerRow">
-        <span>VERSION 3.0</span>
-        <span>STATIC / GITHUB PAGES</span>
-        <span>METHOD + DREAM + TRACE</span>
-      </div>
-    </footer>
   </main>
 
-  <script src="content.js"></script>
   <script src="entity.js"></script>
 </body>
 </html>
