@@ -21,7 +21,9 @@
     traceWidth: 0.95,
     pulseInterval: 7200,
     maxPoints: 5000,
-    touchMinDistance: 14
+    touchMinDistance: 14,
+    collapseThreshold: 180,
+    collapseDuration: 4000
   };
 
   let dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
@@ -34,12 +36,17 @@
   let hasInteracted = false;
   let idleSince = performance.now();
 
+  const collapseState = {
+    active: false,
+    start: 0
+  };
+
   const notes = [
     "Il sistema non risponde subito. Trattiene.",
     "Ogni gesto entra in latenza prima di tornare.",
     "La memoria qui è una linea che si consuma.",
     "Le tracce non sono feedback. Sono residui.",
-    "L’ambiente accumula, poi lascia andare."
+    "L'ambiente accumula, poi lascia andare."
   ];
 
   function randomDelay() {
@@ -160,10 +167,35 @@
   }
 
   function render(now) {
+    const visibleCount = points.filter(p => now >= p.revealAt && now <= p.revealAt + CONFIG.lifetime).length;
+
+    if (!collapseState.active && visibleCount > CONFIG.collapseThreshold) {
+      collapseState.active = true;
+      collapseState.start = now;
+    }
+
+    let collapseProgress = 0;
+    let globalOpacity = 1.0;
+
+    if (collapseState.active) {
+      const elapsed = now - collapseState.start;
+      collapseProgress = Math.min(elapsed / CONFIG.collapseDuration, 1.0);
+      globalOpacity = Math.max(0, 1 - collapseProgress);
+
+      if (collapseProgress >= 1.0) {
+        points.length = 0;
+        lastCapture = null;
+        collapseState.active = false;
+      }
+    }
+
     ctx.fillStyle = `rgba(8, 8, 8, ${CONFIG.backgroundFadeAlpha})`;
     ctx.fillRect(0, 0, width, height);
 
     drawAmbientPulse(now);
+
+    const centerX = width * 0.5;
+    const centerY = height * 0.5;
 
     for (let i = 1; i < points.length; i++) {
       const prev = points[i - 1];
@@ -171,18 +203,37 @@
 
       if (curr.t - prev.t > CONFIG.maxGapMs) continue;
 
-      const opacity = getSegmentOpacity(prev, curr, now);
+      let opacity = getSegmentOpacity(prev, curr, now);
       if (opacity <= 0) continue;
 
+      if (collapseState.active) {
+        opacity *= globalOpacity;
+        if (opacity <= 0.001) continue;
+      }
+
+      let x1 = prev.x, y1 = prev.y;
+      let x2 = curr.x, y2 = curr.y;
+
+      if (collapseState.active) {
+        const compress = collapseProgress * 0.25;
+        x1 = prev.x + (centerX - prev.x) * compress;
+        y1 = prev.y + (centerY - prev.y) * compress;
+        x2 = curr.x + (centerX - curr.x) * compress;
+        y2 = curr.y + (centerY - curr.y) * compress;
+      }
+
       ctx.beginPath();
-      ctx.moveTo(prev.x, prev.y);
-      ctx.lineTo(curr.x, curr.y);
-      ctx.strokeStyle = `rgba(${CONFIG.trace}, ${opacity})`;
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = `rgba(208, 194, 176, ${opacity})`;
       ctx.lineWidth = CONFIG.traceWidth;
       ctx.stroke();
     }
 
-    cleanup(now);
+    if (!collapseState.active) {
+      cleanup(now);
+    }
+
     updateText(now);
 
     rafId = requestAnimationFrame(render);
@@ -205,7 +256,13 @@
     if (!systemNote || !siteState) return;
 
     const idleTime = now - idleSince;
-    const visibleCount = points.filter(point => now >= point.revealAt && now <= point.revealAt + CONFIG.lifetime).length;
+    const visibleCount = points.filter(p => now >= p.revealAt && now <= p.revealAt + CONFIG.lifetime).length;
+
+    if (collapseState.active) {
+      siteState.textContent = "RESIDUO / COLLAPSING";
+      systemNote.textContent = "Il sistema cede. Le tracce convergono.";
+      return;
+    }
 
     if (!hasInteracted) {
       siteState.textContent = "RESIDUO / LISTENING";
