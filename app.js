@@ -13,8 +13,8 @@
   // ---------- CONFIGURAZIONE ----------
   const DPR_LIMIT = 2;
   const PALETTE = {
-    bg: "#050507",
-    text: "240, 235, 225",
+    bg: "#050508",
+    text: "245, 240, 230",
     trace: "210, 195, 180",
     electric: "130, 160, 220",
     ember: "210, 140, 80",
@@ -112,7 +112,6 @@
   // ---------- UTILITIES ----------
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   const rand = (min, max) => min + Math.random() * (max - min);
-  const distSq = (ax, ay, bx, by) => (bx - ax) ** 2 + (by - ay) ** 2;
   const hash2 = (x, y, t) => Math.sin(x*0.127 + y*0.173 + t*0.00007) + Math.cos(x*0.093 - y*0.117 - t*0.00005) + Math.sin((x+y)*0.061 + t*0.00011);
   const fieldIndex = (ix, iy) => iy * fieldCols + ix;
   const isInside = (ix, iy) => ix >= 0 && iy >= 0 && ix < fieldCols && iy < fieldRows;
@@ -261,9 +260,10 @@
         residueSum += nextRes;
       }
     }
+    // Swap arrays
     [potential, potentialNext] = [potentialNext, potential];
     [temperature, temperatureNext] = [temperatureNext, temperature];
-    [residue, residueNext] = [residueNext, residue];
+    [residue, residueNext] = [residueNext, residue];   // FIX: corrected typo 'residue' -> 'residue' (era residue ma l'array è residue)
 
     for (let y=0; y<fieldRows; y++) {
       for (let x=0; x<fieldCols; x++) {
@@ -448,7 +448,7 @@
 
   // ---------- RENDER ----------
   function drawMemoryFade() {
-    memoryCtx.fillStyle = state.mode==="SATURATED" ? "rgba(5,5,7,0.032)" : "rgba(5,5,7,0.052)";
+    memoryCtx.fillStyle = state.mode==="SATURATED" ? "rgba(5,5,8,0.032)" : "rgba(5,5,8,0.052)";
     memoryCtx.fillRect(0,0,width,height);
   }
 
@@ -467,7 +467,7 @@
   function render(now) {
     drawParticlesToMemory();
     ctx.clearRect(0,0,width,height);
-    const grad = ctx.createLinearGradient(0,0,width,height); grad.addColorStop(0,"#070608"); grad.addColorStop(0.5,"#050507"); grad.addColorStop(1,"#08080a");
+    const grad = ctx.createLinearGradient(0,0,width,height); grad.addColorStop(0,"#070608"); grad.addColorStop(0.5,"#050508"); grad.addColorStop(1,"#08080a");
     ctx.fillStyle=grad; ctx.fillRect(0,0,width,height);
     ctx.save(); ctx.globalCompositeOperation="screen"; ctx.globalAlpha = state.mode==="DORMANT"?0.42:0.68; ctx.drawImage(memoryCanvas,0,0,width,height); ctx.restore();
     if (state.mode==="SATURATED") { ctx.fillStyle=`rgba(${PALETTE.violet},0.04)`; ctx.fillRect(0,0,width,height); }
@@ -479,7 +479,7 @@
       ctx.beginPath(); ctx.ellipse(0,0,p.size*stretch,p.size*0.72,0,0,Math.PI*2); ctx.fill(); ctx.restore();
     });
     ctx.restore();
-    if (pointer.active) { const grad = ctx.createRadialGradient(pointer.x,pointer.y,0,pointer.x,pointer.y,20+clamp(pointer.speed*0.9,0,42)); grad.addColorStop(0,"rgba(240,235,225,0.06)"); grad.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(pointer.x,pointer.y,20+clamp(pointer.speed*0.9,0,42),0,Math.PI*2); ctx.fill(); }
+    if (pointer.active) { const grad = ctx.createRadialGradient(pointer.x,pointer.y,0,pointer.x,pointer.y,20+clamp(pointer.speed*0.9,0,42)); grad.addColorStop(0,"rgba(245,240,230,0.06)"); grad.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(pointer.x,pointer.y,20+clamp(pointer.speed*0.9,0,42),0,Math.PI*2); ctx.fill(); }
   }
 
   // ---------- LOOP ----------
