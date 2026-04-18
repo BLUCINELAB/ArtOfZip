@@ -4,66 +4,97 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Nebula — presenza residua</title>
-  <meta name="description" content="Un organismo narrativo che trattiene il gesto prima di restituirlo. Latenza, traccia, mutazione.">
+  <meta name="description" content="Nebula è un organismo narrativo interattivo: traccia, latenza, mutazione, memoria del gesto.">
   <meta name="theme-color" content="#050508">
   <meta name="color-scheme" content="dark">
   <meta name="author" content="Nebula">
   <meta property="og:title" content="Nebula — presenza residua">
-  <meta property="og:description" content="Memoria, latenza, sedimentazione.">
+  <meta property="og:description" content="Traccia, latenza, mutazione. Un campo interattivo tra gesto e memoria.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-phase="listening">
+  <a class="skip-link" href="#mainContent">Vai al contenuto</a>
 
   <canvas id="nebulaCanvas" aria-hidden="true"></canvas>
-
   <div class="atmosphere-noise" aria-hidden="true"></div>
   <div class="atmosphere-vignette" aria-hidden="true"></div>
   <div class="atmosphere-glow" aria-hidden="true"></div>
 
   <header class="site-header">
-    <div class="site-identity">
+    <div class="site-identity" aria-label="Identità del sito">
       <span class="site-name">NEBULA</span>
       <span class="site-divider" aria-hidden="true"></span>
       <span class="site-phase" id="sitePhase">LISTENING</span>
     </div>
+
     <nav class="site-nav" aria-label="Navigazione principale">
       <a href="#about">about</a>
       <a href="#diary">diario</a>
-      <a href="mailto:hello@nebula.place">contact</a>
+      <a href="#contact">contact</a>
     </nav>
   </header>
 
-  <main class="stage">
+  <main class="stage" id="mainContent">
     <section class="hero" aria-labelledby="heroTitle">
       <p class="hero-kicker">TRACE · FIELD · DELAY</p>
       <h1 class="hero-title" id="heroTitle">After<br>the<br>gesture.</h1>
       <div class="hero-rule" aria-hidden="true"></div>
-      <p class="hero-text">Qualcosa è rimasto.<br>Non è ancora visibile.</p>
-      <div class="hero-meta">
+      <p class="hero-text">
+        Qualcosa è rimasto.<br>
+        Non è ancora visibile.<br>
+        Il campo ascolta prima di rispondere.
+      </p>
+
+      <div class="hero-meta" aria-label="Coordinate poetiche">
         <span>campo pieno</span>
         <span>traccia ritardata</span>
         <span>presenza senza risposta</span>
       </div>
     </section>
 
-    <div class="lower-band">
+    <section class="lower-band" aria-label="Contenuti principali">
       <article class="panel" id="about">
         <p class="panel-label">ABOUT</p>
-        <p class="panel-copy">Il gesto non produce effetto. Si deposita.<br>Ritarda. Riaffiora. Svanisce.<br>Il tempo qui non è metafora.</p>
+        <p class="panel-copy">
+          Il gesto non produce subito un effetto.<br>
+          Si deposita, devia, ritorna.<br>
+          Qui il tempo non è sfondo: è materia attiva.
+        </p>
       </article>
+
       <article class="panel" id="diary">
         <p class="panel-label">DIARIO</p>
-        <p class="panel-copy" id="systemNote">Il campo trattiene. La risposta non coincide mai con il gesto.</p>
+        <p class="panel-copy" id="systemNote">
+          Il campo trattiene. La risposta non coincide mai con il gesto.
+        </p>
         <div class="panel-footnote" id="phaseFootnote">fase attuale · listening</div>
       </article>
-    </div>
+
+      <article class="panel panel-contact" id="contact">
+        <p class="panel-label">CONTACT</p>
+        <p class="panel-copy">
+          Per conversazioni, progetti, installazioni e collaborazioni:
+        </p>
+        <p class="contact-link-wrap">
+          <a class="contact-link" href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a>
+        </p>
+      </article>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <p>Presenza residua · campo interattivo</p>
+  </footer>
+
+  <noscript>
+    <div class="noscript-banner">Per vedere il campo in mutazione attiva JavaScript.</div>
+  </noscript>
 
   <script src="app.js" defer></script>
 </body>
