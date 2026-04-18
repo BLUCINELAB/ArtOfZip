@@ -6,22 +6,22 @@
   <title>Anton Zip — Residuo</title>
   <meta
     name="description"
-    content="Presenza. Latenza. Traccia. Un ambiente che trattiene prima di restituire."
+    content="Un ecosistema neurale di latenza, memoria e collasso. Il gesto non comanda: perturba."
   />
-  <meta name="theme-color" content="#060606" />
+  <meta name="theme-color" content="#050505" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:title" content="Anton Zip — Residuo" />
   <meta
     property="og:description"
-    content="Memoria, latenza, sedimentazione."
+    content="Campo, residuo, soglia. Un organismo visivo che trattiene prima di restituire."
   />
   <meta property="og:type" content="website" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet"
   />
 
@@ -30,9 +30,9 @@
 <body>
   <canvas id="residuoCanvas" aria-hidden="true"></canvas>
 
-  <div class="noise-layer"   aria-hidden="true"></div>
+  <div class="noise-layer" aria-hidden="true"></div>
   <div class="vignette-layer" aria-hidden="true"></div>
-  <div class="glow-layer"    aria-hidden="true"></div>
+  <div class="glow-layer" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="site-mark">
@@ -43,6 +43,7 @@
 
     <nav class="site-nav" aria-label="Navigazione principale">
       <a href="#about">about</a>
+      <a href="#field">field</a>
       <a href="#note">note</a>
       <a href="mailto:antonzip@gmail.com">contact</a>
     </nav>
@@ -50,40 +51,58 @@
 
   <main class="stage">
     <section class="hero" aria-labelledby="heroTitle">
-      <p class="hero-kicker">TRACE / FIELD / DELAY</p>
+      <p class="hero-kicker">FIELD / MEMORY / COLLAPSE</p>
 
       <h1 class="hero-title" id="heroTitle">
-        After
-        the
-        gesture.
+        What remains
+        moves later.
       </h1>
 
       <p class="hero-text">
-        Qualcosa è rimasto.<br>
-        Non è ancora visibile.
+        Il gesto non disegna.<br />
+        Deforma il campo.<br />
+        Il campo decide cosa torna.
       </p>
 
       <div class="hero-meta">
-        <span>campo pieno</span>
-        <span>traccia ritardata</span>
-        <span>presenza senza risposta</span>
+        <span>perturbazione indiretta</span>
+        <span>rete temporanea</span>
+        <span>memoria attiva</span>
       </div>
     </section>
 
     <section class="lower-band">
-      <article class="panel" id="about">
+      <article class="panel panel-wide" id="about">
         <p class="panel-label">ABOUT</p>
         <p class="panel-copy">
-          Il gesto non produce effetto. Si deposita.
-          Ritarda. Riaffiora. Svanisce.
-          Il tempo qui non è metafora.
+          Residuo ora è un organismo visivo a tre membrane: campo invisibile,
+          entità autonome, strato di memoria. L’utente non lo guida. Lo disturba.
+          Le forme emergono da soglie, saturazioni e collassi locali.
         </p>
+      </article>
+
+      <article class="panel panel-metrics" id="field">
+        <p class="panel-label">FIELD READOUT</p>
+        <div class="metrics-grid">
+          <div class="metric">
+            <span class="metric-key">signal</span>
+            <span class="metric-value"><span id="signalReadout">00.0</span>%</span>
+          </div>
+          <div class="metric">
+            <span class="metric-key">entities</span>
+            <span class="metric-value" id="densityReadout">0000</span>
+          </div>
+          <div class="metric">
+            <span class="metric-key">links</span>
+            <span class="metric-value" id="modeReadout">00</span>
+          </div>
+        </div>
       </article>
 
       <article class="panel" id="note">
         <p class="panel-label">NOTE</p>
         <p class="panel-copy" id="systemNote">
-          —
+          Il sistema trattiene. La risposta non coincide mai con il gesto.
         </p>
       </article>
     </section>
