@@ -3,55 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Anton Zip — Residuo</title>
-  <meta name="description" content="Presenza. Latenza. Traccia. Un ambiente che trattiene prima di restituire.">
-  <meta name="theme-color" content="#060606">
+  <title>Nebula — residuo cinematico</title>
+  <meta name="description" content="Presenza. Latenza. Traccia. Un organismo narrativo che trattiene prima di restituire.">
+  <meta name="theme-color" content="#050507">
   <meta name="color-scheme" content="dark">
-  <meta name="author" content="Anton Zip">
+  <meta name="author" content="Nebula">
 
-  <!-- Open Graph / Social -->
-  <meta property="og:title" content="Anton Zip — Residuo">
+  <meta property="og:title" content="Nebula — residuo cinematico">
   <meta property="og:description" content="Memoria, latenza, sedimentazione.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://antonzip.com/residuo-og.jpg"> <!-- placeholder -->
+  <meta property="og:image" content="https://nebula.place/og.jpg">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Preconnect & Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-phase="listening">
 
-  <canvas id="residuoCanvas" aria-hidden="true"></canvas>
+  <canvas id="nebulaCanvas" aria-hidden="true"></canvas>
 
-  <!-- Strati atmosferici -->
-  <div class="noise-layer" aria-hidden="true"></div>
-  <div class="vignette-layer" aria-hidden="true"></div>
-  <div class="glow-layer" aria-hidden="true"></div>
+  <div class="atmosphere-noise" aria-hidden="true"></div>
+  <div class="atmosphere-vignette" aria-hidden="true"></div>
+  <div class="atmosphere-glow" aria-hidden="true"></div>
 
   <header class="site-header">
-    <div class="site-mark">
-      <span class="site-name">ANTON ZIP</span>
+    <div class="site-identity">
+      <span class="site-name">NEBULA</span>
       <span class="site-divider" aria-hidden="true"></span>
-      <span class="site-state" id="siteState">RESIDUO / LISTENING</span>
+      <span class="site-phase" id="sitePhase">LISTENING</span>
     </div>
 
     <nav class="site-nav" aria-label="Navigazione principale">
       <a href="#about">about</a>
-      <a href="#note">note</a>
-      <a href="mailto:antonzip@gmail.com">contact</a>
+      <a href="#diary">diario</a>
+      <a href="mailto:hello@nebula.place">contact</a>
     </nav>
   </header>
 
   <main class="stage">
     <section class="hero" aria-labelledby="heroTitle">
-      <p class="hero-kicker">TRACE / FIELD / DELAY</p>
+      <p class="hero-kicker">TRACE · FIELD · DELAY</p>
       <h1 class="hero-title" id="heroTitle">
         After<br>the<br>gesture.
       </h1>
+      <div class="hero-rule" aria-hidden="true"></div>
       <p class="hero-text">
         Qualcosa è rimasto.<br>
         Non è ancora visibile.
@@ -73,13 +71,14 @@
         </p>
       </article>
 
-      <article class="panel" id="note">
-        <p class="panel-label">NOTE</p>
-        <p class="panel-copy" id="systemNote">—</p>
+      <article class="panel" id="diary">
+        <p class="panel-label">DIARIO</p>
+        <p class="panel-copy" id="systemNote">Il campo trattiene. La risposta non coincide mai con il gesto.</p>
+        <div class="panel-footnote" id="phaseFootnote">fase attuale · listening</div>
       </article>
     </div>
   </main>
 
-  <script src="entity.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
