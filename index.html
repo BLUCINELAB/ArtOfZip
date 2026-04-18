@@ -3,98 +3,228 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Nebula — presenza residua</title>
-  <meta name="description" content="Nebula è un organismo narrativo interattivo: traccia, latenza, mutazione, memoria del gesto.">
-  <meta name="theme-color" content="#050508">
-  <meta name="color-scheme" content="dark">
-  <meta name="author" content="Nebula">
-  <meta property="og:title" content="Nebula — presenza residua">
-  <meta property="og:description" content="Traccia, latenza, mutazione. Un campo interattivo tra gesto e memoria.">
+  <title>Anton Zip | Filmmaker, Photographer, Art Director</title>
+  <meta name="description" content="Anton Zip è filmmaker, fotografo, art director e project manager. Lavora tra cinema indipendente, arti visive e comunicazione culturale.">
+  <meta name="theme-color" content="#0a0a0d">
+  <meta name="color-scheme" content="dark light">
+  <meta name="author" content="Anton Zip">
+  <meta property="og:title" content="Anton Zip | Filmmaker, Photographer, Art Director">
+  <meta property="og:description" content="Cinema indipendente, arti visive, fotografia, direzione creativa e project management culturale.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body data-phase="listening">
-  <a class="skip-link" href="#mainContent">Vai al contenuto</a>
+<body>
+  <a class="skip-link" href="#main-content">Vai al contenuto</a>
 
-  <canvas id="nebulaCanvas" aria-hidden="true"></canvas>
-  <div class="atmosphere-noise" aria-hidden="true"></div>
-  <div class="atmosphere-vignette" aria-hidden="true"></div>
-  <div class="atmosphere-glow" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Anton Zip, homepage">
+        <span class="brand-mark">AZ</span>
+        <span class="brand-text">Anton Zip</span>
+      </a>
 
-  <header class="site-header">
-    <div class="site-identity" aria-label="Identità del sito">
-      <span class="site-name">NEBULA</span>
-      <span class="site-divider" aria-hidden="true"></span>
-      <span class="site-phase" id="sitePhase">LISTENING</span>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Apri il menu">
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Navigazione principale">
+        <a href="#about">About</a>
+        <a href="#practice">Practice</a>
+        <a href="#contexts">Contexts</a>
+        <a href="#press">Press</a>
+        <a href="#contact">Contact</a>
+      </nav>
     </div>
-
-    <nav class="site-nav" aria-label="Navigazione principale">
-      <a href="#about">about</a>
-      <a href="#diary">diario</a>
-      <a href="#contact">contact</a>
-    </nav>
   </header>
 
-  <main class="stage" id="mainContent">
-    <section class="hero" aria-labelledby="heroTitle">
-      <p class="hero-kicker">TRACE · FIELD · DELAY</p>
-      <h1 class="hero-title" id="heroTitle">After<br>the<br>gesture.</h1>
-      <div class="hero-rule" aria-hidden="true"></div>
-      <p class="hero-text">
-        Qualcosa è rimasto.<br>
-        Non è ancora visibile.<br>
-        Il campo ascolta prima di rispondere.
-      </p>
+  <main id="main-content">
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Filmmaker · Photographer · Art Director · Project Manager</p>
+          <h1>Costruisco immagini, film e sistemi visivi che tengono insieme rigore, presenza e immaginazione.</h1>
+          <p class="hero-text">
+            Lavoro tra cinema indipendente, arti visive e comunicazione culturale.
+            Entro nei progetti quando serve unire direzione creativa, produzione e sensibilità visiva in una forma chiara, concreta e contemporanea.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#contexts">Selected work</a>
+            <a class="button button-secondary" href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a>
+          </div>
+        </div>
 
-      <div class="hero-meta" aria-label="Coordinate poetiche">
-        <span>campo pieno</span>
-        <span>traccia ritardata</span>
-        <span>presenza senza risposta</span>
+        <aside class="hero-panel reveal reveal-delay">
+          <p class="panel-label">Focus</p>
+          <ul class="focus-list">
+            <li>Regia e direzione fotografia</li>
+            <li>Fotografia editoriale e progettuale</li>
+            <li>Art direction per contesti culturali</li>
+            <li>Project management audiovisivo</li>
+            <li>Dossier, concept e sistemi di comunicazione</li>
+          </ul>
+        </aside>
       </div>
     </section>
 
-    <section class="lower-band" aria-label="Contenuti principali">
-      <article class="panel" id="about">
-        <p class="panel-label">ABOUT</p>
-        <p class="panel-copy">
-          Il gesto non produce subito un effetto.<br>
-          Si deposita, devia, ritorna.<br>
-          Qui il tempo non è sfondo: è materia attiva.
-        </p>
-      </article>
+    <section class="section" id="about">
+      <div class="container split-grid">
+        <div class="section-head reveal">
+          <p class="eyebrow">About</p>
+          <h2>Un profilo ibrido tra visione e struttura.</h2>
+        </div>
 
-      <article class="panel" id="diary">
-        <p class="panel-label">DIARIO</p>
-        <p class="panel-copy" id="systemNote">
-          Il campo trattiene. La risposta non coincide mai con il gesto.
-        </p>
-        <div class="panel-footnote" id="phaseFootnote">fase attuale · listening</div>
-      </article>
+        <div class="rich-copy reveal reveal-delay">
+          <p>
+            Sono un autore visivo e un project manager operativo. Mi muovo tra film, fotografia, installazioni, contenuti culturali e processi produttivi.
+          </p>
+          <p>
+            Il mio lavoro non consiste soltanto nel produrre immagini. Consiste nel dare forma al caos iniziale, chiarire una direzione, impostare un linguaggio e accompagnare il progetto fino a una presenza reale.
+          </p>
+          <p>
+            Entro bene nei territori in cui estetica, organizzazione e narrazione devono lavorare insieme: cinema, mostre, brand culturali, eventi, campagne visive, identità editoriali.
+          </p>
+        </div>
+      </div>
+    </section>
 
-      <article class="panel panel-contact" id="contact">
-        <p class="panel-label">CONTACT</p>
-        <p class="panel-copy">
-          Per conversazioni, progetti, installazioni e collaborazioni:
-        </p>
-        <p class="contact-link-wrap">
-          <a class="contact-link" href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a>
-        </p>
-      </article>
+    <section class="section" id="practice">
+      <div class="container">
+        <div class="section-head reveal narrow-head">
+          <p class="eyebrow">Practice</p>
+          <h2>Cosa faccio, in modo leggibile.</h2>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card reveal">
+            <p class="card-index">01</p>
+            <h3>Direction</h3>
+            <p>Regia, sviluppo concept, costruzione di linguaggio, ritmo visivo, sguardo autoriale.</p>
+          </article>
+
+          <article class="card reveal reveal-delay-1">
+            <p class="card-index">02</p>
+            <h3>Image</h3>
+            <p>Fotografia, direzione fotografia, ritratto, editoriale, documentazione sensibile dello spazio e delle persone.</p>
+          </article>
+
+          <article class="card reveal reveal-delay-2">
+            <p class="card-index">03</p>
+            <h3>Art Direction</h3>
+            <p>Impostazione estetica di progetti, installazioni, identità narrative e output visivi coordinati.</p>
+          </article>
+
+          <article class="card reveal reveal-delay-3">
+            <p class="card-index">04</p>
+            <h3>Project Management</h3>
+            <p>Traduzione delle intuizioni in piani, timing, priorità, dossier, presentazioni e fasi operative.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contexts">
+      <div class="container">
+        <div class="section-head reveal narrow-head">
+          <p class="eyebrow">Selected contexts</p>
+          <h2>Ambiti in cui il mio lavoro prende forma.</h2>
+        </div>
+
+        <div class="contexts-list">
+          <article class="context-card reveal">
+            <div>
+              <p class="context-tag">Cinema</p>
+              <h3>Produzioni indipendenti e documentarie</h3>
+            </div>
+            <p>Regia, supporto alla produzione, costruzione di dispositivi visivi, attenzione al rapporto tra verità, atmosfera e limite concreto.</p>
+          </article>
+
+          <article class="context-card reveal reveal-delay-1">
+            <div>
+              <p class="context-tag">Visual Arts</p>
+              <h3>Mostre, installazioni, spazi espositivi</h3>
+            </div>
+            <p>Processi visivi per contesti artistici e culturali, dove allestimento, immagine, ritmo e percezione devono parlare la stessa lingua.</p>
+          </article>
+
+          <article class="context-card reveal reveal-delay-2">
+            <div>
+              <p class="context-tag">Editorial & Portrait</p>
+              <h3>Fotografia come presenza, non come ornamento</h3>
+            </div>
+            <p>Ritratti, editoriale, documentazione, immagini per artisti, progetti culturali e identità visive con una tensione reale.</p>
+          </article>
+
+          <article class="context-card reveal reveal-delay-3">
+            <div>
+              <p class="context-tag">Communication</p>
+              <h3>Comunicazione culturale e sistemi narrativi</h3>
+            </div>
+            <p>Concept, presentazioni, dossier, contenuti, strutture di racconto e dispositivi che danno coerenza tra idea, forma e diffusione.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="press">
+      <div class="container">
+        <div class="section-head reveal narrow-head">
+          <p class="eyebrow">Press & links</p>
+          <h2>Tracce pubbliche.</h2>
+        </div>
+
+        <div class="press-grid">
+          <a class="press-card reveal" href="https://www.vogue.com/photovogue/photographers/188548" target="_blank" rel="noreferrer">
+            <p class="press-source">PhotoVogue</p>
+            <h3>Portfolio selezionato su Vogue PhotoVogue</h3>
+            <span class="press-arrow">Open</span>
+          </a>
+
+          <a class="press-card reveal reveal-delay-1" href="https://aboutbologna.it/bologna-furiosa-la-ballroom-culture-accende-la-citta/" target="_blank" rel="noreferrer">
+            <p class="press-source">About Bologna</p>
+            <h3>Bologna Furiosa, ballroom culture e attivazione culturale</h3>
+            <span class="press-arrow">Open</span>
+          </a>
+
+          <a class="press-card reveal reveal-delay-2" href="https://www.ilrestodelcarlino.it/bologna/cronaca/pop-corn-fra-le-poltrone" target="_blank" rel="noreferrer">
+            <p class="press-source">Il Resto del Carlino</p>
+            <h3>Pop corn fra le poltrone</h3>
+            <span class="press-arrow">Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-contact" id="contact">
+      <div class="container contact-box reveal">
+        <div>
+          <p class="eyebrow">Contact</p>
+          <h2>Se il progetto ha bisogno di una forma forte, parliamone.</h2>
+          <p class="contact-text">
+            Disponibile per collaborazioni, produzioni, art direction, fotografia, sviluppo concept e project management creativo.
+          </p>
+        </div>
+
+        <div class="contact-actions">
+          <a class="contact-mail" href="mailto:anton0zip@gmail.com">anton0zip@gmail.com</a>
+          <a class="contact-social" href="https://www.instagram.com/anton_zip" target="_blank" rel="noreferrer">Instagram</a>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>Presenza residua · campo interattivo</p>
+    <div class="container footer-inner">
+      <p>Anton Zip</p>
+      <p>Filmmaker · Photographer · Art Director</p>
+      <p>© <span id="year"></span></p>
+    </div>
   </footer>
-
-  <noscript>
-    <div class="noscript-banner">Per vedere il campo in mutazione attiva JavaScript.</div>
-  </noscript>
 
   <script src="app.js" defer></script>
 </body>
