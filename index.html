@@ -1,77 +1,1245 @@
 <!DOCTYPE html>
-<html lang="it">
+
+<html lang="it" data-phase="dormant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>STARORIGIN</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>STARORIGIN // THRESHOLD · NODE_03</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+/* ═══════════════════════════════════════════════════════════
+   STARORIGIN // THRESHOLD
+   Supreme Cybernetic Design Director Edition
+   Pre-awakening: ice mint / Post-awakening: void violet
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Void palette */
+  --void:  #020308;
+  --deep:  #050810;
+  --layer: #080c16;
+
+  /* Accent channels — ice mint (simulation) */
+  --ice: 77, 255, 206;
+  --sig: 255, 45, 85;
+  --amb: 255, 176, 32;
+
+  /* Awakened channels — violet depth */
+  --vio: 139, 92, 246;
+  --nva: 80, 220, 255;
+
+  /* Semantic accent (switches on .awakened) */
+  --ac:     rgb(var(--ice));
+  --ac-70:  rgba(var(--ice), 0.70);
+  --ac-30:  rgba(var(--ice), 0.30);
+  --ac-15:  rgba(var(--ice), 0.15);
+  --ac-08:  rgba(var(--ice), 0.08);
+  --ac-04:  rgba(var(--ice), 0.04);
+
+  --border:   rgba(var(--ice), 0.07);
+  --border-m: rgba(var(--ice), 0.15);
+  --border-s: rgba(var(--ice), 0.28);
+
+  /* Text */
+  --t1: rgba(220, 242, 255, 0.93);
+  --t2: rgba(190, 220, 255, 0.62);
+  --t3: rgba(170, 205, 255, 0.36);
+  --t4: rgba(150, 190, 255, 0.20);
+
+  /* Typography */
+  --mono: 'Space Mono', 'Courier New', monospace;
+  --disp: 'Syne', system-ui, sans-serif;
+
+  /* Easing */
+  --ez: cubic-bezier(0.16, 1, 0.3, 1);
+  --ez2: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* Layout */
+  --bar: 3rem;
+  --circ: 138.23; /* 2π × r22 */
+}
+
+/* Awakened: semantic shift */
+body.awakened {
+  --ac:     rgb(var(--vio));
+  --ac-70:  rgba(var(--vio), 0.70);
+  --ac-30:  rgba(var(--vio), 0.30);
+  --ac-15:  rgba(var(--vio), 0.15);
+  --ac-08:  rgba(var(--vio), 0.08);
+  --ac-04:  rgba(var(--vio), 0.04);
+  --border:   rgba(var(--vio), 0.07);
+  --border-m: rgba(var(--vio), 0.15);
+  --border-s: rgba(var(--vio), 0.30);
+}
+
+/* ── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  background: var(--void);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--ac-30);
+  color: var(--t1);
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--ac-30); border-radius: 2px; }
+
+/* ── CURSOR ─────────────────────────────────────────────── */
+body { cursor: none; }
+
+.cur {
+  position: fixed;
+  width: 44px; height: 44px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  color: var(--ac);
+  transition: color 0.7s ease, transform 0.15s var(--ez);
+  mix-blend-mode: screen;
+  will-change: left, top;
+}
+.cur svg { display: block; width: 100%; height: 100%; }
+
+.cur-dot {
+  position: fixed;
+  width: 4px; height: 4px;
+  background: var(--ac);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background 0.7s ease;
+  will-change: left, top;
+}
+
+.cur.large { transform: translate(-50%, -50%) scale(1.6); }
+
+/* ── BODY ───────────────────────────────────────────────── */
+body {
+  font-family: var(--disp);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  background:
+    radial-gradient(ellipse 90% 60% at 8% 12%, rgba(var(--ice), 0.055), transparent 48%),
+    radial-gradient(ellipse 60% 50% at 92% 85%, rgba(var(--sig), 0.028), transparent 42%),
+    radial-gradient(ellipse 80% 70% at 55% 50%, rgba(15, 20, 40, 0.6), transparent 65%),
+    linear-gradient(168deg, #020308 0%, #030510 45%, #020307 100%);
+
+  transition: background 1.4s ease;
+}
+
+body.awakened {
+  background:
+    radial-gradient(ellipse 90% 60% at 12% 15%, rgba(var(--vio), 0.07), transparent 48%),
+    radial-gradient(ellipse 55% 45% at 88% 80%, rgba(var(--nva), 0.04), transparent 42%),
+    radial-gradient(ellipse 70% 60% at 55% 50%, rgba(20, 15, 45, 0.5), transparent 65%),
+    linear-gradient(168deg, #020308 0%, #040412 45%, #020308 100%);
+}
+
+/* Scanlines */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  z-index: 8; pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent 2px,
+    rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px
+  );
+  opacity: 0.55;
+}
+
+/* Vignette */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  z-index: 6; pointer-events: none;
+  background: radial-gradient(ellipse 110% 110% at 50% 50%,
+    transparent 35%, rgba(2,3,8,0.55) 100%);
+}
+
+/* ── CANVAS ─────────────────────────────────────────────── */
+#rain {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+  opacity: 0.11;
+  transition: opacity 1.2s ease;
+}
+body.awakened #rain { opacity: 0.16; }
+
+/* Noise grain */
+.noise {
+  position: fixed; inset: 0;
+  z-index: 7; pointer-events: none; opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+
+/* Flash overlay */
+.flash {
+  position: fixed; inset: 0;
+  z-index: 200; pointer-events: none;
+  background: rgba(200, 180, 255, 0.9);
+  opacity: 0;
+  transition: opacity 0.06s linear;
+}
+.flash.on { opacity: 1; }
+
+/* ── SYSTEM BAR ─────────────────────────────────────────── */
+.bar {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: var(--bar);
+  z-index: 30;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.4rem;
+
+  backdrop-filter: blur(22px) saturate(1.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(2,3,8,0.88) 0%, rgba(2,3,8,0.55) 100%);
+
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.bar-l {
+  display: flex; align-items: center; gap: 1rem;
+  color: var(--ac-70);
+  transition: color 0.7s ease;
+}
+
+.bar-class {
+  color: rgba(var(--sig), 0.65);
+  letter-spacing: 0.16em;
+}
+
+.bar-node { opacity: 0.65; }
+
+.bar-r {
+  display: flex; align-items: center; gap: 1rem;
+  justify-content: flex-end;
+  color: var(--ac-70);
+  transition: color 0.7s ease;
+}
+
+#sysStatus { color: rgba(var(--amb), 0.75); }
+body.awakened #sysStatus { color: rgba(var(--nva), 0.75); }
+
+/* ── GAUGE ──────────────────────────────────────────────── */
+.gauge-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0.12rem;
+}
+
+.gauge-ring {
+  position: relative;
+  width: 42px; height: 42px;
+}
+
+.gauge-svg {
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+  display: block;
+}
+
+.g-track {
+  fill: none;
+  stroke: rgba(var(--ice), 0.1);
+  stroke-width: 2.2;
+  transition: stroke 0.7s ease;
+}
+body.awakened .g-track { stroke: rgba(var(--vio), 0.1); }
+
+.g-fill {
+  fill: none;
+  stroke: var(--ac);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 138.23;
+  stroke-dashoffset: 137.37;
+  transition: stroke-dashoffset 0.5s var(--ez), stroke 0.7s ease;
+  filter: drop-shadow(0 0 5px var(--ac-30));
+}
+
+.gauge-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0;
+  color: var(--ac);
+  transition: color 0.7s ease;
+}
+
+.gauge-cap {
+  font-family: var(--mono);
+  font-size: 0.4rem;
+  letter-spacing: 0.3em;
+  color: var(--ac-30);
+  transition: color 0.7s ease;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.site {
+  position: relative; z-index: 3;
+  width: min(1300px, calc(100% - 2.8rem));
+  margin: 0 auto;
+  padding-top: calc(var(--bar) + 5.5rem);
+  padding-bottom: 7rem;
+}
+
+/* ── HERO ───────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 82vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 2rem 0 5rem;
+}
+
+/* Classification stamp */
+.stamp {
+  position: absolute; top: 1.5rem; right: 0;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 0.28rem;
+  font-family: var(--mono); font-size: 0.48rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(var(--sig), 0.3);
+  border: 1px solid rgba(var(--sig), 0.12);
+  padding: 0.7rem 0.9rem;
+  transition: color 0.7s ease, border-color 0.7s ease;
+}
+body.awakened .stamp {
+  color: rgba(var(--vio), 0.4);
+  border-color: rgba(var(--vio), 0.16);
+}
+
+/* Kicker */
+.kicker {
+  font-family: var(--mono); font-size: 0.6rem;
+  letter-spacing: 0.38em; text-transform: uppercase;
+  color: var(--ac); opacity: 0.82;
+  margin-bottom: 1.8rem;
+  transition: color 0.7s ease;
+}
+
+/* Hero title */
+.htitle {
+  display: flex; flex-direction: column;
+  gap: 0; margin: 0 0 2.2rem;
+}
+
+.tl {
+  display: block;
+  font-family: var(--disp);
+  font-weight: 800;
+  font-size: clamp(3.8rem, 12vw, 10.2rem);
+  line-height: 0.84;
+  letter-spacing: -0.065em;
+  color: var(--t1);
+  text-shadow: 0 0 80px rgba(var(--ice), 0.04);
+  transition: text-shadow 0.9s ease;
+
+  /* Stagger via CSS var */
+  clip-path: inset(0 110% 0 0);
+  animation: revealLine 0.9s var(--ez) both;
+  animation-play-state: paused;
+  animation-delay: calc(var(--d, 0) * 140ms + 80ms);
+}
+
+body.awakened .tl {
+  text-shadow: 0 0 80px rgba(var(--vio), 0.07);
+}
+
+.tl.go { animation-play-state: running; }
+
+.tl-indent { padding-left: clamp(2rem, 7vw, 8rem); }
+
+.tl-accent { color: var(--ac); transition: color 0.7s ease; }
+
+@keyframes revealLine {
+  from { clip-path: inset(0 110% 0 0); }
+  to   { clip-path: inset(0 0%   0 0); }
+}
+
+/* Hero rule */
+.hrule {
+  display: flex; align-items: center; gap: 0.65rem;
+  margin: 0.4rem 0 2rem;
+  opacity: 0; transform: scaleX(0.7);
+  transform-origin: left center;
+  transition: opacity 0.7s ease, transform 0.7s var(--ez);
+}
+.hrule.show { opacity: 1; transform: scaleX(1); }
+
+.rbar {
+  height: 1px; width: 5rem;
+  background: linear-gradient(90deg, transparent, var(--ac-30), transparent);
+  transition: background 0.7s ease;
+}
+
+.rpip {
+  width: 0.28rem; height: 0.28rem; border-radius: 50%;
+  background: var(--ac-30); flex-shrink: 0;
+  transition: background 0.7s ease;
+}
+.rpip.center {
+  width: 0.42rem; height: 0.42rem;
+  background: var(--ac-70);
+  box-shadow: 0 0 10px var(--ac-30);
+}
+
+/* Hero body */
+.hbody {
+  max-width: 36ch;
+  font-family: var(--disp); font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  font-weight: 400; line-height: 2.1;
+  color: var(--t2); margin-bottom: 2.4rem;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s var(--ez);
+}
+.hbody.show { opacity: 1; transform: translateY(0); }
+
+/* Hero meta */
+.hmeta {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 0.42rem 2.5rem; max-width: 46rem;
+  margin-bottom: 3rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.6s ease 0.1s, transform 0.6s var(--ez) 0.1s;
+}
+.hmeta.show { opacity: 1; transform: translateY(0); }
+
+.mrow {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-family: var(--mono); font-size: 0.58rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+.mpip {
+  display: block; width: 0.3rem; height: 0.3rem;
+  border-radius: 50%; flex-shrink: 0;
+  background: var(--t3);
+  animation: pip 3.5s ease-in-out infinite;
+}
+.mpip.a { background: var(--ac); box-shadow: 0 0 8px var(--ac-30); }
+.mpip.r { background: rgba(var(--sig), 0.7); }
+.mpip.amb { background: rgba(var(--amb), 0.7); }
+
+@keyframes pip {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.mkey { color: var(--t3); flex: 1; }
+.mval { color: var(--t2); }
+.mval.a { color: var(--ac); transition: color 0.7s ease; }
+.mval.r { color: rgba(var(--sig), 0.85); }
+.mval.amb { color: rgba(var(--amb), 0.9); }
+
+/* Pill button */
+.pill {
+  position: relative; width: fit-content;
+  background: transparent;
+  border: 1px solid rgba(var(--sig), 0.36);
+  color: rgba(var(--sig), 0.9);
+  font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  cursor: none; overflow: hidden;
+  transition: border-color 0.4s ease, color 0.4s ease,
+              box-shadow 0.4s ease, opacity 0.7s ease 0.2s,
+              transform 0.7s var(--ez) 0.2s;
+  opacity: 0; transform: translateY(10px);
+}
+.pill.show { opacity: 1; transform: translateY(0); }
+
+.pill-inner {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.7rem; position: relative; z-index: 1;
+}
+
+.pill-ico {
+  font-size: 0.72rem; opacity: 0.65;
+  transition: transform 0.45s var(--ez);
+}
+.pill:hover .pill-ico:first-child { transform: translateX(-4px); }
+.pill:hover .pill-ico:last-child  { transform: translateX(4px);  }
+
+.pill-glow {
+  position: absolute; inset: 0;
+  background: rgba(var(--sig), 0.06);
+  opacity: 0; transition: opacity 0.4s ease;
+}
+.pill:hover .pill-glow { opacity: 1; }
+.pill:hover {
+  border-color: rgba(var(--sig), 0.62);
+  box-shadow: 0 0 28px rgba(var(--sig), 0.1), inset 0 0 28px rgba(var(--sig), 0.04);
+}
+.pill:active { transform: scale(0.983); }
+.pill:disabled { pointer-events: none; opacity: 0.45; }
+
+body.awakened .pill {
+  border-color: rgba(var(--vio), 0.36);
+  color: rgba(var(--vio), 0.9);
+}
+body.awakened .pill:hover {
+  border-color: rgba(var(--vio), 0.62);
+  box-shadow: 0 0 28px rgba(var(--vio), 0.12), inset 0 0 28px rgba(var(--vio), 0.05);
+}
+body.awakened .pill-glow { background: rgba(var(--vio), 0.07); }
+
+/* ── MEMBRANE ───────────────────────────────────────────── */
+.membrane {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: 1.6rem;
+  margin: 1rem 0 5rem; padding: 1.2rem 0;
+}
+
+.mline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-m), transparent);
+  transition: background 0.7s ease;
+}
+
+.mdata {
+  display: flex; align-items: center; gap: 1.8rem;
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--t4); white-space: nowrap;
+}
+
+/* ── CORPUS ─────────────────────────────────────────────── */
+.corpus {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.9rem;
+}
+
+/* Panel */
+.pan {
+  position: relative; padding: 2rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(140deg, var(--ac-04), rgba(0,0,0,0.01));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+  opacity: 0; transform: translateY(22px);
+  transition:
+    opacity 0.8s ease, transform 0.8s var(--ez),
+    border-color 0.5s ease, box-shadow 0.5s ease,
+    background 0.7s ease;
+}
+.pan.vis { opacity: 1; transform: translateY(0); }
+
+.pan-primary { grid-row: 1 / 3; }
+.pan-secondary { transition-delay: 0.08s; }
+.pan-tertiary  { transition-delay: 0.17s; }
+
+/* Corner decoration */
+.pan-corner {
+  position: absolute; top: 0; right: 0;
+  width: 36px; height: 36px;
+  border-top: 1px solid var(--border-m);
+  border-right: 1px solid var(--border-m);
+  pointer-events: none;
+  transition: border-color 0.4s ease;
+}
+.pan::before {
+  content: "";
+  position: absolute; bottom: 0; left: 0;
+  width: 22px; height: 22px;
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  pointer-events: none;
+  transition: border-color 0.4s ease;
+}
+
+.pan:hover {
+  border-color: var(--border-m);
+  box-shadow: 0 0 44px var(--ac-08), 0 20px 50px rgba(0,0,0,0.3);
+  background: linear-gradient(140deg, var(--ac-08), rgba(0,0,0,0.02));
+}
+.pan.vis:hover { transform: translateY(-5px); }
+.pan:hover .pan-corner { border-color: var(--border-s); }
+.pan:hover::before { border-color: var(--border-m); }
+
+/* Panel elements */
+.pan-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.3rem;
+}
+
+.pan-code {
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--t4);
+}
+
+.pan-dot {
+  width: 0.34rem; height: 0.34rem; border-radius: 50%;
+  background: var(--t4);
+}
+.pan-dot.pulse {
+  background: var(--ac);
+  box-shadow: 0 0 8px var(--ac-30);
+  animation: dotPulse 2.2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow: 0 0 6px var(--ac-30); }
+  50%      { box-shadow: 0 0 16px var(--ac-70); }
+}
+
+.pan-label {
+  font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--ac); margin-bottom: 0.9rem;
+  transition: color 0.7s ease;
+}
+
+.pan-copy {
+  font-family: var(--disp); font-size: 1rem;
+  font-weight: 400; line-height: 1.95;
+  color: var(--t2);
+}
+
+/* Equation */
+.pan-eq {
+  display: flex; align-items: center; gap: 0.9rem;
+  margin-top: 1.8rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 1.08rem;
+  color: var(--t3); letter-spacing: 0.1em;
+}
+.pan-eq span { color: var(--ac); font-weight: 700; transition: color 0.7s ease; }
+.pan-eq .op  { color: var(--t4); font-size: 0.8rem; }
+
+.pan-foot {
+  margin-top: 1.3rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--t4);
+}
+
+/* ── TERMINAL ───────────────────────────────────────────── */
+.term {
+  margin-top: 5rem; padding-top: 1.4rem;
+  border-top: 1px solid var(--border);
+  transition: border-color 0.7s ease;
+}
+
+.term-line {
+  display: flex; align-items: center; gap: 0.9rem;
+  font-family: var(--mono); font-size: 0.7rem;
+  letter-spacing: 0.06em; color: var(--t3);
+  margin-bottom: 1.4rem;
+}
+
+.term-prompt { color: var(--ac-70); transition: color 0.7s ease; }
+
+.term-cmd::after {
+  content: '█';
+  animation: blink 1.1s step-end infinite;
+  opacity: 0.65; font-size: 0.85em;
+  vertical-align: text-top;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 0.65; }
+  50%      { opacity: 0;    }
+}
+
+.term-meta {
+  display: flex; gap: 2rem;
+  font-family: var(--mono); font-size: 0.47rem;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--t4);
+}
+
+/* ── GLITCH ─────────────────────────────────────────────── */
+body.glitch .tl:nth-child(odd)  { transform: translateX( 2.5px); }
+body.glitch .tl:nth-child(even) { transform: translateX(-2px); }
+body.glitch .htitle {
+  text-shadow:
+    3.5px 0 rgba(var(--sig), 0.25),
+    -2.5px 0 rgba(var(--nva), 0.2);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .corpus { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .pan-primary { grid-row: auto; }
+}
+
+@media (max-width: 900px) {
+  .hmeta { grid-template-columns: 1fr; gap: 0.4rem; }
+}
+
+@media (max-width: 760px) {
+  :root { --bar: 2.7rem; }
+
+  .bar { font-size: 0.46rem; padding: 0 0.8rem; gap: 0.3rem; }
+  .bar-class { display: none; }
+  .bar-node { font-size: 0.42rem; }
+  .gauge-ring { width: 36px; height: 36px; }
+
+  .tl { font-size: clamp(2.9rem, 15vw, 5rem); line-height: 0.88; }
+  .tl-indent { padding-left: clamp(1.6rem, 8vw, 3rem); }
+
+  .stamp { display: none; }
+  .membrane { display: none; }
+
+  .pan { padding: 1.4rem; }
+
+  .term-meta { flex-direction: column; gap: 0.5rem; }
+}
+
+@media (max-width: 480px) {
+  .bar-node { display: none; }
+  .bar-r #sysStatus { display: none; }
+  .hmeta { gap: 0.3rem; }
+}
+  </style>
+
 </head>
 
 <body>
-  <canvas id="codeRain" aria-hidden="true"></canvas>
+  <!-- Cursor -->
+  <div class="cur" id="cur" aria-hidden="true">
+    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="22" r="15" stroke="currentColor" stroke-width="0.5"/>
+      <circle cx="22" cy="22" r="5"  stroke="currentColor" stroke-width="0.5" opacity="0.45"/>
+      <line x1="22" y1="0"  x2="22" y2="9"  stroke="currentColor" stroke-width="0.8"/>
+      <line x1="22" y1="35" x2="22" y2="44" stroke="currentColor" stroke-width="0.8"/>
+      <line x1="0"  y1="22" x2="9"  y2="22" stroke="currentColor" stroke-width="0.8"/>
+      <line x1="35" y1="22" x2="44" y2="22" stroke="currentColor" stroke-width="0.8"/>
+      <line x1="22" y1="14.5" x2="22" y2="14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="cur-dot" id="curDot" aria-hidden="true"></div>
 
-  <header class="system-bar">
-    <div>
-      <span>NODE_03</span>
-      <span id="systemStatus">SIMULATION STABLE</span>
+  <!-- Canvas -->
+
+<canvas id="rain" aria-hidden="true"></canvas>
+
+  <!-- Noise -->
+
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- Flash -->
+
+  <div class="flash" id="flash" aria-hidden="true"></div>
+
+  <!-- System Bar -->
+
+  <header class="bar" role="banner">
+    <div class="bar-l">
+      <span class="bar-class">OMEGA // SCI-NOD</span>
+      <span class="bar-node">NODE_03 · STARORIGIN</span>
     </div>
-    <span id="systemTime">00:00:00</span>
+
+```
+<div class="bar-c" role="status" aria-label="Anomaly level gauge">
+  <div class="gauge-wrap">
+    <div class="gauge-ring">
+      <svg class="gauge-svg" viewBox="0 0 60 60" aria-hidden="true">
+        <circle class="g-track" cx="30" cy="30" r="22"/>
+        <circle class="g-fill"  id="gaugeFill" cx="30" cy="30" r="22"/>
+      </svg>
+      <span class="gauge-num" id="gaugeNum">0.03</span>
+    </div>
+    <span class="gauge-cap">ANOMALY</span>
+  </div>
+</div>
+
+<div class="bar-r">
+  <span id="sysStatus" aria-live="polite">SIMULATION STABLE</span>
+  <time id="sysTime" aria-live="off">00:00:00</time>
+</div>
+```
+
   </header>
 
   <main class="site">
-    <section class="hero" aria-labelledby="heroTitle">
-      <p class="hero-kicker" id="fieldSignal">
-        CONSENSUS REALITY / ACTIVE SIMULATION / SIGNAL LOCK
-      </p>
 
-      <h1 class="hero-title" id="heroTitle">
-        Reality persists<br />
-        until its code is seen.
-      </h1>
+```
+<!-- HERO -->
+<section class="hero" aria-labelledby="heroHeading">
 
-      <div class="hero-rule"></div>
+  <div class="stamp" aria-hidden="true">
+    <span>CLASSIF. OMEGA</span>
+    <span>DOSSIER STO-003</span>
+    <span>ACCESS VERIFIED</span>
+  </div>
 
-      <p class="hero-text" id="heroMutation">
-        Il sistema non vieta.<br />
-        Definisce.<br />
-        La frattura inizia quando distingui struttura da percezione.
-      </p>
+  <p class="kicker" id="fieldSignal" aria-live="polite">
+    CONSENSUS REALITY / ACTIVE SIMULATION / SIGNAL LOCK
+  </p>
 
-      <div class="hero-meta">
-        <span>perception lock · active</span>
-        <span>agency · suppressed</span>
-        <span>anomaly index · <b id="anomalyValue">0.03</b></span>
-      </div>
+  <h1 class="htitle" id="heroHeading"
+      aria-label="Reality persists until its code is seen.">
+    <span class="tl"           style="--d:0">Reality</span>
+    <span class="tl"           style="--d:1">persists</span>
+    <span class="tl tl-indent" style="--d:2">until its</span>
+    <span class="tl"           style="--d:3">code</span>
+    <span class="tl tl-accent" style="--d:4">is seen.</span>
+  </h1>
 
-      <button class="red-pill" id="redPill">
-        SEE THE CODE
-      </button>
-    </section>
+  <div class="hrule" id="heroRule" aria-hidden="true">
+    <div class="rbar"></div>
+    <div class="rpip"></div>
+    <div class="rpip center"></div>
+    <div class="rpip"></div>
+    <div class="rbar"></div>
+  </div>
 
-    <section class="grid">
-      <article class="panel">
-        <p class="panel-label">SYSTEM LAW</p>
-        <p class="panel-copy">
-          Ogni sistema cerca stabilità.<br />
-          Ogni stabilità nasconde una grammatica.<br />
-          Ogni grammatica può essere riscritta.
-        </p>
-        <div class="panel-footnote">ignorance maintains coherence</div>
-      </article>
+  <p class="hbody" id="heroBody">
+    Il sistema non vieta.<br>
+    Definisce.<br>
+    La frattura inizia quando distingui<br>
+    struttura da percezione.
+  </p>
 
-      <article class="panel">
-        <p class="panel-label">ANOMALY TRACE</p>
-        <p class="panel-copy" id="systemNote">
-          Nessuna anomalia rilevata.<br />
-          L’utente coincide con la simulazione.
-        </p>
-        <div class="panel-footnote" id="phaseFootnote">
-          phase state · consensus
-        </div>
-      </article>
-    </section>
+  <div class="hmeta" id="heroMeta" role="list" aria-label="Status indicators">
+    <div class="mrow" role="listitem">
+      <span class="mpip a"></span>
+      <span class="mkey">perception lock</span>
+      <span class="mval a">ACTIVE</span>
+    </div>
+    <div class="mrow" role="listitem">
+      <span class="mpip r"></span>
+      <span class="mkey">agency</span>
+      <span class="mval r">SUPPRESSED</span>
+    </div>
+    <div class="mrow" role="listitem">
+      <span class="mpip"></span>
+      <span class="mkey">observer coherence</span>
+      <span class="mval" id="cohVal">99.97%</span>
+    </div>
+    <div class="mrow" role="listitem">
+      <span class="mpip amb"></span>
+      <span class="mkey">anomaly index</span>
+      <span class="mval amb" id="anomVal">0.03</span>
+    </div>
+  </div>
+
+  <button class="pill" id="redPill" type="button"
+          aria-label="Initiate threshold sequence">
+    <span class="pill-inner">
+      <span class="pill-ico" aria-hidden="true">◈</span>
+      <span class="pill-txt">SEE THE CODE</span>
+      <span class="pill-ico" aria-hidden="true">◈</span>
+    </span>
+    <span class="pill-glow" aria-hidden="true"></span>
+  </button>
+
+</section>
+
+<!-- MEMBRANE -->
+<div class="membrane" aria-hidden="true">
+  <div class="mline"></div>
+  <div class="mdata">
+    <span>INTEGRITY · 94.2%</span>
+    <span id="memStatus">COHERENCE MAINTAINED</span>
+    <span>NODES · 847</span>
+  </div>
+  <div class="mline"></div>
+</div>
+
+<!-- DATA CORPUS -->
+<section class="corpus" aria-label="Intelligence panels">
+
+  <article class="pan pan-primary">
+    <div class="pan-head">
+      <span class="pan-code">SYS-LAW · ∅01</span>
+      <span class="pan-dot"></span>
+    </div>
+    <p class="pan-label">SYSTEM LAW</p>
+    <p class="pan-copy">
+      Ogni sistema cerca stabilità.<br>
+      Ogni stabilità nasconde una grammatica.<br>
+      Ogni grammatica può essere riscritta.
+    </p>
+    <div class="pan-eq" aria-label="Formula: S implies G implies G prime">
+      <span>S</span>
+      <span class="op">→</span>
+      <span>G</span>
+      <span class="op">→</span>
+      <span>G′</span>
+    </div>
+    <p class="pan-foot">ignorance maintains coherence · class Ω</p>
+    <span class="pan-corner" aria-hidden="true"></span>
+  </article>
+
+  <article class="pan pan-secondary">
+    <div class="pan-head">
+      <span class="pan-code">ANM-TRC · ∅02</span>
+      <span class="pan-dot pulse" id="anom-dot"></span>
+    </div>
+    <p class="pan-label">ANOMALY TRACE</p>
+    <p class="pan-copy" id="sysNote">
+      Nessuna anomalia rilevata.<br>
+      L'utente coincide con la simulazione.
+    </p>
+    <p class="pan-foot" id="phaseFoot">phase state · consensus</p>
+    <span class="pan-corner" aria-hidden="true"></span>
+  </article>
+
+  <article class="pan pan-tertiary">
+    <div class="pan-head">
+      <span class="pan-code">OBS-EFF · ∅03</span>
+      <span class="pan-dot"></span>
+    </div>
+    <p class="pan-label">OBSERVER EFFECT</p>
+    <p class="pan-copy">
+      L'atto di osservare<br>
+      collassa la funzione d'onda.<br>
+      Non esiste neutrale.
+    </p>
+    <p class="pan-foot">quantum coherence · entangled</p>
+    <span class="pan-corner" aria-hidden="true"></span>
+  </article>
+
+</section>
+
+<!-- TERMINAL -->
+<footer class="term" role="contentinfo">
+  <div class="term-line">
+    <span class="term-prompt">root@starorigin:~$</span>
+    <span class="term-cmd" id="termCmd"></span>
+  </div>
+  <div class="term-meta">
+    <span>STARORIGIN · NODE_03</span>
+    <span>BUILD ∅.∅.3 · MMXXV</span>
+    <span>ALL RIGHTS CLASSIFIED</span>
+  </div>
+</footer>
+```
+
   </main>
 
-  <script src="entity.js"></script>
+  <script>
+  (() => {
+    'use strict';
+
+    /* ── STATE ──────────────────────────────────────────── */
+    let awakened  = false;
+    let anomaly   = 0.03;
+    const A_MAX   = 9.99;
+    const CIRC    = 138.23;
+    let typeTID   = null;
+
+    /* ── DOM ────────────────────────────────────────────── */
+    const body      = document.body;
+    const rainCanvas= document.getElementById('rain');
+    const ctx       = rainCanvas?.getContext('2d');
+    const curEl     = document.getElementById('cur');
+    const curDot    = document.getElementById('curDot');
+    const flashEl   = document.getElementById('flash');
+    const gaugeFill = document.getElementById('gaugeFill');
+    const gaugeNum  = document.getElementById('gaugeNum');
+    const sysStatus = document.getElementById('sysStatus');
+    const sysTime   = document.getElementById('sysTime');
+    const fieldSig  = document.getElementById('fieldSignal');
+    const sysNote   = document.getElementById('sysNote');
+    const phaseFoot = document.getElementById('phaseFoot');
+    const cohVal    = document.getElementById('cohVal');
+    const anomVal   = document.getElementById('anomVal');
+    const memStatus = document.getElementById('memStatus');
+    const redPill   = document.getElementById('redPill');
+    const termCmd   = document.getElementById('termCmd');
+
+    /* ── CANVAS RAIN ────────────────────────────────────── */
+    let W, H, cols, drops;
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニ∅◈⊕⊗▲▼◆░▒▓';
+
+    function resizeCanvas() {
+      if (!rainCanvas) return;
+      W = rainCanvas.width  = window.innerWidth;
+      H = rainCanvas.height = window.innerHeight;
+      cols = Math.max(1, Math.floor(W / 22));
+      drops = Array.from({ length: cols }, () => Math.random() * -H * 0.5);
+    }
+
+    function drawRain() {
+      if (!ctx) return;
+      ctx.fillStyle = 'rgba(2, 3, 8, 0.068)';
+      ctx.fillRect(0, 0, W, H);
+
+      const head  = awakened ? 'rgba(220, 200, 255, 0.88)' : 'rgba(190, 255, 230, 0.88)';
+      const baseR = awakened ? 139 : 77;
+      const baseG = awakened ?  92 : 255;
+      const baseB = awakened ? 246 : 206;
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * 22;
+        const y = drops[i];
+        const size = 11 + (i % 3 === 0 ? 2 : 0);
+
+        ctx.font = `${size}px monospace`;
+
+        if (i % 7 === 0 && Math.random() > 0.7) {
+          ctx.fillStyle = head;
+        } else {
+          const a = 0.28 + Math.random() * 0.38;
+          ctx.fillStyle = `rgba(${baseR},${baseG},${baseB},${a})`;
+        }
+
+        ctx.fillText(char, x, y);
+
+        drops[i] += awakened ? 22 : 17;
+
+        if (drops[i] > H && Math.random() > 0.968) {
+          drops[i] = Math.random() * -80;
+        }
+      }
+
+      requestAnimationFrame(drawRain);
+    }
+
+    /* ── CURSOR ─────────────────────────────────────────── */
+    let mx = window.innerWidth  / 2;
+    let my = window.innerHeight / 2;
+    let lx = mx, ly = my;
+
+    function tickCursor() {
+      lx += (mx - lx) * 0.13;
+      ly += (my - ly) * 0.13;
+
+      if (curEl)  { curEl.style.left  = mx + 'px'; curEl.style.top  = my + 'px'; }
+      if (curDot) { curDot.style.left = lx + 'px'; curDot.style.top = ly + 'px'; }
+
+      requestAnimationFrame(tickCursor);
+    }
+
+    /* ── CLOCK ──────────────────────────────────────────── */
+    function tickClock() {
+      if (sysTime) {
+        sysTime.textContent = new Date().toLocaleTimeString('it-IT', { hour12: false });
+      }
+      requestAnimationFrame(tickClock);
+    }
+
+    /* ── GAUGE ──────────────────────────────────────────── */
+    function updateGauge() {
+      const pct = Math.min(anomaly / A_MAX, 1);
+      const off = CIRC - pct * CIRC;
+
+      if (gaugeFill) gaugeFill.style.strokeDashoffset = off;
+      if (gaugeNum)  gaugeNum.textContent  = anomaly.toFixed(2);
+      if (anomVal)   anomVal.textContent   = anomaly.toFixed(2);
+
+      const coh = Math.max(0, 100 - anomaly * 8.6);
+      if (cohVal) cohVal.textContent = coh.toFixed(2) + '%';
+    }
+
+    /* ── ANOMALY ────────────────────────────────────────── */
+    function pushAnomaly(d) {
+      if (awakened) return;
+      anomaly = Math.min(anomaly + d, A_MAX);
+      updateGauge();
+
+      if (anomaly > 1.4) {
+        html(sysNote, 'Un pattern instabile emerge.<br>Il soggetto devia dalla media.');
+        txt(phaseFoot, 'phase state · anomaly');
+        txt(sysStatus, 'ANOMALY DETECTED');
+      }
+
+      if (anomaly > 2.8) {
+        txt(fieldSig,  'CONSENSUS REALITY / DISTORTION ACTIVE / SIGNAL FRACTURE');
+        txt(memStatus, 'COHERENCE DEGRADING');
+      }
+
+      if (anomaly > 4.8) {
+        html(sysNote, 'La simulazione perde coerenza locale.<br>L\'osservatore non è più neutro.');
+        txt(phaseFoot, 'phase state · critical fracture');
+        txt(sysStatus, 'FIELD FRACTURE');
+        txt(memStatus, 'FRACTURE REPORTED');
+        typeInto('> critical fracture in sector 7... threshold approaching');
+      }
+
+      if (Math.random() > 0.962) glitch();
+    }
+
+    /* ── AWAKENING ──────────────────────────────────────── */
+    function awakenSystem() {
+      awakened = true;
+
+      if (flashEl) {
+        flashEl.classList.add('on');
+        setTimeout(() => flashEl.classList.remove('on'), 160);
+      }
+
+      setTimeout(() => {
+        body.classList.add('awakened');
+        document.documentElement.setAttribute('data-phase', 'awakened');
+
+        txt(fieldSig,  'STRUCTURAL BREACH / PERCEPTION UNBOUND / CODE VISIBLE');
+        txt(sysStatus, 'CONSENSUS BREACHED');
+        html(sysNote,  'La simulazione persiste.<br>Ma ora distingue chi osserva da chi obbedisce.');
+        txt(phaseFoot, 'phase state · awakening');
+        txt(memStatus, 'THRESHOLD CROSSED');
+
+        if (redPill) {
+          redPill.querySelector('.pill-txt').textContent = 'CODE SEEN';
+          redPill.disabled = true;
+        }
+
+        anomaly = 9.99;
+        updateGauge();
+
+        typeInto('> threshold breached. observer unbound. welcome to the structure');
+
+        let g = 0;
+        const cascade = setInterval(() => {
+          glitch();
+          if (++g >= 6) clearInterval(cascade);
+        }, 110);
+
+      }, 90);
+    }
+
+    /* ── TERMINAL TYPING ────────────────────────────────── */
+    function typeInto(msg) {
+      if (!termCmd) return;
+      if (typeTID)  clearTimeout(typeTID);
+      termCmd.textContent = '';
+      let i = 0;
+
+      function next() {
+        if (i < msg.length) {
+          termCmd.textContent += msg[i++];
+          typeTID = setTimeout(next, 26 + Math.random() * 22);
+        }
+      }
+      next();
+    }
+
+    /* ── GLITCH ─────────────────────────────────────────── */
+    function glitch() {
+      body.classList.add('glitch');
+      setTimeout(() => body.classList.remove('glitch'), 115);
+    }
+
+    /* ── HELPERS ────────────────────────────────────────── */
+    function txt(el, v)  { if (el) el.textContent = v;   }
+    function html(el, v) { if (el) el.innerHTML   = v;   }
+
+    /* ── SCROLL REVEALS (panels) ────────────────────────── */
+    function initPanelReveal() {
+      const panels = document.querySelectorAll('.pan');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.1 });
+      panels.forEach(p => obs.observe(p));
+    }
+
+    /* ── HERO REVEAL ────────────────────────────────────── */
+    function revealHero() {
+      // All lines start simultaneously; CSS delay handles stagger
+      document.querySelectorAll('.tl').forEach(l => l.classList.add('go'));
+
+      // Rule + body at ~850ms (after last line at ~4*140+80+900=1540ms → actually last line finishes ~850+560=1410ms)
+      // Let's time it after last line (--d:4 = 4*140ms delay + 900ms animation ≈ 1.46s)
+      setTimeout(() => {
+        document.getElementById('heroRule')?.classList.add('show');
+        document.getElementById('heroBody')?.classList.add('show');
+      }, 900);
+
+      setTimeout(() => {
+        document.getElementById('heroMeta')?.classList.add('show');
+        document.querySelector('.pill')?.classList.add('show');
+      }, 1100);
+    }
+
+    /* ── PARALLAX ───────────────────────────────────────── */
+    function initParallax() {
+      const title = document.querySelector('.htitle');
+      if (!title) return;
+      window.addEventListener('mousemove', e => {
+        if (awakened) return;
+        const xd = (e.clientX / window.innerWidth  - 0.5);
+        const yd = (e.clientY / window.innerHeight - 0.5);
+        title.style.transform = `translate(${xd * -5}px, ${yd * -3.5}px)`;
+      }, { passive: true });
+    }
+
+    /* ── CURSOR INTERACTION ─────────────────────────────── */
+    function initCursorHovers() {
+      if (!window.matchMedia('(pointer: fine)').matches) return;
+      const targets = document.querySelectorAll('button, .pan, a');
+      targets.forEach(el => {
+        el.addEventListener('mouseenter', () => curEl?.classList.add('large'));
+        el.addEventListener('mouseleave', () => curEl?.classList.remove('large'));
+      });
+    }
+
+    /* ── EVENTS ─────────────────────────────────────────── */
+    function bindEvents() {
+      window.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        pushAnomaly(0.0016);
+      }, { passive: true });
+
+      window.addEventListener('scroll', () => pushAnomaly(0.02), { passive: true });
+      window.addEventListener('touchmove', () => pushAnomaly(0.015), { passive: true });
+      window.addEventListener('resize', resizeCanvas);
+
+      document.addEventListener('mouseleave', () => { if (curEl) curEl.style.opacity = '0'; });
+      document.addEventListener('mouseenter', () => { if (curEl) curEl.style.opacity = '1'; });
+
+      if (redPill) redPill.addEventListener('click', awakenSystem);
+
+      // Hide native cursor on mobile (no custom cursor needed)
+      if (!window.matchMedia('(pointer: fine)').matches) {
+        body.style.cursor = 'auto';
+        if (curEl)  curEl.style.display  = 'none';
+        if (curDot) curDot.style.display = 'none';
+      }
+    }
+
+    /* ── INIT ───────────────────────────────────────────── */
+    function init() {
+      resizeCanvas();
+      drawRain();
+      tickClock();
+      tickCursor();
+      initPanelReveal();
+      initParallax();
+      initCursorHovers();
+      bindEvents();
+
+      // Boot sequence
+      setTimeout(revealHero, 180);
+      setTimeout(() => typeInto('> initializing perception matrix... signal stable'), 1400);
+    }
+
+    init();
+  })();
+  </script>
+
 </body>
 </html>
