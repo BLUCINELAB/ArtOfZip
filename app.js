@@ -1,232 +1,135 @@
+/* =========================
+STARORIGIN // ENTITY.JS
+MATRIX SYSTEM ENGINE
+========================= */
+
 (() => {
   "use strict";
 
-  // ==========================================
-  // NEBULA — STARORIGIN SYSTEM LAYER
-  // Da visual organism → epistemic field
-  // ==========================================
-
+  const body = document.body;
+  const redPill = document.getElementById("redPill");
   const systemNote = document.getElementById("systemNote");
-  const sitePhase = document.getElementById("sitePhase");
   const phaseFootnote = document.getElementById("phaseFootnote");
+  const fieldSignal = document.getElementById("fieldSignal");
+  const systemStatus = document.getElementById("systemStatus");
+  const systemTime = document.getElementById("systemTime");
 
-  // NEW LIVE METRICS
-  let metricsLayer;
-  let metrics = {
-    presenceDrift: 72.4,
-    latencyField: "UNSTABLE",
-    memoryDensity: 0.31,
-    signalRetention: 0.58,
-    observationNode: "NODE_03"
-  };
+  let awakened = false;
+  let anomaly = 0;
 
-  // PHASE LEXICON UPGRADE
-  const notes = {
-    listening: "Il sistema osserva prima di rispondere.",
-    revealing: "Il campo devia. La presenza modifica la struttura.",
-    network: "Una coerenza locale sta emergendo. La stabilità resta temporanea.",
-    saturated: "La densità mnemonica supera la soglia. Il sistema accelera.",
-    collapse: "Una regione è stata svuotata. La memoria persiste per sottrazione.",
-    dormant: "Attività minima. Il campo conserva tracce fredde.",
-    wake: "Nuovo disturbo rilevato. Il sistema riapre il flusso."
-  };
+  // CLOCK
+  function updateClock() {
+    const now = new Date();
 
-  // ==========================================
-  // METRICS UI
-  // ==========================================
-  function createMetricsLayer() {
-    metricsLayer = document.createElement("div");
-    metricsLayer.className = "metrics-layer";
+    systemTime.textContent =
+      now.toLocaleTimeString("en-GB", { hour12: false });
 
-    metricsLayer.innerHTML = `
-      <div class="metric-block">
-        <span class="metric-label">PRESENCE DRIFT</span>
-        <span class="metric-value" id="presenceMetric">72.4%</span>
-      </div>
-
-      <div class="metric-block">
-        <span class="metric-label">LATENCY FIELD</span>
-        <span class="metric-value" id="latencyMetric">UNSTABLE</span>
-      </div>
-
-      <div class="metric-block">
-        <span class="metric-label">MEMORY DENSITY</span>
-        <span class="metric-value" id="memoryMetric">0.31</span>
-      </div>
-    `;
-
-    document.body.appendChild(metricsLayer);
+    requestAnimationFrame(updateClock);
   }
 
-  function injectMetricsStyles() {
-    const style = document.createElement("style");
-    style.textContent = `
-      .metrics-layer {
-        position: fixed;
-        right: 2.5rem;
-        bottom: 2.2rem;
-        z-index: 12;
-        display: flex;
-        flex-direction: column;
-        gap: 0.85rem;
-        pointer-events: none;
-        mix-blend-mode: screen;
-      }
+  // CODE RAIN
+  function initCodeRain() {
+    const canvas = document.getElementById("codeRain");
+    if (!canvas) return;
 
-      .metric-block {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-      }
+    const ctx = canvas.getContext("2d");
 
-      .metric-label {
-        font-family: "IBM Plex Mono", monospace;
-        font-size: 0.54rem;
-        letter-spacing: 0.34em;
-        color: rgba(245,240,230,0.22);
-      }
+    let w, h, cols, drops;
 
-      .metric-value {
-        font-family: "IBM Plex Mono", monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.18em;
-        color: rgba(245,240,230,0.58);
-      }
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
 
-      @media (max-width: 780px) {
-        .metrics-layer {
-          right: 1.2rem;
-          bottom: 1.4rem;
-          gap: 0.65rem;
-        }
-
-        .metric-label {
-          font-size: 0.48rem;
-        }
-
-        .metric-value {
-          font-size: 0.62rem;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  // ==========================================
-  // METRICS UPDATE ENGINE
-  // ==========================================
-  function updateMetrics(state) {
-    // Presence Drift
-    metrics.presenceDrift += (state.motionEnergy * 0.028) - 0.012;
-    metrics.presenceDrift = clamp(metrics.presenceDrift, 12, 99.2);
-
-    // Memory Density
-    metrics.memoryDensity += (state.averageResidue - metrics.memoryDensity) * 0.04;
-    metrics.memoryDensity = clamp(metrics.memoryDensity, 0.01, 0.99);
-
-    // Latency Status
-    if (state.mode === "SATURATED") metrics.latencyField = "CRITICAL";
-    else if (state.mode === "NETWORK") metrics.latencyField = "MAPPING";
-    else if (state.mode === "COLLAPSING") metrics.latencyField = "FRACTURED";
-    else if (state.mode === "DORMANT") metrics.latencyField = "LOW";
-    else metrics.latencyField = "UNSTABLE";
-
-    // UI Apply
-    const presence = document.getElementById("presenceMetric");
-    const latency = document.getElementById("latencyMetric");
-    const memory = document.getElementById("memoryMetric");
-
-    if (presence) presence.textContent = `${metrics.presenceDrift.toFixed(1)}%`;
-    if (latency) latency.textContent = metrics.latencyField;
-    if (memory) memory.textContent = metrics.memoryDensity.toFixed(2);
-  }
-
-  // ==========================================
-  // PHASE UI ENHANCED
-  // ==========================================
-  function applyPhaseToUI(state) {
-    document.body.dataset.phase = state.mode.toLowerCase();
-
-    if (sitePhase) {
-      sitePhase.textContent = state.mode;
+      cols = Math.floor(w / 18);
+      drops = Array(cols).fill(1);
     }
 
-    if (systemNote) {
-      systemNote.textContent = notes[state.mode.toLowerCase()] || state.note;
+    function draw() {
+      ctx.fillStyle = "rgba(2,4,3,0.08)";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = awakened
+        ? "rgba(120,180,255,0.7)"
+        : "rgba(110,255,170,0.7)";
+
+      ctx.font = "14px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text =
+          String.fromCharCode(0x30A0 + Math.random() * 96);
+
+        ctx.fillText(text, i * 18, drops[i] * 18);
+
+        if (drops[i] * 18 > h && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+
+      requestAnimationFrame(draw);
     }
 
-    if (phaseFootnote) {
-      phaseFootnote.textContent =
-        `phase state · ${state.mode.toLowerCase()} · ${metrics.observationNode.toLowerCase()}`;
-    }
+    resize();
+    window.addEventListener("resize", resize);
 
-    updateMetrics(state);
+    draw();
   }
 
-  // ==========================================
-  // SIGNAL DISTORTION EVENTS
-  // ==========================================
-  function triggerSignalGlitch() {
-    document.body.classList.add("signal-glitch");
+  // GLITCH
+  function triggerGlitch() {
+    body.classList.add("glitch");
 
     setTimeout(() => {
-      document.body.classList.remove("signal-glitch");
-    }, 180);
+      body.classList.remove("glitch");
+    }, 160);
   }
 
-  function injectGlitchStyles() {
-    const style = document.createElement("style");
+  // AWAKEN
+  function awakenSystem() {
+    awakened = true;
 
-    style.textContent = `
-      body.signal-glitch .hero-title,
-      body.signal-glitch .site-phase {
-        text-shadow:
-          2px 0 rgba(130,160,220,0.28),
-          -2px 0 rgba(210,140,80,0.22),
-          0 0 12px rgba(255,255,255,0.08);
-      }
+    body.classList.add("awakened");
 
-      body.signal-glitch .hero-title {
-        transform: translateX(1px);
-      }
-    `;
+    fieldSignal.textContent =
+      "STRUCTURAL BREACH / PERCEPTION UNBOUND / CODE VISIBLE";
 
-    document.head.appendChild(style);
+    systemStatus.textContent =
+      "CONSENSUS BREACHED";
+
+    systemNote.innerHTML =
+      `La simulazione persiste.<br>Ma ora distingue chi osserva da chi obbedisce.`;
+
+    phaseFootnote.textContent =
+      "phase state · awakening";
+
+    triggerGlitch();
   }
 
-  // ==========================================
-  // UTILS
-  // ==========================================
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
+  // BEHAVIOR TRACK
+  window.addEventListener("scroll", () => {
+    anomaly += Math.abs(window.scrollY * 0.00002);
 
-  // ==========================================
-  // PUBLIC INJECTION
-  // Hook this into main simulation:
-  // window.NebulaStarorigin.applyPhase(state)
-  // ==========================================
-  window.NebulaStarorigin = {
-    applyPhase(state) {
-      applyPhaseToUI(state);
+    if (anomaly > 3 && !awakened) {
+      systemNote.innerHTML =
+        `Un pattern instabile emerge.<br>Il soggetto devia dalla media.`;
 
-      if (
-        state.mode === "COLLAPSING" ||
-        state.mode === "SATURATED"
-      ) {
-        if (Math.random() > 0.78) triggerSignalGlitch();
-      }
+      phaseFootnote.textContent =
+        "phase state · anomaly";
     }
-  };
 
-  // ==========================================
-  // INIT
-  // ==========================================
-  function init() {
-    injectMetricsStyles();
-    injectGlitchStyles();
-    createMetricsLayer();
+    if (Math.random() > 0.96) {
+      triggerGlitch();
+    }
+  });
+
+  // RED PILL
+  if (redPill) {
+    redPill.addEventListener("click", awakenSystem);
   }
 
-  init();
-})();
+  // INIT
+  updateClock();
+  initCodeRain();
+
+})();```
