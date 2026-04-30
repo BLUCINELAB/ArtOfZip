@@ -1,86 +1,77 @@
-<!-- =========================
-STARORIGIN // INDEX.HTML
-MATRIX SHIFT:
-Da landing poetica → epistemic simulation
-Copia e sostituisci la sezione principale
-========================= -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STARORIGIN</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-<div class="matrix-shell" id="matrixShell">
-
-  <!-- CODE VEIL -->
+<body>
   <canvas id="codeRain" aria-hidden="true"></canvas>
 
-  <!-- SYSTEM HEADER -->
   <header class="system-bar">
-    <div class="system-left">
-      <span class="system-node">NODE_03</span>
-      <span class="system-status" id="systemStatus">SIMULATION STABLE</span>
+    <div>
+      <span>NODE_03</span>
+      <span id="systemStatus">SIMULATION STABLE</span>
     </div>
-
-    <div class="system-right">
-      <span class="system-time" id="systemTime">00:00:00</span>
-    </div>
+    <span id="systemTime">00:00:00</span>
   </header>
 
-  <!-- HERO -->
-  <section class="hero matrix-hero" aria-labelledby="heroTitle">
+  <main class="site">
+    <section class="hero" aria-labelledby="heroTitle">
+      <p class="hero-kicker" id="fieldSignal">
+        CONSENSUS REALITY / ACTIVE SIMULATION / SIGNAL LOCK
+      </p>
 
-    <p class="hero-kicker" id="fieldSignal">
-      CONSENSUS REALITY / ACTIVE SIMULATION / SIGNAL LOCK
-    </p>
+      <h1 class="hero-title" id="heroTitle">
+        Reality persists<br />
+        until its code is seen.
+      </h1>
 
-    <h1 class="hero-title" id="heroTitle">
-      Reality persists<br>
-      until its code is seen.
-    </h1>
+      <div class="hero-rule"></div>
 
-    <div class="hero-rule" aria-hidden="true"></div>
+      <p class="hero-text" id="heroMutation">
+        Il sistema non vieta.<br />
+        Definisce.<br />
+        La frattura inizia quando distingui struttura da percezione.
+      </p>
 
-    <p class="hero-text" id="heroMutation">
-      Il sistema non vieta.<br>
-      Definisce.<br>
-      La frattura inizia quando distingui struttura da percezione.
-    </p>
+      <div class="hero-meta">
+        <span>perception lock · active</span>
+        <span>agency · suppressed</span>
+        <span>anomaly index · <b id="anomalyValue">0.03</b></span>
+      </div>
 
-    <div class="hero-meta" id="liveMeta">
-      <span>perception lock · active</span>
-      <span>agency · suppressed</span>
-      <span>anomaly index · 0.03</span>
-    </div>
+      <button class="red-pill" id="redPill">
+        SEE THE CODE
+      </button>
+    </section>
 
-    <button class="red-pill" id="redPill">
-      SEE THE CODE
-    </button>
+    <section class="grid">
+      <article class="panel">
+        <p class="panel-label">SYSTEM LAW</p>
+        <p class="panel-copy">
+          Ogni sistema cerca stabilità.<br />
+          Ogni stabilità nasconde una grammatica.<br />
+          Ogni grammatica può essere riscritta.
+        </p>
+        <div class="panel-footnote">ignorance maintains coherence</div>
+      </article>
 
-  </section>
+      <article class="panel">
+        <p class="panel-label">ANOMALY TRACE</p>
+        <p class="panel-copy" id="systemNote">
+          Nessuna anomalia rilevata.<br />
+          L’utente coincide con la simulazione.
+        </p>
+        <div class="panel-footnote" id="phaseFootnote">
+          phase state · consensus
+        </div>
+      </article>
+    </section>
+  </main>
 
-  <!-- ABOUT -->
-  <article class="panel" id="about">
-    <p class="panel-label">SYSTEM LAW</p>
-
-    <p class="panel-copy">
-      Ogni sistema cerca stabilità.<br>
-      Ogni stabilità nasconde una grammatica.<br>
-      Ogni grammatica può essere riscritta.
-    </p>
-
-    <div class="panel-footnote">
-      ignorance maintains coherence
-    </div>
-  </article>
-
-  <!-- TRACE -->
-  <article class="panel" id="diary">
-    <p class="panel-label">ANOMALY TRACE</p>
-
-    <p class="panel-copy" id="systemNote">
-      Nessuna anomalia rilevata.<br>
-      L’utente coincide con la simulazione.
-    </p>
-
-    <div class="panel-footnote" id="phaseFootnote">
-      phase state · consensus
-    </div>
-  </article>
-
-</div>
+  <script src="entity.js"></script>
+</body>
+</html>
