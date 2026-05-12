@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it" data-phase="dormant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020308" />
+  <meta name="description" content="STARORIGIN ORACLE è un rituale digitale statico: un terminale filosofico vivo con memoria locale, gauge di anomalia e risposte procedurali." />
+  <meta name="author" content="BLUCINELAB" />
+  <meta property="og:title" content="STARORIGIN // ORACLE" />
+  <meta property="og:description" content="Non è un sito. È un rituale digitale." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-starorigin.png" />
+  <meta name="color-scheme" content="dark" />
+  <title>STARORIGIN // ORACLE</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/experience.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a class="skip-link" href="#oracleInput">Salta al terminale</a>
+
+  <canvas id="codeRain" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="breach-flash" id="breachFlash" aria-hidden="true"></div>
+
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <svg viewBox="0 0 48 48" focusable="false">
+      <circle cx="24" cy="24" r="17" />
+      <circle cx="24" cy="24" r="4" />
+      <path d="M24 1v9M24 38v9M1 24h9M38 24h9" />
+    </svg>
+  </div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+  <header class="system-bar" role="banner">
+    <div class="system-left">
+      <span class="classification">OMEGA // STARORIGIN</span>
+      <span class="node">NODE_03 · ORACLE</span>
+    </div>
+
+    <div class="gauge" role="status" aria-live="polite" aria-label="Livello di anomalia">
+      <svg class="gauge-svg" viewBox="0 0 64 64" aria-hidden="true">
+        <circle class="gauge-track" cx="32" cy="32" r="24" />
+        <circle class="gauge-fill" id="gaugeFill" cx="32" cy="32" r="24" />
+      </svg>
+      <span class="gauge-number" id="gaugeNumber">0.03</span>
+      <span class="gauge-label">ANOMALY</span>
+    </div>
+
+    <div class="system-right">
+      <span id="systemStatus">SIMULATION STABLE</span>
+      <time id="systemTime" aria-live="off">00:00:00</time>
+    </div>
+  </header>
+
+  <main class="site">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="stamp" aria-hidden="true">
+        <span>CLASSIF. OMEGA</span>
+        <span>ACCESS: RITUAL</span>
+        <span>LAW: UNSTABLE</span>
+      </div>
+
+      <p class="kicker" id="fieldSignal">CONSENSUS REALITY / ORACLE DORMANT / SIGNAL LOCK</p>
+
+      <h1 class="hero-title" id="heroTitle" aria-label="Ask the system where reality begins to break.">
+        <span class="title-line" style="--i:0">Ask</span>
+        <span class="title-line" style="--i:1">the system</span>
+        <span class="title-line title-indent" style="--i:2">where reality</span>
+        <span class="title-line" style="--i:3">begins</span>
+        <span class="title-line title-accent" style="--i:4">to break.</span>
+      </h1>
+
+      <div class="ritual-rule" id="ritualRule" aria-hidden="true">
+        <span></span><i></i><b></b><i></i><span></span>
+      </div>
+
+      <p class="hero-copy" id="heroCopy">
+        Questo terminale non predice. Risponde.<br />
+        Ogni domanda altera il campo.<br />
+        Ogni risposta lascia una traccia nella memoria locale.
+      </p>
+
+      <div class="hero-meta" id="heroMeta" role="list" aria-label="Stato del sistema">
+        <div role="listitem"><span></span><strong>oracle state</strong><em id="oracleState">DORMANT</em></div>
+        <div role="listitem"><span></span><strong>questions</strong><em id="questionCount">0</em></div>
+        <div role="listitem"><span></span><strong>coherence</strong><em id="coherenceValue">99.74%</em></div>
+        <div role="listitem"><span></span><strong>threshold</strong><em>5.00</em></div>
+      </div>
+
+      <button class="breach-button" id="breachButton" type="button">
+        <span>◈</span>
+        <strong>VIOLATE THE FIELD</strong>
+        <span>◈</span>
+      </button>
+    </section>
+
+    <div class="membrane" aria-hidden="true">
+      <span></span>
+      <p><b>LOCAL MEMORY ACTIVE</b><i id="sessionCode">SESSION ∅</i><b>NO BACKEND</b></p>
+      <span></span>
+    </div>
+
+    <section class="oracle-grid" aria-label="Interfaccia Oracle">
+      <article class="panel panel-terminal">
+        <div class="panel-head">
+          <span>TERMINAL · INPUT</span>
+          <i class="pulse"></i>
+        </div>
+        <h2>Interroga il campo</h2>
+        <p class="panel-copy">Scrivi una domanda, un sogno, un dubbio, un comando. Il sistema leggerà struttura, densità simbolica e ricorrenze.</p>
+
+        <form class="terminal-form" id="terminalForm" autocomplete="off">
+          <label class="sr-only" for="oracleInput">Domanda per l'oracolo</label>
+          <span aria-hidden="true">root@oracle:~$</span>
+          <input id="oracleInput" name="oracleInput" type="text" spellcheck="false" enterkeyhint="send" placeholder="ask: cosa resta di me quando il sistema risponde?" />
+          <button type="submit" aria-label="Invia domanda">↵</button>
+        </form>
+
+        <div class="command-strip" aria-label="Comandi rapidi">
+          <button type="button" data-command="help">help</button>
+          <button type="button" data-command="daily">daily</button>
+          <button type="button" data-command="ritual">ritual</button>
+          <button type="button" data-command="share">share</button>
+          <button type="button" data-command="recall">recall</button>
+          <button type="button" data-command="export">export</button>
+          <button type="button" data-command="clear">clear</button>
+          <button type="button" data-command="forget">forget</button>
+        </div>
+
+        <div class="terminal-output" id="terminalOutput" aria-live="polite"></div>
+      </article>
+
+      <article class="panel panel-trace">
+        <div class="panel-head">
+          <span>ANOMALY · TRACE</span>
+          <i id="traceDot"></i>
+        </div>
+        <h2>Stato della frattura</h2>
+        <p class="system-note" id="systemNote">Nessuna frattura critica. Il soggetto coincide ancora con la simulazione.</p>
+        <div class="metric-list">
+          <div><span>depth</span><strong id="depthValue">—</strong></div>
+          <div><span>category</span><strong id="categoryValue">none</strong></div>
+          <div><span>memory</span><strong id="memoryValue">0 traces</strong></div>
+        </div>
+        <p class="panel-foot" id="phaseFoot">phase · consensus</p>
+      </article>
+
+      <article class="panel panel-law">
+        <div class="panel-head">
+          <span>SYSTEM · LAW</span>
+          <i></i>
+        </div>
+        <h2>Leggi instabili</h2>
+        <p class="law-text">
+          Ogni sistema cerca stabilità.<br />
+          Ogni stabilità nasconde una grammatica.<br />
+          Ogni grammatica può essere riscritta.
+        </p>
+        <div class="equation" aria-label="Sistema implica grammatica implica grammatica trasformata">
+          <span>S</span><i>→</i><span>G</span><i>→</i><span>G′</span>
+        </div>
+        <p class="panel-foot">ignorance maintains coherence · class Ω</p>
+      </article>
+
+      <article class="panel panel-archive">
+        <div class="panel-head">
+          <span>MEMORY · ARCHIVE</span>
+          <i></i>
+        </div>
+        <h2>Tracce recenti</h2>
+        <div class="archive-list" id="archiveList">
+          <p class="empty">Nessuna domanda salvata. La memoria è vuota.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <span>STARORIGIN // ORACLE</span>
+    <span>STATIC RITUAL · VANILLA HTML CSS JS</span>
+    <span>ALL ANSWERS ARE LOCAL</span>
+  </footer>
+
+  <script src="js/modules/memory.js"></script>
+  <script src="js/modules/oracle.js"></script>
+  <script src="js/modules/anomaly.js"></script>
+  <script src="js/modules/visuals.js"></script>
+  <script src="js/modules/terminal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
