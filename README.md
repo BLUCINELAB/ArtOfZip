@@ -1,38 +1,18 @@
-# STARORIGIN // ORACLE — Enhanced
+# STARORIGIN // ORACLE — Installation v2
 
-Rituale digitale statico in vanilla HTML, CSS e JavaScript.
+Static ritual website in vanilla HTML, CSS, and JavaScript.
 
-## Funzioni principali
+This version turns the existing STARORIGIN // ORACLE site into a quieter terminal-based digital installation. The visitor enters a field, writes into it, and leaves local traces. Memory is stored only in the browser and is treated as consequence, not simple storage.
 
-- Terminale interattivo con risposte procedurali locali
-- Motore `oracle.js` potenziato con categorie simboliche estese
-- Gauge di anomalia legato alla profondità della domanda
-- Stato `awakened` persistente via localStorage
-- Memoria locale con archivio e export testuale
-- Comandi: `help`, `daily`, `ritual`, `share`, `recall`, `export`, `clear`, `forget`, `awaken`, `reset`
-- Modalità rituale fullscreen senza pannelli laterali
-- Export card PNG locale dell’ultima risposta
-- Canvas code rain semantico con rispetto di `prefers-reduced-motion`
-- Cursor custom desktop, fallback touch/mobile
-- Responsive, accessibile, GitHub Pages ready
-- Nessun backend, nessuna libreria, nessun build step
-
-## Deploy GitHub Pages
-
-1. Carica tutti i file nella root del repository.
-2. Vai su Settings → Pages.
-3. Source: Deploy from branch.
-4. Branch: `main`, folder: `/root`.
-5. Mantieni `CNAME` se usi `antonzip.it`.
-
-## Struttura
+## Structure
 
 ```text
 .
 ├── index.html
 ├── CNAME
-├── README.md
 ├── .nojekyll
+├── README.md
+├── CHANGELOG.md
 ├── assets/
 ├── data/
 ├── css/
@@ -49,6 +29,56 @@ Rituale digitale statico in vanilla HTML, CSS e JavaScript.
         └── visuals.js
 ```
 
-## Note operative
+## States
 
-Non cambiare gli ID HTML collegati ai moduli JS senza aggiornare i rispettivi file. Il cuore creativo è `js/modules/oracle.js`; il cuore interattivo è `js/modules/terminal.js`.
+- `DORMANT`
+- `BREACH`
+- `THRESHOLD`
+- `AFTERIMAGE`
+
+`COLLAPSE` is an event, not a permanent visual phase. It leads into `AFTERIMAGE`.
+
+## Commands
+
+Active commands:
+
+- `help`
+- `recall`
+- `forget`
+- `ritual`
+- `awaken`
+- `export`
+- `signal`
+- `collapse`
+- `echo`
+- `installation`
+- `fieldnotes`
+- `blucinelab`
+- `author`
+
+Deprecated or absorbed commands:
+
+- `share` is not implemented.
+- `clear` is treated as `forget`.
+- `daily` is absorbed into normal oracle language.
+- `reset` is refused and replaced by `collapse`.
+
+## localStorage Keys
+
+- `starorigin_state`
+- `starorigin_interaction_count`
+- `starorigin_memory`
+- `starorigin_forgotten_log`
+- `starorigin_afterimage_fragments`
+- `starorigin_ritual_count`
+
+Memory is capped at 50 entries with FIFO rotation. All storage access is wrapped in `try/catch`.
+
+## Deployment
+
+1. Upload the contents of this folder to the root of the GitHub Pages repository.
+2. Keep `CNAME` in the root. It is preserved as `antonzip.it`.
+3. Keep `.nojekyll` in the root.
+4. In GitHub repository settings, enable Pages from the intended branch and root folder.
+
+No backend, framework, build step, package manager, external library, CDN, or server process is required.
