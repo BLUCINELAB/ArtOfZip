@@ -1,0 +1,265 @@
+@media (pointer: fine) {
+  body { cursor: none; }
+}
+
+#codeRain {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.42;
+}
+
+.grain, .scanlines, .breach-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.grain {
+  z-index: 7;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.72'/%3E%3C/svg%3E");
+  mix-blend-mode: screen;
+}
+
+.scanlines {
+  z-index: 8;
+  opacity: 0.16;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(255,255,255,0.018) 3px, rgba(255,255,255,0.018) 4px);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(2,3,7,0.38), transparent 24%, transparent 76%, rgba(2,3,7,0.46));
+}
+
+.breach-flash {
+  z-index: 100;
+  background: rgba(var(--accent-rgb), var(--flash-opacity, 0.12));
+  opacity: 0;
+}
+
+.breach-flash[data-phase="afterimage"] {
+  background: rgba(220, 226, 232, var(--flash-opacity, 0.08));
+}
+
+.cursor, .cursor-dot {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: left, top, transform;
+}
+.cursor {
+  width: 46px;
+  height: 46px;
+  color: var(--color-signal);
+  mix-blend-mode: screen;
+}
+.cursor svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.72;
+}
+.cursor-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-signal);
+}
+.cursor.large { transform: translate(-50%, -50%) scale(1.48); }
+
+body.state-dormant #codeRain { opacity: 0.18; }
+body.state-breach #codeRain { opacity: 0.33; }
+body.state-threshold #codeRain { opacity: 0.5; }
+body.state-afterimage #codeRain { opacity: 0.24; }
+
+body.state-afterimage .hero,
+body.state-afterimage .panel-trace,
+body.state-afterimage .panel-law {
+  opacity: 0.42;
+}
+
+body.state-afterimage .panel-terminal {
+  background: rgba(6, 9, 12, 0.66);
+}
+
+body.state-afterimage .command-strip button[data-command="collapse"],
+body.state-afterimage .command-strip button[data-command="awaken"],
+body.state-afterimage .command-strip button[data-command="ritual"] {
+  opacity: 0.42;
+}
+
+body.installation-mode {
+  overflow: hidden;
+}
+
+body.installation-mode .system-bar,
+body.installation-mode .hero,
+body.installation-mode .membrane,
+body.installation-mode .panel-trace,
+body.installation-mode .panel-law,
+body.installation-mode .panel-archive,
+body.installation-mode .footer {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.installation-mode .site {
+  width: min(100% - 2rem, 1080px);
+  height: 100vh;
+  padding: 2rem 0;
+  display: grid;
+  place-items: center;
+}
+
+body.installation-mode .oracle-grid {
+  width: 100%;
+  grid-template-columns: 1fr;
+  grid-template-areas: "terminal";
+}
+
+body.installation-mode .panel-terminal {
+  min-height: min(760px, calc(100vh - 4rem));
+  max-height: calc(100vh - 4rem);
+  border-color: var(--color-border-strong);
+  background: rgba(4, 7, 9, 0.82);
+}
+
+body.installation-mode .terminal-output {
+  max-height: calc(100vh - 21rem);
+}
+
+body.ritual-mode .command-strip,
+body.ritual-mode .panel-copy {
+  display: none;
+}
+
+body.ritual-mode .terminal-form {
+  margin-top: 0;
+}
+
+body.ritual-mode .panel-terminal::after {
+  content: "RITUAL FIELD";
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--color-faint);
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+}
+
+@media (pointer: coarse) {
+  body { cursor: auto; }
+  .cursor, .cursor-dot { display: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+
+  body,
+  .gauge-fill,
+  .breach-button,
+  .command-strip button,
+  .panel,
+  .cursor,
+  .cursor-dot,
+  #codeRain,
+  .breach-flash,
+  .hero,
+  .panel-terminal {
+    transition:
+      background 700ms ease,
+      border-color 300ms ease,
+      box-shadow 300ms ease,
+      color 300ms ease,
+      opacity 520ms ease,
+      transform 520ms ease,
+      stroke-dashoffset 500ms ease;
+  }
+
+  .title-line {
+    opacity: 0;
+    transform: translateY(0.45rem);
+  }
+  .title-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-copy,
+  .hero-meta,
+  .breach-button,
+  .ritual-rule,
+  .panel {
+    opacity: 0;
+    transform: translateY(0.7rem);
+  }
+  .hero-copy.visible,
+  .hero-meta.visible,
+  .breach-button.visible,
+  .ritual-rule.visible,
+  .panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .breach-button:hover,
+  .breach-button:focus-visible,
+  .command-strip button:hover,
+  .command-strip button:focus-visible,
+  .terminal-form button:hover,
+  .terminal-form button:focus-visible {
+    color: var(--color-signal);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.08);
+  }
+
+  .panel:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .panel-head i.pulse,
+  #traceDot.active {
+    animation: dotPulse 2.8s ease-in-out infinite;
+  }
+
+  .breach-flash.active {
+    animation: flashPulse 170ms linear forwards;
+  }
+
+  @keyframes dotPulse {
+    50% { transform: scale(1.45); opacity: 0.55; }
+  }
+
+  @keyframes flashPulse {
+    0% { opacity: 0; }
+    24% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  body { cursor: auto; }
+  .cursor, .cursor-dot, #codeRain { display: none; }
+  .title-line,
+  .hero-copy,
+  .hero-meta,
+  .breach-button,
+  .ritual-rule,
+  .panel {
+    opacity: 1;
+    transform: none;
+  }
+}
