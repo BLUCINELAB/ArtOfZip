@@ -88,8 +88,8 @@ export const fragmentShader = /* glsl */ `
     float innerEdge = line(abs(membraneX) - membraneWidth * 0.58, 0.004);
     float folds = pow(max(0.0, sin((p.y + warp) * 32.0 + fineNoise * 4.0)), 18.0);
     folds *= membrane * (0.13 + reveal * 0.46);
-    float tissue = membrane * (0.12 + lowNoise * 0.12 + fineNoise * 0.055);
-    tissue += innerEdge * (0.07 + reveal * 0.12) + folds;
+    float tissue = membrane * (0.14 + lowNoise * 0.13 + fineNoise * 0.06);
+    tissue += innerEdge * (0.085 + reveal * 0.13) + folds;
 
     // A large incomplete contour gives the image scale without becoming navigable 3D.
     vec2 arcPoint = p - vec2(0.34, -0.01);
@@ -120,13 +120,13 @@ export const fragmentShader = /* glsl */ `
     matter *= 1.0 - withdrawal;
 
     vec3 deepBlack = vec3(0.006, 0.007, 0.006);
-    vec3 graphite = vec3(0.055, 0.06, 0.056);
-    vec3 oxidized = vec3(0.115, 0.17, 0.142);
+    vec3 graphite = vec3(0.07, 0.075, 0.07);
+    vec3 oxidized = vec3(0.14, 0.195, 0.165);
     vec3 bone = vec3(0.69, 0.69, 0.635);
     vec3 alarm = vec3(0.42, 0.035, 0.024);
 
     float depthShade = pow(max(0.0, 1.0 - length(p - vec2(0.08, 0.0)) * 0.9), 3.0);
-    vec3 color = deepBlack + graphite * depthShade * 0.12 * uDepth;
+    vec3 color = deepBlack + graphite * depthShade * 0.16 * uDepth;
     color += mix(oxidized, bone, clamp(folds + innerEdge * 0.2, 0.0, 0.55)) * matter;
 
     float defensive = 1.0 - step(0.45, abs(uState - 6.0));
@@ -135,7 +135,7 @@ export const fragmentShader = /* glsl */ `
     color = mix(color, alarm, alarmVein);
 
     float vignette = smoothstep(0.88, 0.22, length(p * vec2(0.78, 1.0)));
-    color *= 0.45 + vignette * 0.72;
+    color *= 0.5 + vignette * 0.7;
     color *= 1.0 + (uContrast - 1.0) * 0.55;
 
     float grain = hash21(gl_FragCoord.xy + fract(uTime) * 191.0) - 0.5;
