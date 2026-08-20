@@ -1,0 +1,91 @@
+{
+  "siteName": "Anton Likht",
+  "siteUrl": "https://antonzip.it",
+  "locale": "en",
+  "location": "Bologna, Italy",
+  "role": "Photographer · Director · Visual Artist",
+  "availability": "Italy · International",
+  "email": "anton0zip@gmail.com",
+  "description": "Anton Likht is a photographer, director and visual artist based in Bologna, Italy, working across editorial photography, cinematography and visual culture.",
+  "navigation": [
+    { "label": "Home", "href": "/" },
+    { "label": "Photography", "href": "/photography/" },
+    { "label": "About", "href": "/about/" },
+    { "label": "Contact", "href": "/contact/" }
+  ],
+  "about": {
+    "eyebrow": "Bologna · Italy",
+    "heading": "Image as atmosphere, body and structure.",
+    "paragraphs": [
+      "Anton Likht is a photographer, director and visual artist based in Bologna, Italy. Working between still and moving image, he builds scenes where bodies, natural elements and constructed light hold equal weight. His photographs move between intimacy and distance, editorial precision and physical uncertainty.",
+      "His photographic work is featured on PhotoVogue, including one image listed in Best of PhotoVogue. Alongside his independent practice, he teaches at Blow Up Academy and develops film, cultural and commissioned projects through BluCineLab.",
+      "Available for editorial photography, commissioned image-making and moving-image projects in Italy and internationally."
+    ],
+    "credentials": [
+      {
+        "label": "Photography",
+        "value": "PhotoVogue portfolio · 20 photographs · 1 Best of PhotoVogue",
+        "href": "https://www.vogue.com/photovogue/photographers/188548"
+      },
+      {
+        "label": "Teaching",
+        "value": "Blow Up Academy",
+        "href": "https://www.blowupacademy.it/ferrara/direzione-della-fotografia/"
+      },
+      {
+        "label": "Studio practice",
+        "value": "BluCineLab · Direction, cinematography and visual systems",
+        "href": "https://blucinelab.it"
+      }
+    ]
+  },
+  "profiles": [
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/anton_zip",
+      "sameAs": true
+    },
+    {
+      "label": "PhotoVogue",
+      "href": "https://www.vogue.com/photovogue/photographers/188548",
+      "sameAs": true
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/anton-likht-30457170",
+      "sameAs": true
+    },
+    {
+      "label": "BluCineLab",
+      "href": "https://blucinelab.it",
+      "sameAs": false
+    }
+  ],
+  "sources": [
+    {
+      "label": "PhotoVogue profile",
+      "href": "https://www.vogue.com/photovogue/photographers/188548",
+      "supports": "Name, Bologna location, Instagram identity, 20-image portfolio and one Best of PhotoVogue selection."
+    },
+    {
+      "label": "Blow Up Academy faculty page",
+      "href": "https://www.blowupacademy.it/ferrara/direzione-della-fotografia/",
+      "supports": "Teaching role."
+    },
+    {
+      "label": "Pop Corn on FilmFreeway",
+      "href": "https://filmfreeway.com/PopCornshort",
+      "supports": "Director of Photography credit and 2024 completion date."
+    },
+    {
+      "label": "Il viaggio on OpenDDB",
+      "href": "https://openddb.it/film/il-viaggio/",
+      "supports": "Director of Photography credit."
+    },
+    {
+      "label": "BluCineLab",
+      "href": "https://blucinelab.it",
+      "supports": "Anton Likht's role in direction, cinematography and visual systems."
+    }
+  ]
+}
