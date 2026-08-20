@@ -1,0 +1,15 @@
+{
+  "name": "Anton Likht",
+  "short_name": "Anton Likht",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f4f2ed",
+  "theme_color": "#f4f2ed",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
